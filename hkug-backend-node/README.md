@@ -12,6 +12,10 @@ Node version API server for HKUG
 3. npm run compile
 4. npm start
 
+## Usage
+1. start the server
+2. goto http://localhost:8080/api/topics?forum=${LIHKG/HKG}
+
 ## Todo list
 * [ ] Write better readme file
 * [ ] Error Handling
