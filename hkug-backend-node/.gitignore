@@ -1,0 +1,8 @@
+# Built files
+/lib
+
+# OS files
+.DS_STORE
+
+# npm files
+/node_modules

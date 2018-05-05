@@ -1,0 +1,41 @@
+{
+  "name": "hkug-backend-node",
+  "private": "true",
+  "version": "1.0.0",
+  "description": "Node version backend server for combine golden & lihkg database",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "eslint": "eslint src",
+    "compile": "babel src -d lib",
+    "start": "cross-env NODE_ENV=production node lib",
+    "babel-register": "node -e \"require('babel-register');require('./src');\"",
+    "dev": "nodemon --exec npm run babel-register"
+  },
+  "keywords": [
+    "hkug",
+    "hkgos"
+  ],
+  "author": "CK Wun <ckwun@connect.ust.hk>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.3",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-lodash-fp": "^2.1.3",
+    "nodemon": "^1.17.3"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.2",
+    "cross-env": "^5.1.4",
+    "express": "^4.16.3",
+    "lodash": "^4.17.10",
+    "minimist": "^1.2.0"
+  }
+}
