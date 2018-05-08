@@ -18,6 +18,7 @@
   ],
   "author": "CK Wun <ckwun@connect.ust.hk>",
   "license": "MIT",
+  "repository": "https://github.com/hkgos/hkug/tree/master/hkug-backend-node",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.3",
