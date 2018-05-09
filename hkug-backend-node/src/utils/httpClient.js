@@ -33,7 +33,7 @@ const client = axios.create({
 
 // Request Interceptor
 client.interceptors.request.use((config) => {
-  console.log('HTTP request...');
+  console.log('Making HTTP request...');
   console.log(`URL: ${config.url}`);
   console.log(`METHOD: ${config.method}`);
   console.log(`DATA: ${config.data}`);
