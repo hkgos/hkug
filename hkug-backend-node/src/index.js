@@ -6,7 +6,7 @@ import topics from './routers/topics';
 
 const argv = minimist(process.argv.slice(2));
 
-const { port = 8080 } = argv;
+const { port = 8081 } = argv;
 
 const app = express();
 
