@@ -14,7 +14,7 @@ export default class Topic {
     dislike,
     totalPage,
   } = {}) {
-    this.topicId = topicId;
+    this.topicId = String(topicId);
     this.forum = forum;
     this.category = category;
     this.title = title;
@@ -23,10 +23,10 @@ export default class Topic {
     this.authorName = authorName;
     this.authorGender = authorGender;
     this.lastReplyDate = lastReplyDate;
-    this.totalReplies = totalReplies;
-    this.like = like;
-    this.dislike = dislike;
-    this.totalPage = totalPage;
+    this.totalReplies = Number(totalReplies);
+    this.like = Number(like);
+    this.dislike = Number(dislike);
+    this.totalPage = Number(totalPage);
   }
 
   // Delete any 'Private' / Unwanted props
