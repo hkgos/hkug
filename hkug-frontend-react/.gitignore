@@ -1,0 +1,10 @@
+# Built files
+/public/index.html
+/public/assets
+webpack.stats.json
+
+# OS files
+.DS_STORE
+
+# npm files
+/node_modules
