@@ -18,11 +18,11 @@ const styles = {
   contentlayout: {
     minHeight: '100vh',
     maxHeight: '100vh',
-    overflow: 'auto',
   },
   content: {
     display: 'flex',
-    overflow: 'auto',
+    'overflow-y': 'scroll',
+    '-webkit-overflow-scrolling': 'touch',
   },
 };
 
