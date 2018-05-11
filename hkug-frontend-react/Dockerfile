@@ -3,8 +3,6 @@ FROM node:8.11.1-alpine
 RUN mkdir /hkug-frontend-react
 WORKDIR /hkug-frontend-react
 
-RUN npm install -g yarn
-
 COPY package.json /hkug-frontend-react
 COPY yarn.lock /hkug-frontend-react
 RUN yarn install
