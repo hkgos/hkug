@@ -37,7 +37,7 @@ const AppSider = ({
     breakpoint="lg"
     collapsedWidth="0"
     collapsed={menuCollapsed}
-    onCollapse={({ collapsed }) => { setMenuCollapse(collapsed); }}
+    onCollapse={(collapsed) => { setMenuCollapse(collapsed); }}
   >
     <div className={classes.logo} />
     <Menu
