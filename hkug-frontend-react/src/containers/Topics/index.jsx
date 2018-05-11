@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { List, Icon, Spin, Button } from 'antd';
+import { List, Icon, Spin, Button, message } from 'antd';
 import {
   compose,
   branch,
@@ -118,11 +118,17 @@ const enhance = compose(
   connect(state => ({
     topics: state.topic.topics,
     loading: state.topic.isFetchingTopics,
+    isError: state.topic.isFetchTopicsError,
   }), { fetchTopics }),
   lifecycle({
     componentWillMount() {
       const category = this.props.match.params.id;
       this.props.fetchTopics({ category }, { reset: true });
+    },
+    componentDidUpdate(prevProps) {
+      if (!prevProps.isError && this.props.isError) {
+        message.error('發生錯誤，請稍後再試');
+      }
     },
   }),
   withHandlers({
