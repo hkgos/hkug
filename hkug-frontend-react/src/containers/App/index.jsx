@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { hot } from 'react-hot-loader';
 import { Layout } from 'antd';
-import { compose, pure } from 'recompose';
+import { compose, withStateHandlers, pure } from 'recompose';
 import injectSheet from 'react-jss';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Loadable from 'react-loadable';
@@ -37,12 +37,12 @@ const Topics = Loadable({
   delay: 300,
 });
 
-const App = ({ classes }) => (
+const App = ({ classes, menuCollapsed, setMenuCollapsed }) => (
   <Router>
     <Layout>
-      <Sider />
+      <Sider menuCollapsed={menuCollapsed} handleMenuCollapse={setMenuCollapsed} />
       <Layout className={classes.contentlayout}>
-        <Header />
+        <Header menuCollapsed={menuCollapsed} setMenuCollapsed={setMenuCollapsed} />
         <Content className={classes.content}>
           <Switch>
             <Route exact path="/" component={Home} />
@@ -58,10 +58,17 @@ const App = ({ classes }) => (
 
 App.propTypes = {
   classes: PropTypes.shape({}).isRequired,
+  menuCollapsed: PropTypes.bool.isRequired,
+  setMenuCollapsed: PropTypes.func.isRequired,
 };
 
 let enhance = compose(
   injectSheet(styles),
+  withStateHandlers(() => ({ menuCollapsed: false }), {
+    setMenuCollapsed: () => menuCollapsed => ({
+      menuCollapsed,
+    }),
+  }),
   pure,
 );
 
