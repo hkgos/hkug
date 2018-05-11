@@ -72,6 +72,12 @@ if (devMode) {
   plugins.push(new webpack.HotModuleReplacementPlugin());
 } else {
   plugins.push(
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('production'),
+        PROXY: JSON.stringify(true),
+      },
+    }),
     // keep vendor bundle unchanged when only module.id was changed, see:
     // https://webpack.js.org/guides/caching/#module-identifiers
     new webpack.HashedModuleIdsPlugin(),
