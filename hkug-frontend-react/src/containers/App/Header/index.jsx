@@ -11,24 +11,32 @@ const { Header } = Layout;
 const styles = theme => ({
   menuIcon: {
     float: 'left',
-    lineHeight: 2.5,
+    lineHeight: 2.95,
     cursor: 'pointer',
     'z-index': 1,
-    marginLeft: 30,
+    margin: '0 15px 0 15px',
   },
   header: {
     background: theme.primaryColor8,
     padding: 0,
-    textAlign: 'center',
+    textAlign: 'left',
     color: '#fff',
   },
   headerText: {
-    margin: '0px auto',
-    width: 100,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
   '@media only screen and (min-width: 992px)': {
     menuIcon: {
       display: 'none',
+    },
+    header: {
+      textAlign: 'center',
+    },
+    headerText: {
+      width: 100,
+      margin: '0 auto',
     },
   },
 });
@@ -41,7 +49,7 @@ const AppHeader = ({
 }) => (
   <Header className={classes.header}>
     <Icon
-      style={{ fontSize: 24 }}
+      style={{ fontSize: 22 }}
       className={classes.menuIcon}
       type={menuCollapsed ? 'menu-unfold' : 'menu-fold'}
       onClick={() => { setMenuCollapsed(!menuCollapsed); }}

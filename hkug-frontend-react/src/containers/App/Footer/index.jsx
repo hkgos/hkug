@@ -9,6 +9,9 @@ const { Footer } = Layout;
 const styles = {
   footer: {
     textAlign: 'center',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
 };
 
