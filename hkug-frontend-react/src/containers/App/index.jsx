@@ -64,7 +64,7 @@ App.propTypes = {
 
 let enhance = compose(
   injectSheet(styles),
-  withStateHandlers(() => ({ menuCollapsed: false }), {
+  withStateHandlers(({ menuCollapsed = false }) => ({ menuCollapsed }), {
     setMenuCollapsed: () => menuCollapsed => ({
       menuCollapsed,
     }),
