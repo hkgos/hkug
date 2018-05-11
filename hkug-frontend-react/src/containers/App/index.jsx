@@ -40,7 +40,7 @@ const Topics = Loadable({
 const App = ({ classes, menuCollapsed, setMenuCollapsed }) => (
   <Router>
     <Layout>
-      <Sider menuCollapsed={menuCollapsed} handleMenuCollapse={setMenuCollapsed} />
+      <Sider menuCollapsed={menuCollapsed} setMenuCollapse={setMenuCollapsed} />
       <Layout className={classes.contentlayout}>
         <Header menuCollapsed={menuCollapsed} setMenuCollapsed={setMenuCollapsed} />
         <Content className={classes.content}>
