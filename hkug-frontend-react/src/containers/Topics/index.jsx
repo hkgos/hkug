@@ -19,7 +19,7 @@ import { fetchTopics } from '../../modules/topic';
 const styles = {
   container: {
     flex: 'auto',
-    margin: '24px 16px 0',
+    margin: '0 16px 0',
   },
   loadingIndicator: {
     textAlign: 'center',
