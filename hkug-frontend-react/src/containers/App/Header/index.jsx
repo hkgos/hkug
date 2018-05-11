@@ -35,14 +35,21 @@ const styles = theme => ({
     textOverflow: 'ellipsis',
   },
   headerText: {
-    padding: 0,
+    marginBottom: 0,
+    marginRight: 64,
+    fontSize: '1.5em',
+  },
+  rightOffset: {
+    marginLeft: 64,
+  },
+  '@media only screen and (max-width: 992px)': {
+    headerText: {
+      margin: '0 !important',
+    },
   },
   '@media only screen and (min-width: 992px)': {
     header: {
       textAlign: 'center',
-    },
-    headerText: {
-      padding: '0 64px 0 64px',
     },
   },
 });
@@ -62,13 +69,17 @@ const AppHeader = ({
       type={menuCollapsed ? 'menu-unfold' : 'menu-fold'}
       onClick={() => { setMenuCollapsed(!menuCollapsed); }}
     />
-    <span className={classes.headerText}>{header}</span>
-    <Icon
+    <span
+      className={`${classes.headerText} ${isValidCategory && classes.rightOffset}`}
+    >
+      {header}
+    </span>
+    {isValidCategory && <Icon
       style={{ fontSize: 22 }}
       className={classes.rightIcon}
       type="reload"
-      onClick={isValidCategory && handleReloadClick}
-    />
+      onClick={handleReloadClick}
+    />}
   </Header>
 );
 
