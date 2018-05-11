@@ -14,7 +14,8 @@ const styles = theme => ({
   sider: {
     minHeight: '100vh',
     maxHeight: '100vh',
-    overflow: 'auto',
+    'overflow-y': 'auto',
+    'overflow-x': 'hidden',
   },
   logo: {
     height: 32,
