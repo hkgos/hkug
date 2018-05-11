@@ -30,14 +30,14 @@ const AppSider = ({
   handleMenuItemClick,
   defaultSelectedKeys,
   menuCollapsed,
-  handleMenuCollapse,
+  setMenuCollapse,
 }) => (
   <Sider
     className={classes.sider}
     breakpoint="lg"
     collapsedWidth="0"
     collapsed={menuCollapsed}
-    onCollapse={handleMenuCollapse}
+    onCollapse={({ collapsed }) => { setMenuCollapse(collapsed); }}
   >
     <div className={classes.logo} />
     <Menu
@@ -67,7 +67,7 @@ AppSider.propTypes = {
   defaultSelectedKeys: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleMenuItemClick: PropTypes.func.isRequired,
   menuCollapsed: PropTypes.bool.isRequired,
-  handleMenuCollapse: PropTypes.func.isRequired,
+  setMenuCollapse: PropTypes.func.isRequired,
 };
 
 const enhance = compose(
@@ -84,6 +84,7 @@ const enhance = compose(
   }),
   withHandlers({
     handleMenuItemClick: props => ({ key }) => {
+      props.setMenuCollapse(true);
       props.fetchTopics({ category: key }, { reset: true });
       props.history.push(`/topics/${key}`);
     },
