@@ -1,0 +1,13 @@
+# Built files
+/public/index.html
+/public/assets
+
+# OS files
+.DS_STORE
+
+# npm files
+/node_modules
+
+# Git files
+.git
+.gitignore
