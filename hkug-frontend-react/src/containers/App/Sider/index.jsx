@@ -28,11 +28,15 @@ const AppSider = ({
   categories,
   handleMenuItemClick,
   defaultSelectedKeys,
+  menuCollapsed,
+  handleMenuCollapse,
 }) => (
   <Sider
     className={classes.sider}
     breakpoint="lg"
     collapsedWidth="0"
+    collapsed={menuCollapsed}
+    onCollapse={handleMenuCollapse}
   >
     <div className={classes.logo} />
     <Menu
@@ -61,6 +65,8 @@ AppSider.propTypes = {
   })).isRequired,
   defaultSelectedKeys: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleMenuItemClick: PropTypes.func.isRequired,
+  menuCollapsed: PropTypes.bool.isRequired,
+  handleMenuCollapse: PropTypes.func.isRequired,
 };
 
 const enhance = compose(
