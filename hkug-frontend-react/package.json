@@ -6,6 +6,7 @@
   "main": "public/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --ext .jsx --ext .js .",
     "build:prod": "cross-env NODE_ENV=production webpack --progress --profile --json > webpack.stats.json",
     "build:dev": "webpack --progress --profile --json > webpack.stats.json",
     "bundle-analyzer": "webpack-bundle-analyzer webpack.stats.json",
