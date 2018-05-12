@@ -14,7 +14,7 @@ const styles = theme => ({
   sider: {
     minHeight: '100vh',
     maxHeight: '100vh',
-    'overflow-y': 'scroll',
+    'overflow-y': 'auto',
     'overflow-x': 'hidden',
     '-webkit-overflow-scrolling': 'touch',
   },
@@ -37,6 +37,7 @@ const AppSider = ({
     className={classes.sider}
     breakpoint="lg"
     collapsedWidth="0"
+    trigger={null}
     collapsed={menuCollapsed}
     onCollapse={(collapsed) => { setMenuCollapse(collapsed); }}
   >
