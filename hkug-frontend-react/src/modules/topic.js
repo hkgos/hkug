@@ -48,7 +48,11 @@ export const sagas = [
 ];
 
 function mergeTopics(current, next) {
+  // prevent duplicate Topics
+  // currently just check the last page (30 elements)
+  // to avoid any performance issues
   const sliced = current.length > 30 ? current.slice(-30) : current;
+  // remove Topics already included in the current list
   const filtered = next
     .filter(n => !(sliced.some(c => c.topicId === n.topicId)));
   return current.concat(filtered);
