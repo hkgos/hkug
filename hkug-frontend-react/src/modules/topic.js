@@ -47,6 +47,12 @@ export const sagas = [
   takeLatest(FETCH_TOPICS, doFetchTopics),
 ];
 
+function mergeTopics(current, next) {
+  const sliced = current.length > 30 ? current.slice(-30) : current;
+  const filtered = next
+    .filter(n => !(sliced.some(c => c.topicId === n.topicId)));
+  return current.concat(filtered);
+}
 // Reducer
 export default function reducer(state = defaultState(), action) {
   switch (action.type) {
@@ -61,7 +67,7 @@ export default function reducer(state = defaultState(), action) {
       return {
         ...state,
         isFetchingTopics: false,
-        topics: state.topics.concat(action.payload.topics),
+        topics: mergeTopics(state.topics, action.payload.topics),
         page: action.payload.page,
       };
     case FETCH_TOPICS_FAILED:
