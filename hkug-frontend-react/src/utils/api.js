@@ -8,14 +8,11 @@ import {
   LIHKG_VIEW_TOPIC_BASE,
 } from '../constants';
 
-/* eslint-disable import/prefer-default-export */
-export async function fetchTopics({ category, page } = {}) {
+export async function fetchHkgTopics({ category, page } = {}) {
   let hkgTopics = [];
-  let lihkgTopics = [];
   const hkgId = getHkgId(category);
-  const lihkgId = getLihkgId(category);
-  try {
-    if (hkgId) {
+  if (hkgId) {
+    try {
       const url = new URL(`topics/${hkgId}/${page}`, HKG_API_ENDPOINT);
       const res = await httpClient.get(url.href);
       hkgTopics = [].concat(res.data.list).map(t => new Topic({
@@ -29,12 +26,18 @@ export async function fetchTopics({ category, page } = {}) {
         dislike: t.marksBad,
         href: new URL(t.id, HKG_VIEW_TOPIC_BASE).href,
       }));
+    } catch (e) {
+      throw new Error('高登冇應機');
     }
-  } catch (e) {
-    throw new Error('高登冇應機');
   }
-  try {
-    if (lihkgId && !(page >= 2 && lihkgId === 2)) {
+  return hkgTopics;
+}
+
+export async function fetchLihkgTopics({ category, page } = {}) {
+  let lihkgTopics = [];
+  const lihkgId = getLihkgId(category);
+  if (lihkgId && !(page >= 2 && lihkgId === 2)) {
+    try {
       let url;
       if (lihkgId === 1) {
         url = new URL('thread/latest', LIHKG_API_ENDPOINT);
@@ -66,10 +69,18 @@ export async function fetchTopics({ category, page } = {}) {
         totalPage: t.total_page,
         href: new URL(t.thread_id, LIHKG_VIEW_TOPIC_BASE).href,
       }));
+    } catch (e) {
+      throw new Error('連登冇應機');
     }
-  } catch (e) {
-    throw new Error('連登冇應機');
   }
+  return lihkgTopics;
+}
+
+export async function fetchTopics({ category, page } = {}) {
+  const [hkgTopics, lihkgTopics] = await Promise.all([
+    fetchHkgTopics({ category, page }),
+    fetchLihkgTopics({ category, page }),
+  ]);
   const result = [];
   while (hkgTopics.length > 0 || lihkgTopics.length > 0) {
     if (hkgTopics.length > 0) {
@@ -81,4 +92,3 @@ export async function fetchTopics({ category, page } = {}) {
   }
   return result;
 }
-/* eslint-disable import/prefer-default-export */
