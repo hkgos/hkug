@@ -21,7 +21,7 @@ const styles = {
   },
   content: {
     display: 'flex',
-    'overflow-y': 'scroll',
+    overflow: 'auto',
     '-webkit-overflow-scrolling': 'touch',
   },
 };
@@ -46,7 +46,7 @@ const App = ({ classes, menuCollapsed, setMenuCollapsed }) => (
         <Content className={classes.content}>
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route path="/topics/:id" component={Topics} />
+            <Route exact path="/topics/:id" component={Topics} />
             <Route component={NotFound} />
           </Switch>
         </Content>
