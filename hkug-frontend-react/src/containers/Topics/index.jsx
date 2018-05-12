@@ -57,7 +57,7 @@ const Footer = ({ loadMore, className }) => ( // eslint-disable-line react/prop-
 );
 
 const AuthorName = ({ name, gender, classes }) => ( // eslint-disable-line react/prop-types
-  <span className={gender === 'M' ? classes.male : classes.female}>${name}</span>
+  <span className={gender === 'M' ? classes.male : classes.female}>{name}</span>
 );
 
 const renderActions = item => [
