@@ -16,7 +16,7 @@ import NotFound from '../NotFound';
 import allCategories from '../../utils/categories';
 import { fetchTopics } from '../../modules/topic';
 
-const styles = {
+const styles = theme => ({
   container: {
     flex: 'auto',
     margin: '0 16px 0',
@@ -29,7 +29,13 @@ const styles = {
     textAlign: 'center',
     padding: 16,
   },
-};
+  male: {
+    color: theme.maleColor,
+  },
+  female: {
+    color: theme.femaleColor,
+  },
+});
 
 const IconText = ({ type, text }) => ( // eslint-disable-line react/prop-types
   <span>
@@ -50,20 +56,32 @@ const Footer = ({ loadMore, className }) => ( // eslint-disable-line react/prop-
   </div>
 );
 
+const AuthorName = ({ name, gender, classes }) => ( // eslint-disable-line react/prop-types
+  <span className={gender === 'M' ? classes.male : classes.female}>${name}</span>
+);
+
 const renderActions = item => [
   <IconText type="like-o" text={item.like} />,
   <IconText type="dislike-o" text={item.dislike} />,
   <IconText type="message" text={item.totalReplies} />,
+  <IconText type="clock-circle-o" text={item.lastReplyMoment.fromNow()} />,
+  <span>{item.forumName}</span>,
 ];
 
-const renderItem = item => (
+const renderItem = classes => item => (
   <List.Item
     key={`${item.forum}+${item.topicId}`}
     actions={renderActions(item)}
   >
     <List.Item.Meta
       title={<a href={item.href} target="_blank" rel="noopener noreferrer">{item.title}</a>}
-      description={item.authorName}
+      description={
+        <AuthorName
+          name={item.authorName}
+          gender={item.authorGender}
+          classes={classes}
+        />
+      }
     />
     {item.content}
   </List.Item>
@@ -79,7 +97,7 @@ const Topics = ({
     <List
       itemLayout="vertical"
       dataSource={topics}
-      renderItem={renderItem}
+      renderItem={renderItem(classes)}
       footer={
         topics.length > 0 &&
         !loading &&
