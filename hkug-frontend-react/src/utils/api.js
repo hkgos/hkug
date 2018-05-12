@@ -8,6 +8,16 @@ import {
   LIHKG_VIEW_TOPIC_BASE,
 } from '../constants';
 
+function sortTopicsByLastReplyMoment(a, b) {
+  if (a.lastReplyMoment.isBefore(b.lastReplyMoment)) {
+    return -1;
+  }
+  if (a.lastReplyMoment.isAfter(b.lastReplyMoment)) {
+    return 1;
+  }
+  return 0;
+}
+
 export async function fetchHkgTopics({ category, page } = {}) {
   let hkgTopics = [];
   const hkgId = getHkgId(category);
@@ -25,7 +35,7 @@ export async function fetchHkgTopics({ category, page } = {}) {
         like: t.marksGood,
         dislike: t.marksBad,
         href: new URL(t.id, HKG_VIEW_TOPIC_BASE).href,
-      }));
+      })).sort(sortTopicsByLastReplyMoment).reverse();
     } catch (e) {
       throw new Error('高登冇應機');
     }
@@ -51,6 +61,8 @@ export async function fetchLihkgTopics({ category, page } = {}) {
       url.search = new URLSearchParams({
         cat_id: lihkgId,
         page,
+        count: 30,
+        type: 'now',
       });
       const res = await httpClient.get(url.href);
       lihkgTopics = [].concat(res.response.items).map(t => new Topic({
@@ -62,15 +74,15 @@ export async function fetchLihkgTopics({ category, page } = {}) {
         authorId: t.user.user_id,
         authorName: t.user_nickname,
         authorGender: t.user_gender,
-        lastReplyDate: t.last_reply_time,
+        lastReplyDate: t.last_reply_time * 1000,
         totalReplies: t.no_of_reply,
         like: t.reply_like_count,
         dislike: t.reply_dislike_count,
         totalPage: t.total_page,
         href: new URL(t.thread_id, LIHKG_VIEW_TOPIC_BASE).href,
-      }));
+      })).sort(sortTopicsByLastReplyMoment).reverse();
     } catch (e) {
-      throw new Error('連登冇應機');
+      throw new Error('LIHKG冇應機');
     }
   }
   return lihkgTopics;
@@ -83,10 +95,15 @@ export async function fetchTopics({ category, page } = {}) {
   ]);
   const result = [];
   while (hkgTopics.length > 0 || lihkgTopics.length > 0) {
-    if (hkgTopics.length > 0) {
+    if (hkgTopics.length > 0 && lihkgTopics.length > 0) {
+      if (hkgTopics[0].lastReplyMoment.isAfter(lihkgTopics[0].lastReplyMoment)) {
+        result.push(hkgTopics.shift());
+      } else {
+        result.push(lihkgTopics.shift());
+      }
+    } else if (hkgTopics.length > 0) {
       result.push(hkgTopics.shift());
-    }
-    if (lihkgTopics.length > 0) {
+    } else if (lihkgTopics.length > 0) {
       result.push(lihkgTopics.shift());
     }
   }
