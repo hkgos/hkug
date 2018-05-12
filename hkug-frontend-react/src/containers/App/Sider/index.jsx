@@ -85,7 +85,9 @@ const enhance = compose(
   }),
   withHandlers({
     handleMenuItemClick: props => ({ key }) => {
-      props.setMenuCollapse(true);
+      if (window.innerWidth <= 992) {
+        props.setMenuCollapse(true);
+      }
       props.fetchTopics({ category: key }, { reset: true });
       props.history.push(`/topics/${key}`);
     },
