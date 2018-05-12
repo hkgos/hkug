@@ -10,4 +10,6 @@ export default {
   primaryColor8: '#2a3a52',
   primaryColor9: '#243247',
   primaryColor10: '#1e2a3b',
+  maleColor: '#0d6da0',
+  femaleColor: '#b51c42',
 };
