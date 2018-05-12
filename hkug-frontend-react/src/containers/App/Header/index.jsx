@@ -15,7 +15,7 @@ const styles = theme => ({
     lineHeight: 2.95,
     cursor: 'pointer',
     'z-index': 1,
-    margin: '0 15px 0 15px',
+    margin: '0 16px 0 16px',
   },
   leftIcon: {
     extend: 'menuIcon',
@@ -35,12 +35,11 @@ const styles = theme => ({
     textOverflow: 'ellipsis',
   },
   headerText: {
-    marginBottom: 0,
-    marginRight: 64,
     fontSize: '1.5em',
+    marginBottom: 0,
   },
-  rightOffset: {
-    marginLeft: 64,
+  headerTextOffset: {
+    marginRight: 64,
   },
   '@media only screen and (max-width: 992px)': {
     headerText: {
@@ -70,7 +69,7 @@ const AppHeader = ({
       onClick={() => { setMenuCollapsed(!menuCollapsed); }}
     />
     <span
-      className={`${classes.headerText} ${isValidCategory && classes.rightOffset}`}
+      className={`${classes.headerText} ${!isValidCategory && classes.headerTextOffset}`}
     >
       {header}
     </span>
@@ -97,7 +96,7 @@ const enhance = compose(
   withRouter,
   connect(() => ({}), { fetchTopics }),
   withProps(({ location }) => {
-    const match = matchPath(location.pathname, { path: '/topics/:id' });
+    const match = matchPath(location.pathname, { exact: true, path: '/topics/:id' });
     let header = 'HKUG 香港聯登';
     let categoryId = null;
     if (match && match.params.id) {
