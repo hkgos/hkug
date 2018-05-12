@@ -119,6 +119,7 @@ const enhance = compose(
     topics: state.topic.topics,
     loading: state.topic.isFetchingTopics,
     isError: state.topic.isFetchTopicsError,
+    error: state.topic.fetchTopicsError,
   }), { fetchTopics }),
   lifecycle({
     componentWillMount() {
@@ -127,7 +128,12 @@ const enhance = compose(
     },
     componentDidUpdate(prevProps) {
       if (!prevProps.isError && this.props.isError) {
-        message.error('發生錯誤，請稍後再試');
+        message.config({
+          top: 72,
+          duration: 3,
+          maxCount: 1,
+        });
+        message.error(`發生錯誤，請稍後再試。原因：${this.props.error.message}`);
       }
     },
   }),
