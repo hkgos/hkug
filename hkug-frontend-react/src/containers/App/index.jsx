@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { hot } from 'react-hot-loader';
-import { Layout } from 'antd';
+import { Layout, BackTop } from 'antd';
 import { compose, withStateHandlers, pure } from 'recompose';
 import injectSheet from 'react-jss';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -49,6 +49,7 @@ const App = ({ classes, menuCollapsed, setMenuCollapsed }) => (
             <Route exact path="/topics/:id" component={Topics} />
             <Route component={NotFound} />
           </Switch>
+          <BackTop target={() => document.getElementsByClassName(classes.content)[0]} />
         </Content>
         <Footer />
       </Layout>
