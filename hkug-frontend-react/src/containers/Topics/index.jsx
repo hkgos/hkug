@@ -25,6 +25,21 @@ const styles = theme => ({
     textAlign: 'center',
     padding: 16,
   },
+  listItem: {
+    '& li': {
+      '@media only screen and (max-width: 576px)': {
+        width: '33% !important',
+        padding: '5px 0 0 0 !important',
+        textAlign: 'left !important',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
+        '& em': {
+          display: 'none',
+        },
+      },
+    },
+  },
   footer: {
     textAlign: 'center',
     padding: 16,
@@ -37,8 +52,8 @@ const styles = theme => ({
   },
 });
 
-const IconText = ({ type, text }) => ( // eslint-disable-line react/prop-types
-  <span>
+const IconText = ({ type, text, ...rest }) => ( // eslint-disable-line react/prop-types
+  <span {...rest}>
     <Icon type={type} style={{ marginRight: 8 }} />
     {text}
   </span>
@@ -65,13 +80,22 @@ const renderActions = item => [
   <IconText type="dislike-o" text={item.dislike} />,
   <IconText type="message" text={item.totalReplies} />,
   <IconText type="clock-circle-o" text={item.lastReplyMoment.fromNow()} />,
-  <span>{item.forumName}</span>,
+  <IconText
+    type="export"
+    text={item.forumName}
+    onClick={() => {
+      const newWindow = window.open();
+      newWindow.opener = null;
+      newWindow.location = item.href;
+    }}
+  />,
 ];
 
 const renderItem = classes => item => (
   <List.Item
     key={`${item.forum}+${item.topicId}`}
     actions={renderActions(item)}
+    className={classes.listItem}
   >
     <List.Item.Meta
       title={<a href={item.href} target="_blank" rel="noopener noreferrer">{item.title}</a>}
