@@ -49,10 +49,14 @@ client.interceptors.response.use(res => res.data, (error) => {
   } else if (error.request) {
     // The request was made but no response was received
     // Most likely a network problem
-    return Promise.reject(new Error('網絡發生問題'));
+    const err = new Error('網絡發生問題');
+    err.network = true;
+    return Promise.reject(err);
   }
   // Something happened in setting up the request that triggered an Error
-  return Promise.reject(new Error('內部錯誤'));
+  const err = new Error('內部錯誤');
+  err.internal = true;
+  return Promise.reject(err);
 });
 
 export default client;

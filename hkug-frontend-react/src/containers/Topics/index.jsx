@@ -151,7 +151,7 @@ const enhance = compose(
           duration: 3,
           maxCount: 1,
         });
-        message.error(`發生錯誤，請稍後再試。原因：${this.props.error.message}`);
+        message.error(this.props.error.message);
       }
     },
   }),
