@@ -37,7 +37,11 @@ export async function fetchHkgTopics({ category, page } = {}) {
         href: new URL(t.id, HKG_VIEW_TOPIC_BASE).href,
       })).sort(sortTopicsByLastReplyMoment).reverse();
     } catch (e) {
-      throw new Error('高登冇應機');
+      if (e.network || e.internal) {
+        throw e;
+      } else {
+        throw new Error('高登冇應機');
+      }
     }
   }
   return hkgTopics;
@@ -82,7 +86,11 @@ export async function fetchLihkgTopics({ category, page } = {}) {
         href: new URL(t.thread_id, LIHKG_VIEW_TOPIC_BASE).href,
       })).sort(sortTopicsByLastReplyMoment).reverse();
     } catch (e) {
-      throw new Error('LIHKG冇應機');
+      if (e.network || e.internal) {
+        throw e;
+      } else {
+        throw new Error('LIHKG冇應機');
+      }
     }
   }
   return lihkgTopics;
