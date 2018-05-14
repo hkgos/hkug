@@ -8,3 +8,4 @@ webpack.stats.json
 
 # npm files
 /node_modules
+package-lock.json
