@@ -10,7 +10,7 @@ const styles = {
   footer: {
     textAlign: 'center',
     overflow: 'hidden',
-    textOverflow: 'ellipsis',
+    textOverflow: 'clip',
     whiteSpace: 'nowrap',
   },
 };
