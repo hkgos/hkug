@@ -119,6 +119,9 @@ const Topics = ({
 }) => (
   <div className={classes.container}>
     <List
+      locale={{
+        emptyText: '乜都冇，試下F5',
+      }}
       itemLayout="vertical"
       dataSource={topics}
       renderItem={renderItem(classes)}
