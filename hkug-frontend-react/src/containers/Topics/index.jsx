@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { List, Icon, Spin, Button, BackTop, message } from 'antd';
+import { List, Icon, Spin, Button, message } from 'antd';
 import {
   compose,
   branch,
@@ -133,7 +133,6 @@ const Topics = ({
     >
       {loading && <LoadingIndicator className={classes.loadingIndicator} />}
     </List>
-    <BackTop target={() => document.getElementsByClassName(classes.container)[0].parentNode} />
   </div>
 );
 Topics.propTypes = {
