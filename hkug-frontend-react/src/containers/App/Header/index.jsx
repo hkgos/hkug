@@ -32,7 +32,7 @@ const styles = theme => ({
     color: '#fff',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
+    textOverflow: 'clip',
   },
   headerText: {
     fontSize: '1.5em',

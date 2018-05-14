@@ -21,7 +21,8 @@ const styles = {
   },
   content: {
     display: 'flex',
-    overflow: 'auto',
+    'overflow-x': 'hidden',
+    'overflow-y': 'auto',
     '-webkit-overflow-scrolling': 'touch',
   },
 };
