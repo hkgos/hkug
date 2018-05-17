@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Layout, Icon } from 'antd';
 import { compose, pure } from 'recompose';
 import injectSheet from 'react-jss';
+import { SIDE_MENU_BREAK_POINT } from '../../../constants';
 
 const { Footer } = Layout;
 
@@ -12,6 +13,11 @@ const styles = {
     overflow: 'hidden',
     textOverflow: 'clip',
     whiteSpace: 'nowrap',
+  },
+  [`@media only screen and (max-width: ${SIDE_MENU_BREAK_POINT}px)`]: {
+    footer: {
+      minWidth: '100vw',
+    },
   },
 };
 

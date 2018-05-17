@@ -7,6 +7,7 @@ import injectSheet from 'react-jss';
 import { matchPath, withRouter } from 'react-router-dom';
 import allCategories from '../../../utils/categories';
 import { fetchTopics } from '../../../modules/topic';
+import { SIDE_MENU_BREAK_POINT } from '../../../constants';
 
 const { Header } = Layout;
 
@@ -28,7 +29,7 @@ const styles = theme => ({
   header: {
     background: theme.primaryColor8,
     padding: 0,
-    textAlign: 'left',
+    textAlign: 'center',
     color: '#fff',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
@@ -41,14 +42,13 @@ const styles = theme => ({
   headerTextOffset: {
     marginRight: 64,
   },
-  '@media only screen and (max-width: 992px)': {
+  [`@media only screen and (max-width: ${SIDE_MENU_BREAK_POINT}px)`]: {
+    header: {
+      minWidth: '100vw',
+      textAlign: 'left',
+    },
     headerText: {
       margin: '0 !important',
-    },
-  },
-  '@media only screen and (min-width: 992px)': {
-    header: {
-      textAlign: 'center',
     },
   },
 });

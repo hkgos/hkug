@@ -7,6 +7,7 @@ import injectSheet from 'react-jss';
 import { withRouter, matchPath } from 'react-router-dom';
 import allCategories from '../../../utils/categories';
 import { fetchTopics } from '../../../modules/topic';
+import { SIDE_MENU_BREAK_POINT } from '../../../constants';
 
 const { Sider } = Layout;
 
@@ -86,7 +87,7 @@ const enhance = compose(
   }),
   withHandlers({
     handleMenuItemClick: props => ({ key }) => {
-      if (window.innerWidth <= 992) {
+      if (window.innerWidth <= SIDE_MENU_BREAK_POINT) {
         props.setMenuCollapse(true);
       }
       props.fetchTopics({ category: key }, { reset: true });
