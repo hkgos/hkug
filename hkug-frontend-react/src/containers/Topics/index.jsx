@@ -25,7 +25,7 @@ const styles = theme => ({
   },
   listItem: {
     '& li': {
-      '@media only screen and (max-width: 576px)': {
+      '@media only screen and (max-width: 768px)': {
         width: '33% !important',
         padding: '5px 0 0 0 !important',
         textAlign: 'left !important',
