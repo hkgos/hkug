@@ -11,6 +11,7 @@ import Header from './Header';
 import Footer from './Footer';
 import Loading from '../Loading';
 import NotFound from '../NotFound';
+import { SIDE_MENU_BREAK_POINT } from '../../constants';
 
 const { Content } = Layout;
 
@@ -27,6 +28,11 @@ const styles = {
   },
   backTop: {
     bottom: 75,
+  },
+  [`@media only screen and (max-width: ${SIDE_MENU_BREAK_POINT}px)`]: {
+    content: {
+      minWidth: '100vw',
+    },
   },
 };
 
