@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { List, Icon, Spin, Button, message } from 'antd';
+import { List, Button, message } from 'antd';
 import {
   compose,
   branch,
@@ -12,6 +12,8 @@ import {
 import { connect } from 'react-redux';
 import injectSheet from 'react-jss';
 import { withRouter } from 'react-router-dom';
+import LoadingIndicator from '../../components/LoadingIndicator';
+import IconText from '../../components/IconText';
 import NotFound from '../NotFound';
 import allCategories from '../../utils/categories';
 import { fetchTopics } from '../../modules/topic';
@@ -20,10 +22,6 @@ const styles = theme => ({
   container: {
     flex: 'auto',
     margin: '0 16px 0',
-  },
-  loadingIndicator: {
-    textAlign: 'center',
-    padding: 16,
   },
   listItem: {
     '& li': {
@@ -52,19 +50,6 @@ const styles = theme => ({
   },
 });
 
-const IconText = ({ type, text, ...rest }) => ( // eslint-disable-line react/prop-types
-  <span {...rest}>
-    <Icon type={type} style={{ marginRight: 8 }} />
-    {text}
-  </span>
-);
-
-const LoadingIndicator = ({ className }) => ( // eslint-disable-line react/prop-types
-  <div className={className}>
-    <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} />
-  </div>
-);
-
 const Footer = ({ loadMore, className }) => ( // eslint-disable-line react/prop-types
   <div className={className}>
     <Button icon="ellipsis" type="primary" onClick={loadMore}>繼續睇</Button>
@@ -76,12 +61,12 @@ const AuthorName = ({ name, gender, classes }) => ( // eslint-disable-line react
 );
 
 const renderActions = item => [
-  <IconText type="like-o" text={item.like} />,
-  <IconText type="dislike-o" text={item.dislike} />,
-  <IconText type="message" text={item.totalReplies} />,
-  <IconText type="clock-circle-o" text={item.lastReplyMoment.fromNow()} />,
+  <IconText icon="like-o" text={item.like} />,
+  <IconText icon="dislike-o" text={item.dislike} />,
+  <IconText icon="message" text={item.totalReplies} />,
+  <IconText icon="clock-circle-o" text={item.lastReplyMoment.fromNow()} />,
   <IconText
-    type="export"
+    icon="export"
     text={item.forumName}
     onClick={() => {
       const newWindow = window.open();
@@ -131,7 +116,7 @@ const Topics = ({
         <Footer className={classes.footer} loadMore={handleLoadMore} />
       }
     >
-      {loading && <LoadingIndicator className={classes.loadingIndicator} />}
+      {loading && <LoadingIndicator />}
     </List>
   </div>
 );
