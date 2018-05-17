@@ -26,12 +26,26 @@ const styles = {
     'overflow-y': 'auto',
     '-webkit-overflow-scrolling': 'touch',
   },
+  overlay: {
+    display: 'none',
+    position: 'fixed',
+    top: 0,
+    bottom: 0,
+    height: '100%',
+    width: '100%',
+    background: 'black',
+    zIndex: 99,
+    opacity: 0.3,
+  },
   backTop: {
     bottom: 75,
   },
   [`@media only screen and (max-width: ${SIDE_MENU_BREAK_POINT}px)`]: {
     content: {
       minWidth: '100vw',
+    },
+    overlay: {
+      display: 'block',
     },
   },
 };
@@ -53,6 +67,14 @@ const App = ({ classes, menuCollapsed, setMenuCollapsed }) => (
       <Sider menuCollapsed={menuCollapsed} setMenuCollapse={setMenuCollapsed} />
       <Layout className={classes.contentlayout}>
         <Header menuCollapsed={menuCollapsed} setMenuCollapsed={setMenuCollapsed} />
+        {!menuCollapsed &&
+          <div
+            className={classes.overlay}
+            role="presentation"
+            onClick={() => { setMenuCollapsed(true); }}
+            onKeyPress={() => { setMenuCollapsed(true); }}
+          />
+        }
         <Content className={classes.content}>
           <Switch>
             <Route exact path="/" component={Home} />

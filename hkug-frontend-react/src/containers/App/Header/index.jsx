@@ -27,6 +27,7 @@ const styles = theme => ({
     float: 'right',
   },
   header: {
+    zIndex: 100,
     background: theme.primaryColor8,
     padding: 0,
     textAlign: 'center',
