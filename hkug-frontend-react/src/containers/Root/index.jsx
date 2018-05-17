@@ -5,6 +5,7 @@ import { compose, pure } from 'recompose';
 import { LocaleProvider } from 'antd';
 import { ThemeProvider } from 'react-jss';
 import antdLocale from 'antd/lib/locale-provider/zh_TW';
+import { SIDE_MENU_BREAK_POINT } from '../../constants';
 
 import App from '../App';
 
@@ -12,7 +13,7 @@ const Root = ({ store, theme }) => (
   <Provider store={store}>
     <ThemeProvider theme={theme}>
       <LocaleProvider locale={antdLocale}>
-        <App />
+        <App menuCollapsed={window.innerWidth <= SIDE_MENU_BREAK_POINT} />
       </LocaleProvider>
     </ThemeProvider>
   </Provider>
