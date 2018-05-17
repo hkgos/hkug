@@ -36,7 +36,7 @@ const AppSider = ({
 }) => (
   <Sider
     className={classes.sider}
-    breakpoint="lg"
+    breakpoint="sm"
     collapsedWidth="0"
     trigger={null}
     collapsed={menuCollapsed}
