@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { HKG_HOST, LIHKG_HOST, HKG_MEMBER_ICONS_BASE } from '../constants';
 
-function createHKGReactElements(nodes) {
+function createReactElements(nodes, forum) {
   if (nodes.length === 0) {
     return [];
   }
@@ -14,45 +14,23 @@ function createHKGReactElements(nodes) {
       for (let i = 0; i < attrsLength; i += 1) {
         props[n.attributes.item(i).name] = n.attributes.item(i).value;
       }
-      if (props['data-icons'] && n.tagName === 'IMG') {
-        const url = new URL(props.src, HKG_HOST);
-        props.src = url.href;
+      if (forum === 'HKG') {
+        if (props['data-icons'] && n.tagName === 'IMG') {
+          const url = new URL(props.src, HKG_HOST);
+          props.src = url.href;
+        }
+      } else if (forum === 'LIHKG') {
+        if (n.tagName === 'IMG' && props.class === 'hkgmoji') {
+          const url = new URL(props.src, LIHKG_HOST);
+          props.src = url.href;
+        }
       }
-      result.push(React.createElement(
-        n.tagName.toLowerCase(),
-        props,
-        ...createHKGReactElements(n.childNodes),
-      ));
-    } else {
-      result.push(n.nodeValue);
-    }
-  });
-  return result;
-}
-
-function createLIHKGReactElements(nodes) {
-  if (nodes.length === 0) {
-    return [];
-  }
-  const result = [];
-  nodes.forEach((n) => {
-    if (n instanceof Element) {
-      const attrsLength = n.attributes.length;
-      const props = {};
-      for (let i = 0; i < attrsLength; i += 1) {
-        props[n.attributes.item(i).name] = n.attributes.item(i).value;
-      }
-      if (n.tagName === 'IMG' && props.class === 'hkgmoji') {
-        const url = new URL(props.src, LIHKG_HOST);
-        props.src = url.href;
-      }
-      // TODO: handle the style
       delete props.class;
       delete props.style;
       result.push(React.createElement(
         n.tagName.toLowerCase(),
         props,
-        ...createLIHKGReactElements(n.childNodes),
+        ...createReactElements(n.childNodes, forum),
       ));
     } else {
       result.push(n.nodeValue);
@@ -108,12 +86,7 @@ export default class Reply {
   contentReactElement(className) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(this.content, 'text/html');
-    let childrens = [];
-    if (this.forum === 'HKG') {
-      childrens = createHKGReactElements(doc.body.childNodes);
-    } else if (this.forum === 'LIHKG') {
-      childrens = createLIHKGReactElements(doc.body.childNodes);
-    }
+    const childrens = createReactElements(doc.body.childNodes, this.forum);
     return React.createElement(
       'div',
       { className },

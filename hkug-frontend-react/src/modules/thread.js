@@ -10,6 +10,7 @@ export const defaultState = () => ({
   isFetchingReplies: false,
   isFetchRepliesError: false,
   fetchRepliesError: null,
+  totalPage: 0,
   title: '',
   replies: [],
 });

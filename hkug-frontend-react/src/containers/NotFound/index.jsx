@@ -8,7 +8,7 @@ import { historyShape } from '../../utils/propTypes';
 
 const styles = theme => ({
   container: {
-    marginTop: '70%',
+    marginTop: 'calc(100vh / 4)',
     textAlign: 'center',
   },
   text: {

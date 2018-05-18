@@ -35,9 +35,13 @@ const Loading = ({
 };
 Loading.propTypes = {
   classes: PropTypes.shape({}).isRequired,
-  error: PropTypes.bool, // eslint-disable-line react/require-default-props
-  pastDelay: PropTypes.bool.isRequired,
+  error: PropTypes.bool,
+  pastDelay: PropTypes.bool,
   retry: PropTypes.func.isRequired,
+};
+Loading.defaultProps = {
+  error: false,
+  pastDelay: true,
 };
 
 const enhance = compose(
