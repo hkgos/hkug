@@ -119,7 +119,7 @@ export async function fetchTopics({ category, page } = {}) {
   return result;
 }
 
-export async function fetchReplies({ thread, page, forum } = {}) {
+export async function fetchReplies({ thread, page = 1, forum } = {}) {
   switch (forum) {
     case 'HKG': {
       const url = new URL(`view/${thread}/${page}`, HKG_API_ENDPOINT);

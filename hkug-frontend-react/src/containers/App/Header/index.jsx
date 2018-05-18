@@ -121,7 +121,7 @@ const enhance = compose(
       isThread = true;
       [threadForum, threadId] = matchThread.params.theadId.split('+');
       const query = new URLSearchParams(location.search);
-      threadPage = query.get('page');
+      threadPage = query.get('page') || 1;
     }
     return ({
       header,
