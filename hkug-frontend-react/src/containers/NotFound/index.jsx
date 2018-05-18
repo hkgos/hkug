@@ -6,10 +6,9 @@ import injectSheet from 'react-jss';
 import { withRouter } from 'react-router-dom';
 import { historyShape } from '../../utils/propTypes';
 
-const styles = {
+const styles = theme => ({
   container: {
-    flex: 'auto',
-    alignSelf: 'center',
+    marginTop: '70%',
     textAlign: 'center',
   },
   text: {
@@ -17,9 +16,9 @@ const styles = {
     fontSize: 'xx-large',
   },
   button: {
-    margin: '0 5px 0px 5px',
+    margin: `0 ${theme.marginSmall}px 0px ${theme.marginSmall}px`,
   },
-};
+});
 
 const NotFound = ({ classes, history }) => (
   <div className={classes.container}>

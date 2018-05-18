@@ -15,8 +15,8 @@ const styles = theme => ({
   menuIcon: {
     lineHeight: 2.95,
     cursor: 'pointer',
-    'z-index': 1,
-    margin: '0 16px 0 16px',
+    zIndex: 1,
+    margin: `0 ${theme.margin}px 0 ${theme.margin}px`,
   },
   leftIcon: {
     extend: 'menuIcon',
@@ -28,7 +28,7 @@ const styles = theme => ({
   },
   header: {
     zIndex: 100,
-    background: theme.primaryColor8,
+    background: theme.primaryColor,
     padding: 0,
     textAlign: 'center',
     color: '#fff',
@@ -57,7 +57,7 @@ const styles = theme => ({
 const AppHeader = ({
   classes,
   header,
-  isValidCategory,
+  showReloadButton,
   menuCollapsed,
   setMenuCollapsed,
   handleReloadClick,
@@ -70,11 +70,11 @@ const AppHeader = ({
       onClick={() => { setMenuCollapsed(!menuCollapsed); }}
     />
     <span
-      className={`${classes.headerText} ${!isValidCategory && classes.headerTextOffset}`}
+      className={`${classes.headerText} ${!showReloadButton && classes.headerTextOffset}`}
     >
       {header}
     </span>
-    {isValidCategory && <Icon
+    {showReloadButton && <Icon
       style={{ fontSize: 22 }}
       className={classes.rightIcon}
       type="reload"
@@ -86,7 +86,7 @@ const AppHeader = ({
 AppHeader.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   header: PropTypes.node.isRequired,
-  isValidCategory: PropTypes.bool.isRequired,
+  showReloadButton: PropTypes.bool.isRequired,
   menuCollapsed: PropTypes.bool.isRequired,
   setMenuCollapsed: PropTypes.func.isRequired,
   handleReloadClick: PropTypes.func.isRequired,
@@ -97,17 +97,22 @@ const enhance = compose(
   withRouter,
   connect(() => ({}), { fetchTopics }),
   withProps(({ location }) => {
-    const match = matchPath(location.pathname, { exact: true, path: '/topics/:id' });
+    const exact = matchPath(location.pathname, { path: '/topics/:category', exact: true });
+    const match = matchPath(location.pathname, { path: '/topics/:category' });
     let header = 'HKUG 香港聯登';
     let categoryId = null;
-    if (match && match.params.id) {
-      const category = allCategories.find(c => c.id === Number(match.params.id));
+    if (match && match.params.category) {
+      const category = allCategories.find(c => c.id === Number(match.params.category));
       if (category) {
         header = category.name;
         categoryId = category.id;
       }
     }
-    return ({ header, categoryId, isValidCategory: categoryId !== null });
+    let showReloadButton = false;
+    if (exact && categoryId !== null) {
+      showReloadButton = true;
+    }
+    return ({ header, categoryId, showReloadButton });
   }),
   withHandlers({
     handleReloadClick: props => () => {

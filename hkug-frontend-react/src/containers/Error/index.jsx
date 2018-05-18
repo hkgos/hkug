@@ -7,8 +7,7 @@ import { withRouter } from 'react-router-dom';
 
 const styles = {
   container: {
-    flex: 'auto',
-    alignSelf: 'center',
+    marginTop: '70%',
     textAlign: 'center',
   },
   text: {
