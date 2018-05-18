@@ -13,6 +13,7 @@ const { Sider } = Layout;
 
 const styles = theme => ({
   sider: {
+    zIndex: 100,
     minHeight: '100vh',
     maxHeight: '100vh',
     overflowY: 'auto',
