@@ -11,7 +11,9 @@ const styles = {
     to: 'background-position: 0 50%',
   },
   loading: {
-    flex: 'auto',
+    position: 'fixed',
+    width: '100%',
+    height: '100%',
     'background-image': 'linear-gradient(125deg,#fff,#f3f3f3 41%,#ededed 0,#fff)',
     'background-size': '200% 100%',
     animation: 'loading 3s ease infinite',

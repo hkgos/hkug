@@ -21,9 +21,8 @@ const styles = {
     maxHeight: '100vh',
   },
   content: {
-    display: 'flex',
-    'overflow-x': 'hidden',
-    'overflow-y': 'auto',
+    overflowX: 'hidden',
+    overflowY: 'auto',
     '-webkit-overflow-scrolling': 'touch',
   },
   overlay: {
@@ -35,7 +34,7 @@ const styles = {
     width: '100%',
     background: 'black',
     zIndex: 99,
-    opacity: 0.3,
+    opacity: 0.6,
   },
   backTop: {
     bottom: 75,
@@ -78,7 +77,7 @@ const App = ({ classes, menuCollapsed, setMenuCollapsed }) => (
         <Content className={classes.content}>
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route exact path="/topics/:id" component={Topics} />
+            <Route path="/topics/:category" component={Topics} />
             <Route component={NotFound} />
           </Switch>
           <BackTop

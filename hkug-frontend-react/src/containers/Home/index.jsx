@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import { compose, pure } from 'recompose';
 import injectSheet from 'react-jss';
 
-const styles = {
+const styles = theme => ({
   container: {
-    flex: 'auto',
-    margin: '16px 16px 0',
+    margin: `${theme.margin}px ${theme.margin}px 0`,
   },
-};
+});
 
 const GitHubLink = () => (
   <a

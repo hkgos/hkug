@@ -9,6 +9,7 @@ const { Footer } = Layout;
 
 const styles = {
   footer: {
+    zIndex: 10,
     textAlign: 'center',
     overflow: 'hidden',
     textOverflow: 'clip',

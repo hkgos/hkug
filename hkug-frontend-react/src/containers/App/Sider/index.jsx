@@ -15,14 +15,14 @@ const styles = theme => ({
   sider: {
     minHeight: '100vh',
     maxHeight: '100vh',
-    'overflow-y': 'auto',
-    'overflow-x': 'hidden',
+    overflowY: 'auto',
+    overflowX: 'hidden',
     '-webkit-overflow-scrolling': 'touch',
   },
   logo: {
     height: 32,
-    background: theme.primaryColor8,
-    margin: 16,
+    background: theme.primaryColor,
+    margin: theme.margin,
   },
 });
 
@@ -36,7 +36,7 @@ const AppSider = ({
 }) => (
   <Sider
     className={classes.sider}
-    breakpoint="sm"
+    breakpoint="md"
     collapsedWidth="0"
     trigger={null}
     collapsed={menuCollapsed}
@@ -78,10 +78,10 @@ const enhance = compose(
   withRouter,
   connect(() => ({}), { fetchTopics }),
   withProps(({ location }) => {
-    const match = matchPath(location.pathname, { path: '/topics/:id' });
+    const match = matchPath(location.pathname, { path: '/topics/:category' });
     const defaultSelectedKeys = [];
-    if (match && match.params.id) {
-      defaultSelectedKeys.push(match.params.id);
+    if (match && match.params.category) {
+      defaultSelectedKeys.push(match.params.category);
     }
     return ({ defaultSelectedKeys, categories: allCategories });
   }),

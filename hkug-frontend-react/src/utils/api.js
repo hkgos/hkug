@@ -1,5 +1,6 @@
 import httpClient from './httpClient';
 import Topic from '../models/Topic';
+import Reply from '../models/Reply';
 import { getHkgId, getLihkgId } from './categories';
 import {
   HKG_API_ENDPOINT,
@@ -37,7 +38,7 @@ export async function fetchHkgTopics({ category, page } = {}) {
         href: new URL(t.id, HKG_VIEW_TOPIC_BASE).href,
       })).sort(sortTopicsByLastReplyMoment).reverse();
     } catch (e) {
-      if (e.network || e.internal) {
+      if (e.internal) {
         throw e;
       } else {
         throw new Error('高登冇應機');
@@ -86,7 +87,7 @@ export async function fetchLihkgTopics({ category, page } = {}) {
         href: new URL(t.thread_id, LIHKG_VIEW_TOPIC_BASE).href,
       })).sort(sortTopicsByLastReplyMoment).reverse();
     } catch (e) {
-      if (e.network || e.internal) {
+      if (e.internal) {
         throw e;
       } else {
         throw new Error('LIHKG冇應機');
@@ -116,4 +117,48 @@ export async function fetchTopics({ category, page } = {}) {
     }
   }
   return result;
+}
+
+export async function fetchReplies({ topic, page, forum } = {}) {
+  switch (forum) {
+    case 'HKG': {
+      const url = new URL(`view/${topic}/${page}`, HKG_API_ENDPOINT);
+      const res = await httpClient.get(url.href);
+      const replies = [].concat(res.data.replies).map(r => new Reply({
+        ...r,
+        replyId: r.id,
+        forum: 'HKG',
+        authorGender: r.authorGender ? 'M' : 'F',
+      }));
+      return {
+        title: res.data.title,
+        totalPage: res.data.totalPage,
+        replies,
+      };
+    }
+    case 'LIHKG': {
+      const url = new URL(`thread/${topic}/page/${page}`, LIHKG_API_ENDPOINT);
+      const res = await httpClient.get(url.href);
+      const replies = [].concat(res.response.item_data).map(r => new Reply({
+        replyId: r.post_id,
+        forum: 'LIHKG',
+        index: r.msg_num,
+        authorId: r.user.user_id,
+        authorName: r.user_nickname,
+        authorGender: r.user_gender,
+        content: r.msg,
+        replyDate: r.reply_time * 1000,
+      }));
+      return {
+        title: res.response.title,
+        totalPage: res.response.total_page,
+        replies,
+      };
+    }
+    default: {
+      return {
+        replies: [],
+      };
+    }
+  }
 }
