@@ -124,12 +124,24 @@ export async function fetchReplies({ thread, page = 1, forum } = {}) {
     case 'HKG': {
       const url = new URL(`view/${thread}/${page}`, HKG_API_ENDPOINT);
       const res = await httpClient.get(url.href);
-      const replies = [].concat(res.data.replies).map(r => new Reply({
+      let first = [];
+      if (page === 1) {
+        first = [new Reply({
+          ...res.data,
+          replyId: res.data.id,
+          forum: 'HKG',
+          index: 0,
+          authorGender: res.data.authorGender ? 'M' : 'F',
+          replyDate: res.data.messageDate,
+        })];
+      }
+      const replies = first.concat((res.data.replies).map(r => new Reply({
         ...r,
         replyId: r.id,
         forum: 'HKG',
+        index: r.index,
         authorGender: r.authorGender ? 'M' : 'F',
-      }));
+      })));
       return {
         title: res.data.title,
         totalPage: res.data.totalPage,
@@ -156,9 +168,7 @@ export async function fetchReplies({ thread, page = 1, forum } = {}) {
       };
     }
     default: {
-      return {
-        replies: [],
-      };
+      throw new Error('Unknown Forum');
     }
   }
 }

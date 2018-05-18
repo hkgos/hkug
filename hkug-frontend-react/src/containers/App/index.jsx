@@ -37,7 +37,7 @@ const styles = {
     opacity: 0.6,
   },
   backTop: {
-    bottom: 75,
+    bottom: 150,
   },
   [`@media only screen and (max-width: ${SIDE_MENU_BREAK_POINT}px)`]: {
     content: {
