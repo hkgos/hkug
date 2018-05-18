@@ -25,6 +25,12 @@ const styles = theme => ({
     fontSize: 'medium',
     marginTop: '1em',
     marginBottom: '1em',
+    '& blockquote': {
+      paddingLeft: '.8rem',
+      marginBottom: '.8rem',
+      marginLeft: '.8rem',
+      borderLeft: `.2rem solid ${theme.secondaryColor}`,
+    },
     '& img': {
       maxWidth: `calc(100vw - ${theme.siderWidth}px - ${theme.padding}px * 3)`,
       verticalAlign: 'unset',
