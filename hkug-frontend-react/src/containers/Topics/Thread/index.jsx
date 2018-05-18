@@ -32,7 +32,7 @@ const styles = theme => ({
       borderLeft: `.2rem solid ${theme.secondaryColor}`,
     },
     '& img': {
-      maxWidth: `calc(100vw - ${theme.siderWidth}px - ${theme.padding}px * 3)`,
+      maxWidth: '30vw',
       verticalAlign: 'unset',
     },
   },
