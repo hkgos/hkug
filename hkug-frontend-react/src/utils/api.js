@@ -119,10 +119,10 @@ export async function fetchTopics({ category, page } = {}) {
   return result;
 }
 
-export async function fetchReplies({ topic, page, forum } = {}) {
+export async function fetchReplies({ thread, page, forum } = {}) {
   switch (forum) {
     case 'HKG': {
-      const url = new URL(`view/${topic}/${page}`, HKG_API_ENDPOINT);
+      const url = new URL(`view/${thread}/${page}`, HKG_API_ENDPOINT);
       const res = await httpClient.get(url.href);
       const replies = [].concat(res.data.replies).map(r => new Reply({
         ...r,
@@ -137,7 +137,7 @@ export async function fetchReplies({ topic, page, forum } = {}) {
       };
     }
     case 'LIHKG': {
-      const url = new URL(`thread/${topic}/page/${page}`, LIHKG_API_ENDPOINT);
+      const url = new URL(`thread/${thread}/page/${page}`, LIHKG_API_ENDPOINT);
       const res = await httpClient.get(url.href);
       const replies = [].concat(res.response.item_data).map(r => new Reply({
         replyId: r.post_id,

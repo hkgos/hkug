@@ -21,7 +21,7 @@ const Thread = Loadable({
 const Topics = () => (
   <Switch>
     <Route exact path="/topics/:category" component={List} />
-    <Route exact path="/topics/:category/:id" component={Thread} />
+    <Route exact path="/topics/:category/:thread" component={Thread} />
     <Route component={NotFound} />
   </Switch>
 );
