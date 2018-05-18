@@ -114,12 +114,12 @@ const enhance = compose(
   lifecycle({
     componentWillMount() {
       const query = new URLSearchParams(this.props.location.search);
-      let { page } = query;
+      let page = query.get('page');
       if (!page || page < 1) {
         page = 1;
       }
-      const [forum, topic] = this.props.match.params.id.split('+');
-      this.props.fetchReplies({ topic, page, forum });
+      const [forum, thread] = this.props.match.params.thread.split('+');
+      this.props.fetchReplies({ thread, page, forum });
     },
   }),
   withHandlers({

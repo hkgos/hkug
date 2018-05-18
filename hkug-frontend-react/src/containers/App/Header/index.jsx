@@ -7,6 +7,7 @@ import injectSheet from 'react-jss';
 import { matchPath, withRouter } from 'react-router-dom';
 import allCategories from '../../../utils/categories';
 import { fetchTopics } from '../../../modules/topic';
+import { fetchReplies } from '../../../modules/thread';
 import { SIDE_MENU_BREAK_POINT } from '../../../constants';
 
 const { Header } = Layout;
@@ -95,28 +96,55 @@ AppHeader.propTypes = {
 const enhance = compose(
   injectSheet(styles),
   withRouter,
-  connect(() => ({}), { fetchTopics }),
+  connect(() => ({}), { fetchTopics, fetchReplies }),
   withProps(({ location }) => {
-    const exact = matchPath(location.pathname, { path: '/topics/:category', exact: true });
-    const match = matchPath(location.pathname, { path: '/topics/:category' });
+    const matchCategory = matchPath(location.pathname, { path: '/topics/:category' });
+    const matchThread = matchPath(location.pathname, { path: '/topics/:category/:theadId', exact: true });
     let header = 'HKUG 香港聯登';
     let categoryId = null;
-    if (match && match.params.category) {
-      const category = allCategories.find(c => c.id === Number(match.params.category));
+    let showReloadButton = false;
+    let isTopics = false;
+    let isThread = false;
+    let threadId;
+    let threadPage;
+    let threadForum;
+    if (matchCategory && matchCategory.params.category) {
+      const category = allCategories.find(c => c.id === Number(matchCategory.params.category));
       if (category) {
+        showReloadButton = true;
+        isTopics = true;
         header = category.name;
         categoryId = category.id;
       }
     }
-    let showReloadButton = false;
-    if (exact && categoryId !== null) {
-      showReloadButton = true;
+    if (matchThread && categoryId !== null) {
+      isThread = true;
+      [threadForum, threadId] = matchThread.params.theadId.split('+');
+      const query = new URLSearchParams(location.search);
+      threadPage = query.get('page');
     }
-    return ({ header, categoryId, showReloadButton });
+    return ({
+      header,
+      categoryId,
+      threadId,
+      threadPage,
+      threadForum,
+      showReloadButton,
+      isTopics,
+      isThread,
+    });
   }),
   withHandlers({
     handleReloadClick: props => () => {
-      props.fetchTopics({ category: props.categoryId }, { reset: true });
+      if (props.isThread) {
+        props.fetchReplies({
+          thread: props.threadId,
+          page: props.threadPage,
+          forum: props.threadForum,
+        });
+      } else if (props.isTopics) {
+        props.fetchTopics({ category: props.categoryId }, { reset: true });
+      }
     },
   }),
   pure,
