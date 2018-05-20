@@ -1,5 +1,7 @@
 language: node_js
 node_js:
   - "8"
+before_script: 
+  - cd hkug-frontend-react
 script:
   - npm run lint
