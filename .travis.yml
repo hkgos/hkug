@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+  - "8"
+install: 
+  - cd $TRAVIS_BUILD_DIR/hkug-frontend-react && npm install
+  - cd $TRAVIS_BUILD_DIR/hkug-backend-node && npm install
+script:
+  - cd $TRAVIS_BUILD_DIR/hkug-frontend-react && npm run lint
+  - cd $TRAVIS_BUILD_DIR/hkug-backend-node && npm run eslint
