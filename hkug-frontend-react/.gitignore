@@ -1,5 +1,7 @@
 # Built files
-/lib
+/public/index.html
+/public/assets
+webpack.stats.json
 
 # OS files
 .DS_STORE

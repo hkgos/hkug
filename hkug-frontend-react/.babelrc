@@ -1,0 +1,30 @@
+{
+  "presets": [
+    ["env", {
+      "targets": {
+        "browsers": ["last 2 Chrome versions"],
+        "node": "current"
+      }
+    }],
+    "react",
+    "stage-0"
+  ],
+  "plugins": [
+    "react-hot-loader/babel",
+    [
+      "import",
+      [
+        {
+          "libraryName": "antd",
+          "libraryDirectory": "lib",
+          "style": true
+        },
+        {
+          "libraryName": "recompose",
+          "libraryDirectory": "",
+          "camel2DashComponentName": false,
+        }
+      ]
+    ]
+  ]
+}

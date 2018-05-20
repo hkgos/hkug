@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export default class Topic {
   constructor({
     topicId,
@@ -13,6 +15,7 @@ export default class Topic {
     like,
     dislike,
     totalPage,
+    href,
   } = {}) {
     this.topicId = String(topicId);
     this.forum = forum;
@@ -27,12 +30,21 @@ export default class Topic {
     this.like = Number(like);
     this.dislike = Number(dislike);
     this.totalPage = Number(totalPage);
+    this.href = href;
   }
 
-  // Delete any 'Private' / Unwanted props
-  toJSON() {
-    return ({
-      ...this,
-    });
+  get lastReplyMoment() {
+    return moment(this.lastReplyDate);
+  }
+
+  get forumName() {
+    switch (this.forum) {
+      case 'HKG':
+        return '高登';
+      case 'LIHKG':
+        return 'LIHKG';
+      default:
+        return this.forum;
+    }
   }
 }
