@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/hkgos/hkug.svg?branch=master)](https://travis-ci.org/hkgos/hkug)
 # hkug
 高登 ＋ 連登 ＝ 聯登
 
