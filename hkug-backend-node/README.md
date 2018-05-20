@@ -14,7 +14,7 @@ Node version API server for HKUG
 
 ## Usage
 1. start the server
-2. goto http://localhost:8080/api/topics?forum=${LIHKG/HKG}
+2. goto http://localhost:8081/api/topics?forum=${LIHKG/HKG}
 
 ## Todo list
 * [ ] Write better readme file

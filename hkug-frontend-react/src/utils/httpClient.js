@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { API_TIMEOUT } from '../constants';
+
 /*
 Axios Response Schema
 {
@@ -27,18 +29,15 @@ Axios Response Schema
 */
 
 const client = axios.create({
-  timeout: 10000,
+  timeout: API_TIMEOUT,
   maxContentLength: Number.POSITIVE_INFINITY,
 });
 
 // Request Interceptor
-client.interceptors.request.use((config) => {
-  console.log('Making HTTP request...');
-  console.log(`URL: ${config.url}`);
-  console.log(`METHOD: ${config.method}`);
-  console.log(`DATA: ${config.data}`);
-  return config;
-}, error => Promise.reject(error)); // Should be a configration error
+// client.interceptors.request.use((config) => {
+//   // TODO: Add Auth headers
+//   return config;
+// }, error => Promise.reject(error)); // Should be a configration error
 
 // Response Interceptor
 // TODO: Error Handling
@@ -50,10 +49,14 @@ client.interceptors.response.use(res => res.data, (error) => {
   } else if (error.request) {
     // The request was made but no response was received
     // Most likely a network problem
-    return Promise.reject(error);
+    const err = new Error('網絡發生問題');
+    err.network = true;
+    return Promise.reject(err);
   }
   // Something happened in setting up the request that triggered an Error
-  return Promise.reject(error);
+  const err = new Error('內部錯誤');
+  err.internal = true;
+  return Promise.reject(err);
 });
 
 export default client;

@@ -17,7 +17,6 @@ export async function fetchLIHKGTopics({ category = 1, page = 1 } = {}) {
   url.search = new URLSearchParams({
     cat_id: category,
     page,
-    count: 30,
   });
   const res = await httpClient.get(url.href);
   return res.response.items;

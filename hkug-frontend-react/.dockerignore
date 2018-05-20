@@ -1,9 +1,13 @@
 # Built files
-/lib
+/public/index.html
+/public/assets
 
 # OS files
 .DS_STORE
 
 # npm files
 /node_modules
-package-lock.json
+
+# Git files
+.git
+.gitignore
