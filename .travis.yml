@@ -1,8 +1,9 @@
 language: node_js
 node_js:
   - "8"
-before_script: 
-  - cd hkug-frontend-react
-  - npm install
+install: 
+  - npm install hkug-frontend-react
+  - npm install hkug-backend-node
 script:
-  - npm run lint
+  - cd $TRAVIS_BUILD_DIR/hkug-frontend-react && npm run lint
+  - cd $TRAVIS_BUILD_DIR/hkug-backend-node && npm run eslint
