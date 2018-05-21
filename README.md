@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/hkgos/hkug.svg?branch=master)](https://travis-ci.org/hkgos/hkug)
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/hkgos/hkug/master/logo/logo@2x-100.jpg" alt="HKUG logl" width="120" />
+<img src="https://raw.githubusercontent.com/hkgos/hkug/master/logo/logo@2x-100.jpg" alt="HKUG logo" width="120" />
 </p>
 
 # 什麼是 HKUG?
