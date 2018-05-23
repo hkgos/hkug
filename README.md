@@ -8,6 +8,8 @@
 ![HKUG](https://raw.githubusercontent.com/hkgos/hkug/master/logo/cover.jpg)
 HKG ＋ LIHKG ＝ HKUG
 
+[Demo](https://hkug.arukascloud.io/)
+
 ## 目標
 建立一個可以同時觀看高登及連登的討論區，方便兩登都想留意的用家。
 
