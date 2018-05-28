@@ -3,6 +3,7 @@ import { Container, Content, Text, List, ListItem } from 'native-base';
 import { connect } from 'react-redux';
 import { modules } from 'hkug-client-core';
 import Header from '../Header';
+import Loading from '../../components/Loading';
 
 const { fetchTopics } = modules.topic;
 
@@ -20,16 +21,19 @@ class Topics extends Component {
     return (
       <Container>
         <Header navigation={this.props.navigation} />
-        <Content>
-          <List
-            dataArray={this.props.topics}
-            renderRow={topic => (
-              <ListItem>
-                <Text>{topic.title}</Text>
-              </ListItem>
-            )}
-          />
-        </Content>
+        {this.props.loading ?
+          <Loading /> :
+          <Content>
+            <List
+              dataArray={this.props.topics}
+              renderRow={topic => (
+                <ListItem>
+                  <Text>{topic.title}</Text>
+                </ListItem>
+              )}
+            />
+          </Content>
+        }
       </Container>
     );
   }
