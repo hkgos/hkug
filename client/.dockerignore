@@ -1,0 +1,18 @@
+# Built files
+web/public/index.html
+web/public/assets*
+*/lib*
+
+# test
+*/test*
+
+# OS files
+.DS_STORE
+*/.DS_STORE
+
+# npm files
+*/node_modules*
+
+# Git files
+*/.git
+*/.gitignore

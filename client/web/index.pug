@@ -1,0 +1,24 @@
+- var options = htmlWebpackPlugin.options || {}
+- var files = htmlWebpackPlugin.files || {}
+
+- var lang = options.lang || "zh-Hant"
+- var mobile = options.mobile || true
+- var chunks = files.chunks || {}
+- var css = files.css || []
+- var title = options.title || ''
+- var appMountId = options.appMountId || 'root'
+
+doctype html
+html(lang=lang)
+  head
+    meta(charset="utf8")
+    if mobile
+      meta(name="viewport" content="user-scalable=0, initial-scale=1, minimum-scale=1, width=device-width, height=device-height")
+    title=title
+    each val in css
+      link(href=val rel="stylesheet" type="text/css")
+  body
+    if appMountId
+      div(id=appMountId)
+    each val, index in chunks
+      script(src=val.entry type="text/javascript")
