@@ -1,3 +1,4 @@
+import URI from 'urijs';
 import {
   HKG_HOST,
   LIHKG_HOST,
@@ -38,16 +39,16 @@ export default class Topic {
   get href() {
     switch (this.forum) {
       case 'HKG': {
-        const url = new URL('view.aspx', HKG_HOST);
-        url.search = new URLSearchParams({
+        const url = new URI('view.aspx', HKG_HOST);
+        url.search({
           type: getHkgId(this.category),
           message: this.topicId,
         });
-        return url.href;
+        return url.href();
       }
       case 'LIHKG': {
-        const url = new URL(`thread/${this.topicId}`, LIHKG_HOST);
-        return url.href;
+        const url = new URI(`thread/${this.topicId}`, LIHKG_HOST);
+        return url.href();
       }
       default:
         return undefined;
