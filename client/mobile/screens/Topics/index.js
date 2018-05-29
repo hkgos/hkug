@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Container, Content, Text, List, ListItem, Body, Icon } from 'native-base';
+import { Container, Content, Text, List, ListItem, Body, Icon, Right } from 'native-base';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { modules } from 'hkug-client-core';
@@ -80,6 +80,9 @@ class Topics extends Component {
                       <Text note>{moment(t.lastReplyDate).fromNow()}</Text>
                     </View>
                   </Body>
+                  <Right>
+                    <Text note>{t.forumName}</Text>
+                  </Right>
                 </ListItem>
               )}
             />
