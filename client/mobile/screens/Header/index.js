@@ -23,17 +23,23 @@ const styles = StyleSheet.create({
   },
 });
 
-const AppHeader = ({ navigation }) => (
+const AppHeader = ({ navigation, drawer }) => (
   <Header style={styles.header}>
     <Left>
       <Button
         transparent
-        onPress={() => { navigation.openDrawer(); }}
+        onPress={() => {
+          if (drawer) {
+            navigation.openDrawer();
+          } else {
+            navigation.navigate(navigation.getParam('state'));
+          }
+        }}
       >
-        <Icon style={styles.drawerIcon} name="menu" />
+        <Icon style={styles.drawerIcon} name={drawer ? 'menu' : 'arrow-back'} />
       </Button>
     </Left>
-    <Body style={{ flex: 2 }}>
+    <Body style={{ flex: 8 }}>
       <Title style={styles.title}>{navigation.getParam('title', 'HKUG 香港聯登')}</Title>
     </Body>
     <Right />
