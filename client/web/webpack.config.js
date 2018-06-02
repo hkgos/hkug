@@ -101,6 +101,7 @@ module.exports = {
   // works for .jsx extension, add 'jsx' to the extensions config
   resolve: {
     extensions: ['.js', '.jsx'],
+    symlinks: false,
   },
   module: {
     rules: [

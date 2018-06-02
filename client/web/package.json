@@ -7,8 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --ext .jsx --ext .js .",
-    "build:prod": "cross-env NODE_ENV=production webpack --progress --profile --json > webpack.stats.json",
-    "build:dev": "webpack --progress --profile --json > webpack.stats.json",
+    "build:prod": "cross-env NODE_ENV=production webpack --progress --profile --json",
+    "build:dev": "webpack --progress --profile --json",
     "bundle-analyzer": "webpack-bundle-analyzer webpack.stats.json",
     "start": "cross-env NODE_ENV=production node server.js",
     "dev": "webpack-dev-server"

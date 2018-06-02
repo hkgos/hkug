@@ -2,11 +2,12 @@ language: node_js
 node_js:
   - "8"
 install: 
-  - cd $TRAVIS_BUILD_DIR/hkug-frontend-react && npm install
-  - cd $TRAVIS_BUILD_DIR/hkug-backend-node && npm install
-  - cd $TRAVIS_BUILD_DIR/client/core && npm install && npm run compile
-  - cd $TRAVIS_BUILD_DIR/client/web && npm install
+  - npm install -g npm@latest
+  - cd $TRAVIS_BUILD_DIR/hkug-frontend-react && npm ci
+  - cd $TRAVIS_BUILD_DIR/hkug-backend-node && npm ci
+  - cd $TRAVIS_BUILD_DIR/client/core && npm ci && npm pack
+  - cd $TRAVIS_BUILD_DIR/client/web && npm ci
 script:
   - cd $TRAVIS_BUILD_DIR/hkug-frontend-react && npm run lint
   - cd $TRAVIS_BUILD_DIR/hkug-backend-node && npm run eslint
-  - cd $TRAVIS_BUILD_DIR/client/web && npm run build:prod
+  - cd $TRAVIS_BUILD_DIR/client/web && npm run lint && npm run build:prod
