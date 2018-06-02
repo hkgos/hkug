@@ -4,10 +4,9 @@ node_js:
 install: 
   - cd $TRAVIS_BUILD_DIR/hkug-frontend-react && npm install
   - cd $TRAVIS_BUILD_DIR/hkug-backend-node && npm install
-  - cd $TRAVIS_BUILD_DIR/client/core && npm install
+  - cd $TRAVIS_BUILD_DIR/client/core && npm install && npm run compile
   - cd $TRAVIS_BUILD_DIR/client/web && npm install
 script:
   - cd $TRAVIS_BUILD_DIR/hkug-frontend-react && npm run lint
   - cd $TRAVIS_BUILD_DIR/hkug-backend-node && npm run eslint
-  - cd $TRAVIS_BUILD_DIR/client/core && npm run compile
   - cd $TRAVIS_BUILD_DIR/client/web && npm run build:prod
