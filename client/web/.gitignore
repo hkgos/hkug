@@ -1,0 +1,9 @@
+# Built files
+public
+
+# OS files
+.DS_STORE
+
+# npm files
+/node_modules
+package-lock.json

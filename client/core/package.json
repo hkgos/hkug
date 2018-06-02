@@ -1,0 +1,38 @@
+{
+  "name": "hkug-client-core",
+  "private": "true",
+  "version": "1.0.0",
+  "description": "hkug client core module",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --ext .jsx --ext .js .",
+    "compile": "babel src -d lib"
+  },
+  "keywords": [
+    "hkug",
+    "hkgos"
+  ],
+  "author": "CK Wun <ckwun@connect.ust.hk>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.3",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.11.0"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "crypto-js": "^3.1.9-1",
+    "urijs": "^1.19.1",
+    "xmldom": "^0.1.27"
+  },
+  "peerDependencies": {
+    "react": "16.3.1",
+    "redux": "^4.0.0",
+    "redux-saga": "^0.16.0"
+  }
+}
