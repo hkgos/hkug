@@ -35,11 +35,12 @@ class App extends React.Component {
     super();
     this.state = { fontLoaded: false };
   }
-  componentDidMount() {
-    Font.loadAsync({
+  async componentDidMount() {
+    await Font.loadAsync({
       Roboto_medium: robotoMedium,
+    });
     // eslint-disable-next-line react/no-did-mount-set-state
-    }).then(this.setState({ fontLoaded: true }));
+    this.setState({ fontLoaded: true });
   }
 
   render() {
