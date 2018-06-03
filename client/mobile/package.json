@@ -3,7 +3,8 @@
   "description": "React native version mobile client",
   "version": "0.1.0",
   "private": true,
-  "author": "CK Wun <ckwun@connect.ust.hk>",
+  "contributors": ["CK Wun <ckwun@connect.ust.hk>"],
+  "repository": "github:hkgos/hkug",
   "license": "MIT",
   "devDependencies": {
     "babel-eslint": "^8.2.3",
