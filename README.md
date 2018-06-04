@@ -20,8 +20,8 @@ HKG ＋ LIHKG ＝ HKUG
 
 ## Source
 * [Nodejs Backend](https://github.com/hkgos/hkug/tree/master/hkug-backend-node) - 收集兩登 data 輸出一個 REST API 的 backend。
-* [React Frontend](https://github.com/hkgos/hkug/tree/master/hkug-frontend-react) - 直接在 frontend fetch 兩登 API 合在同一頁下顯示。
-* [React Native Client](https://github.com/hkgos/hkug/tree/master/client) - 在 client side 直接 fetch 兩登 API 觀看
+* [React Frontend](https://github.com/hkgos/hkug/tree/master/hkug-frontend-react) - (Deprecated: 已和Mobile client合併到Client) Web client。 直接fetch 兩登 API 觀看。
+* [Client](https://github.com/hkgos/hkug/tree/master/client) - Web / Mobile client。直接 fetch 兩登 API 觀看
 
 ## Roadmap
 - ~~召集人手~~
@@ -29,4 +29,3 @@ HKG ＋ LIHKG ＝ HKUG
 - ~~建立適合同時觀看兩登的界面~~
 - Mobile Native App
 - 可以分別登入兩登帳號並留言
-
