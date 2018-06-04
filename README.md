@@ -20,7 +20,7 @@ HKG ＋ LIHKG ＝ HKUG
 
 ## Source
 * [Nodejs Backend](https://github.com/hkgos/hkug/tree/master/hkug-backend-node) - 收集兩登 data 輸出一個 REST API 的 backend。
-* [React Frontend](https://github.com/hkgos/hkug/tree/master/hkug-frontend-react) - (Deprecated: 已和Mobile client合併到Client) Web client。 直接fetch 兩登 API 觀看。
+* ~~[React Frontend](https://github.com/hkgos/hkug/tree/master/hkug-frontend-react)~~ - (Deprecated: 已和Mobile client合併到Client) Web client。 直接fetch 兩登 API 觀看。
 * [Client](https://github.com/hkgos/hkug/tree/master/client) - Web / Mobile client。直接 fetch 兩登 API 觀看
 
 ## Roadmap
