@@ -30,7 +30,7 @@ $ git clone https://github.com/hkgos/hkug.git
 #### 用Docker直接 run web client: go to client folder and do the following:
 
 ```bash
-$ docker build hkug .
+$ docker build -t hkug .
 $ docker run -p 8080:8080 hkug
 ```
 open your browser and go to http://localhost:8080
