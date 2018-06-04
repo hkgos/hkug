@@ -57,6 +57,10 @@ open your browser and go to http://localhost:8080
     ```bash
     $ yarn run dev
     ```
+    注意：若使用dev server，因為高登API沒有CORS Support，browser 需安裝 [CORS extension](https://chrome.google.com/webstore/search/cors) 才能正常使用，否則會看不到所有高登的post。
+
+    警告：CORS extension用後請關掉，否則會有Security Risk！
+
     open your browser and go to http://localhost:8080
 
   * Run production sever:
