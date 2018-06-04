@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 import { Layout, Menu } from 'antd';
 import { compose, withProps, withHandlers, pure } from 'recompose';
 import injectSheet from 'react-jss';
-import { withRouter, matchPath } from 'react-router-dom';
+import { withRouter, matchPath, Link } from 'react-router-dom';
 import { utils, modules } from 'hkug-client-core';
 import { SIDE_MENU_BREAK_POINT } from '../../../constants';
+import logo from '../../../img/logo.png';
 
 const allCategories = utils.categories.default;
 const { fetchTopics } = modules.topic;
@@ -22,9 +23,11 @@ const styles = theme => ({
     '-webkit-overflow-scrolling': 'touch',
   },
   logo: {
-    height: 32,
-    background: theme.primaryColor,
+    textAlign: 'center',
     margin: theme.margin,
+    '& img': {
+      height: 32,
+    },
   },
 });
 
@@ -32,7 +35,7 @@ const AppSider = ({
   classes,
   categories,
   handleMenuItemClick,
-  defaultSelectedKeys,
+  selectedKeys,
   menuCollapsed,
   setMenuCollapse,
 }) => (
@@ -44,11 +47,13 @@ const AppSider = ({
     collapsed={menuCollapsed}
     onCollapse={(collapsed) => { setMenuCollapse(collapsed); }}
   >
-    <div className={classes.logo} />
+    <div className={classes.logo}>
+      <Link to="/" href="/"><img src={logo} alt="Application logo" /></Link>
+    </div>
     <Menu
       theme="dark"
       mode="inline"
-      defaultSelectedKeys={defaultSelectedKeys}
+      selectedKeys={selectedKeys}
       onClick={handleMenuItemClick}
     >
       {
@@ -69,7 +74,7 @@ AppSider.propTypes = {
     lihkgKey: PropTypes.number,
     name: PropTypes.string,
   })).isRequired,
-  defaultSelectedKeys: PropTypes.arrayOf(PropTypes.string).isRequired,
+  selectedKeys: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleMenuItemClick: PropTypes.func.isRequired,
   menuCollapsed: PropTypes.bool.isRequired,
   setMenuCollapse: PropTypes.func.isRequired,
@@ -81,11 +86,11 @@ const enhance = compose(
   connect(() => ({}), { fetchTopics }),
   withProps(({ location }) => {
     const match = matchPath(location.pathname, { path: '/topics/:category' });
-    const defaultSelectedKeys = [];
+    const selectedKeys = [];
     if (match && match.params.category) {
-      defaultSelectedKeys.push(match.params.category);
+      selectedKeys.push(match.params.category);
     }
-    return ({ defaultSelectedKeys, categories: allCategories });
+    return ({ selectedKeys, categories: allCategories });
   }),
   withHandlers({
     handleMenuItemClick: props => ({ key }) => {
