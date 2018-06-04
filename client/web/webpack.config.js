@@ -45,8 +45,6 @@ const plugins = [
     path.resolve(__dirname, contentBase, assetsPrefix),
     // clean index.html only, keep other files not build by webpack
     path.resolve(__dirname, contentBase, 'index.html'),
-    path.resolve(__dirname, contentBase, 'index-zh-Hant.html'),
-    path.resolve(__dirname, contentBase, 'index-zh-Hans.html'),
   ]),
   // auto generate index.html by template
   new HtmlWebpackPlugin({

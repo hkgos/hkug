@@ -31,7 +31,7 @@
   "dependencies": {
     "@expo/vector-icons": "^6.3.1",
     "expo": "^27.0.1",
-    "hkug-client-core": "../core",
+    "hkug-client-core": "file:../core",
     "moment": "^2.22.1",
     "native-base": "^2.4.5",
     "react": "16.3.1",
