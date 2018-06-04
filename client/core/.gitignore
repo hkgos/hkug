@@ -1,7 +1,4 @@
-lib
+/lib
 
-# OS files
-.DS_STORE
-
-# npm files
-node_modules
+# dependencies
+/node_modules

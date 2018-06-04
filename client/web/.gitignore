@@ -1,9 +1,7 @@
 # Built files
-public
-webpack.stats.json
-
-# OS files
-.DS_STORE
+/public/index.html
+/public/assets
+/webpack.stats.json
 
 # npm files
 /node_modules
