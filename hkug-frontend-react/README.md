@@ -1,4 +1,7 @@
-# To run this webapp on localhost:8080
+# Deprecated
+Use [Client](https://github.com/hkgos/hkug/tree/master/client) instead.
+
+### To run this webapp on localhost:8080
 1. Clone this project
 2. yarn install
 3. npm run build:prod
