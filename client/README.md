@@ -44,12 +44,14 @@ $ git clone https://github.com/hkgos/hkug.git
   ```
 
   * Run dev sever:
+
   ```bash
   $ yarn run dev
   ```
   open your browser and go to http://localhost:8080
 
   * Run production sever:
+
   ```bash
   $ yarn run build:prod
   $ yarn start
