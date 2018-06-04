@@ -13,7 +13,7 @@
 ## 事前準備
   Nodejs 8 (Nodejs 6.x 可能有問題) or Docker (Web client only)
 
-  強烈建議使用yarn進行install
+  不使用Docker的話強烈建議使用yarn進行install
 
   特別是run mobile app, 用npm install 會有build不到的問題
 
@@ -26,7 +26,16 @@
 ```bash
 $ git clone https://github.com/hkgos/hkug.git
 ```
-#### 首先build core
+
+#### 用Docker直接 run web client: go to client folder and do the following:
+
+```bash
+$ docker build hkug .
+$ docker run -p 8080:8080 hkug
+```
+open your browser and go to http://localhost:8080
+
+#### 不使用docker, 首先build core
 
   * Go to client/core folder and do the following:
 
@@ -45,18 +54,18 @@ $ git clone https://github.com/hkgos/hkug.git
 
   * Run dev sever:
 
-  ```bash
-  $ yarn run dev
-  ```
-  open your browser and go to http://localhost:8080
+    ```bash
+    $ yarn run dev
+    ```
+    open your browser and go to http://localhost:8080
 
   * Run production sever:
 
-  ```bash
-  $ yarn run build:prod
-  $ yarn start
-  ```
-  open your browser and go to http://localhost:8080
+    ```bash
+    $ yarn run build:prod
+    $ yarn start
+    ```
+    open your browser and go to http://localhost:8080
 
 * Mobile: Go to client/mobile folder and do the following:
 
@@ -64,11 +73,3 @@ $ git clone https://github.com/hkgos/hkug.git
   $ yarn install
   $ yarn start
   ```
-
-* Using Docker to build & run web clinet: Go to client folder and do the following:
-
-  ```bash
-  $ docker build hkug .
-  $ docker run -p 8080:8080 hkug
-  ```
-  open your browser and go to http://localhost:8080
