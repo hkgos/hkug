@@ -57,7 +57,7 @@ const plugins = [
     // Optional
     lang,
     appMountId,
-    title: 'HKUG',
+    title: 'HKUG 香港聯登',
   }),
   // enable alwaysWriteToDisk option
   new HtmlWebpackHarddiskPlugin(),
