@@ -10,6 +10,16 @@ import {
   LIHKG_API_ENDPOINT,
 } from '../constants';
 
+function constructBlockquote(q) {
+  if (!q) {
+    return '';
+  }
+  if (!q.quote) {
+    return `<blockquote>${q.msg}</blockquote>`;
+  }
+  return `<blockquote>${constructBlockquote(q.quote)}${q.msg}</blockquote>`;
+}
+
 function sortTopicsByLastReplyDate(a, b) {
   if (a.lastReplyDate.getTime() < b.lastReplyDate.getTime()) {
     return -1;
@@ -241,7 +251,7 @@ export async function fetchReplies({ thread, page = 1, forum } = {}) {
         authorId: r.user.user_id,
         authorName: r.user_nickname,
         authorGender: r.user_gender,
-        content: r.msg,
+        content: `${constructBlockquote(r.quote)}${r.msg}`,
         replyDate: r.reply_time * 1000,
       }));
       return {
