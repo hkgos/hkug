@@ -24,14 +24,25 @@ function createReactElements(nodes, forum) {
           props.src = url.href();
         }
       }
-      delete props.class;
+      const style = {};
+      const styles = typeof props.style === 'string' ? props.style.split(';') : [];
+      styles.forEach((s) => {
+        const [key, value] = s.split(':');
+        if (key && value && key !== '' && value !== '') {
+          style[key.trim()] = value.trim();
+        }
+      });
       delete props.style;
+      delete props.class;
+      if (Object.keys(style).length > 0) {
+        props.style = style;
+      }
       result.push(React.createElement(
         n.name,
         props,
         ...createReactElements(n.children, forum),
       ));
-    } else {
+    } else if (n.type === 'text') {
       result.push(n.data);
     }
     index += 1;
