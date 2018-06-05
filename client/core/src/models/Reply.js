@@ -1,5 +1,6 @@
 import React from 'react';
-import xmldom from 'xmldom';
+import URI from 'urijs';
+import HtmlDomParser from 'html-dom-parser';
 import { HKG_HOST, LIHKG_HOST, HKG_MEMBER_ICONS_BASE } from '../constants';
 
 function createReactElements(nodes, forum) {
@@ -9,33 +10,29 @@ function createReactElements(nodes, forum) {
   const result = [];
   let index = 0;
   while (nodes.length > index) {
-    const n = nodes.item(index);
-    if (n.nodeType === 1) {
-      const attrsLength = n.attributes.length;
-      const props = {};
-      for (let i = 0; i < attrsLength; i += 1) {
-        props[n.attributes.item(i).name] = n.attributes.item(i).value;
-      }
+    const n = nodes[index];
+    if (n.type === 'tag') {
+      const props = { ...n.attribs };
       if (forum === 'HKG') {
-        if (props.src && props.src.startsWith('/faces/') && n.tagName === 'img') {
-          const url = new URL(props.src, HKG_HOST);
-          props.src = url.href;
+        if (props.src && props.src.startsWith('/faces/') && n.name === 'img') {
+          const url = new URI(props.src, HKG_HOST);
+          props.src = url.href();
         }
       } else if (forum === 'LIHKG') {
-        if (n.tagName === 'img' && props.class === 'hkgmoji') {
-          const url = new URL(props.src, LIHKG_HOST);
-          props.src = url.href;
+        if (n.name === 'img' && props.class === 'hkgmoji') {
+          const url = new URI(props.src, LIHKG_HOST);
+          props.src = url.href();
         }
       }
       delete props.class;
       delete props.style;
       result.push(React.createElement(
-        n.tagName.toLowerCase(),
+        n.name,
         props,
-        ...createReactElements(n.childNodes, forum),
+        ...createReactElements(n.children, forum),
       ));
     } else {
-      result.push(n.nodeValue);
+      result.push(n.data);
     }
     index += 1;
   }
@@ -54,7 +51,6 @@ export default class Reply {
     content,
     replyDate,
   } = {}) {
-    this.parser = new xmldom.DOMParser();
     this.replyId = String(replyId);
     this.forum = String(forum);
     this.index = Number(index);
@@ -84,8 +80,8 @@ export default class Reply {
   }
 
   contentReactElement(className) {
-    const doc = this.parser.parseFromString(this.content, 'text/html');
-    const childrens = createReactElements(doc.childNodes, this.forum);
+    const nodes = HtmlDomParser(this.content);
+    const childrens = createReactElements(nodes, this.forum);
     return React.createElement(
       'div',
       { className },
