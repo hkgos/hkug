@@ -3,7 +3,11 @@ import URI from 'urijs';
 import HtmlDomParser from 'html-dom-parser';
 import { HKG_HOST, LIHKG_HOST, HKG_MEMBER_ICONS_BASE } from '../constants';
 
-function createReactElements(nodes, forum) {
+function toCamelCase(string) {
+  return string.replace('-', ' ').replace(/\s(\w)/g, (matches, letter) => letter.toUpperCase());
+}
+
+function createReactElements(nodes, forum, opts) {
   if (nodes.length === 0) {
     return [];
   }
@@ -29,7 +33,7 @@ function createReactElements(nodes, forum) {
       styles.forEach((s) => {
         const [key, value] = s.split(':');
         if (key && value && key !== '' && value !== '') {
-          style[key.trim()] = value.trim();
+          style[toCamelCase(key.trim())] = value.trim();
         }
       });
       delete props.style;
@@ -37,11 +41,22 @@ function createReactElements(nodes, forum) {
       if (Object.keys(style).length > 0) {
         props.style = style;
       }
-      result.push(React.createElement(
-        n.name,
-        props,
-        ...createReactElements(n.children, forum),
-      ));
+      if (n.name === 'button' && props['data-quote-post-id']) {
+        result.push(React.createElement(
+          opts.render,
+          {
+            onClick: () => { opts.handler(props['data-quote-post-id']); },
+            loading: opts.fetchingIds.indexOf(props['data-quote-post-id']) !== -1,
+          },
+          ...createReactElements(n.children, forum, opts),
+        ));
+      } else {
+        result.push(React.createElement(
+          n.name,
+          props,
+          ...createReactElements(n.children, forum, opts),
+        ));
+      }
     } else if (n.type === 'text') {
       result.push(n.data);
     }
@@ -90,12 +105,12 @@ export default class Reply {
     return undefined;
   }
 
-  contentReactElement(className) {
+  contentReactElement(options) {
     const nodes = HtmlDomParser(this.content);
-    const childrens = createReactElements(nodes, this.forum);
+    const childrens = createReactElements(nodes, this.forum, options);
     return React.createElement(
       'div',
-      { className },
+      { className: options.className },
       ...childrens,
     );
   }
