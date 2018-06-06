@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { List, Row, Pagination } from 'antd';
+import { List, Row, Select, Button, Icon } from 'antd';
 import {
   compose,
   lifecycle,
   withProps,
   withHandlers,
+  withStateHandlers,
   branch,
   renderComponent,
   pure,
@@ -18,8 +19,9 @@ import Avatar from '../../../components/Avatar';
 import IconText from '../../../components/IconText';
 import Loading from '../../../containers/Loading';
 
+const { Option } = Select;
 const { Reply } = models;
-const { fetchReplies } = modules.thread;
+const { fetchReplies, fetchQuote } = modules.thread;
 
 const styles = theme => ({
   container: {
@@ -32,7 +34,7 @@ const styles = theme => ({
       paddingLeft: '.8rem',
       marginBottom: '.8rem',
       marginLeft: '.8rem',
-      borderLeft: `.2rem solid ${theme.secondaryColor}`,
+      borderLeft: `.2rem solid ${theme.textColor}`,
     },
     '& img': {
       maxWidth: '30vw',
@@ -40,13 +42,13 @@ const styles = theme => ({
     },
   },
   titleContainer: {
-    background: theme.secondaryColor,
+    background: '#222',
     padding: theme.padding,
     height: theme.headerHeight,
     lineHeight: `${theme.headerHeight - (theme.padding * 2)}px`,
   },
   title: {
-    color: '#fff',
+    color: theme.textColor,
     margin: 0,
     fontSize: 'large',
     textOverflow: 'ellipsis',
@@ -55,25 +57,35 @@ const styles = theme => ({
   },
   list: {
     margin: '0 !important',
-    padding: `0 ${theme.padding}px !important`,
+    padding: '0 !important',
   },
   item: {
-    borderBottom: `1px solid ${theme.secondaryColor}`,
-    paddingTop: theme.padding,
-    paddingBottom: theme.padding,
+    borderBottom: `.2rem solid ${theme.primaryColor} !important`,
+    padding: theme.padding,
+    color: theme.textColor,
   },
   pagination: {
+    background: '#222',
     padding: theme.padding,
     textAlign: 'center',
+  },
+  select: {
+    width: 96,
+    marginLeft: `${theme.margin}px !important`,
+    marginRight: `${theme.margin}px !important`,
   },
 });
 
 const Thread = ({
   classes,
   replies,
+  thread,
   title,
   page,
   totalPage,
+  pageOptions,
+  fetchQuoteAction,
+  fetchingQuoteId,
   handlePageChange,
 }) => (
   <div className={classes.container}>
@@ -94,7 +106,22 @@ const Thread = ({
             name={item.authorName}
             gender={item.authorGender}
           />
-          {item.contentReactElement(classes.content)}
+          {item.contentReactElement({
+            className: classes.content,
+            render: props => (
+              <Button
+                icon="ellipsis"
+                type="primary"
+                {...props}
+              >
+                顯示更多
+              </Button>
+            ),
+            handler: (quote) => {
+              fetchQuoteAction({ quote, thread }, { replyId: item.replyId, quote });
+            },
+            fetchingIds: fetchingQuoteId,
+          })}
           <Row gutter={16}>
             <IconText icon="pushpin-o" text={item.index} />
             <IconText icon="clock-circle-o" text={moment(item.replyDate).fromNow()} />
@@ -103,23 +130,29 @@ const Thread = ({
       )}
     />
     <div className={classes.pagination}>
-      <Pagination
-        showQuickJumper
-        pageSize={25}
-        current={page}
-        total={totalPage * 25}
-        onChange={handlePageChange}
-      />
+      <Button disabled={page === 1} type="primary" onClick={() => { handlePageChange(page - 1); }}>
+        <Icon type="left" />上一頁
+      </Button>
+      <Select value={page} className={classes.select} onChange={handlePageChange}>
+        {pageOptions}
+      </Select>
+      <Button disabled={page === totalPage} type="primary" onClick={() => { handlePageChange(page + 1); }}>
+        下一頁<Icon type="right" />
+      </Button>
     </div>
   </div>
 );
 Thread.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   title: PropTypes.string.isRequired,
+  thread: PropTypes.string.isRequired,
   replies: PropTypes.arrayOf(PropTypes.instanceOf(Reply)).isRequired,
   page: PropTypes.number.isRequired,
   totalPage: PropTypes.number.isRequired,
+  pageOptions: PropTypes.arrayOf(PropTypes.node).isRequired,
   handlePageChange: PropTypes.func.isRequired,
+  fetchQuoteAction: PropTypes.func.isRequired,
+  fetchingQuoteId: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 const enhance = compose(
@@ -130,7 +163,8 @@ const enhance = compose(
     totalPage: state.thread.totalPage,
     isLoading: state.thread.isFetchingReplies,
     isError: state.thread.isFetchRepliesError,
-  }), { fetchReplies }),
+    fetchingQuoteId: state.thread.fetchingQuoteId,
+  }), { fetchReplies, fetchQuoteAction: fetchQuote }),
   withProps((props) => {
     const query = new URLSearchParams(props.location.search);
     let page = query.get('page');
@@ -138,18 +172,35 @@ const enhance = compose(
       page = 1;
     }
     const [forum, thread] = props.match.params.thread.split('+');
+
+    const pageOptions = [];
+
+    for (let i = 0; i < props.totalPage; i += 1) {
+      pageOptions.push(<Option key={i + 1} value={i + 1}>{`第 ${i + 1} 頁`}</Option>);
+    }
     return ({
       initPage: () => { props.fetchReplies({ thread, page, forum }); },
       page: Number(page),
       thread,
       forum,
+      pageOptions,
     });
   }),
+  withStateHandlers(
+    () => ({ pastDelay: false }),
+    {
+      setPastDelay: () => value => ({ pastDelay: value }),
+    },
+  ),
   lifecycle({
     componentWillMount() {
       this.props.initPage();
     },
     componentDidUpdate(prevProps) {
+      if (this.props.isLoading && !prevProps.isLoading) {
+        this.props.setPastDelay(false);
+        setTimeout(() => { this.props.setPastDelay(true); }, 1000);
+      }
       if (this.props.page !== prevProps.page) {
         this.props.fetchReplies({
           thread: this.props.thread,
@@ -161,7 +212,8 @@ const enhance = compose(
   }),
   branch(
     ({ isLoading, isError }) => isLoading || isError,
-    renderComponent(({ initPage, isError }) => <Loading error={isError} retry={initPage} />),
+    renderComponent(({ initPage, isError, pastDelay }) =>
+      <Loading error={isError} retry={initPage} pastDelay={pastDelay} />),
   ),
   withHandlers({
     handlePageChange: ({ history, location }) => (page) => {

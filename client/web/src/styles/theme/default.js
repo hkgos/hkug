@@ -1,6 +1,9 @@
 export default {
-  primaryColor: '#3d5476',
-  secondaryColor: '#001529',
+  primaryColor: '#111',
+  secondaryColor: '#333',
+  textColor: 'rgba(255, 255, 255, 0.85)',
+  secondaryTextColor: 'rgba(255, 255, 255, 0.65)',
+  hoverColor: 'rgba(255, 255, 255, 1)',
   maleColor: '#0d6da0',
   femaleColor: '#b51c42',
 

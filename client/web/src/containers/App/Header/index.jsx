@@ -34,7 +34,7 @@ const styles = theme => ({
     background: theme.primaryColor,
     padding: 0,
     textAlign: 'center',
-    color: '#fff',
+    color: theme.textColor,
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     textOverflow: 'clip',

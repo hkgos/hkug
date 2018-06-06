@@ -20,7 +20,23 @@ const styles = theme => ({
     maxHeight: '100vh',
     overflowY: 'auto',
     overflowX: 'hidden',
+    background: theme.primaryColor,
     '-webkit-overflow-scrolling': 'touch',
+    '&::-webkit-scrollbar-track': {
+      backgroundColor: theme.primaryColor,
+    },
+    '&::-webkit-scrollbar': {
+      width: '.5em',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: theme.textColor,
+    },
+  },
+  menu: {
+    background: theme.primaryColor,
+    '& .ant-menu-item-selected': {
+      backgroundColor: `${theme.secondaryColor} !important`,
+    },
   },
   logo: {
     textAlign: 'center',
@@ -51,10 +67,11 @@ const AppSider = ({
       <Link to="/" href="/"><img src={logo} alt="Application logo" /></Link>
     </div>
     <Menu
-      theme="dark"
       mode="inline"
+      theme="dark"
       selectedKeys={selectedKeys}
       onClick={handleMenuItemClick}
+      className={classes.menu}
     >
       {
         categories.map(c => (
