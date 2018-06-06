@@ -132,7 +132,9 @@ module.exports = {
             loader: 'less-loader',
             options: {
               javascriptEnabled: true,
-              modifyVars: { 'primary-color': '#3d5476' },
+              modifyVars: {
+                'primary-color': '#111',
+              },
             },
           },
         ],

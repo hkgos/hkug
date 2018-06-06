@@ -14,7 +14,7 @@ const styles = {
     position: 'fixed',
     width: '100%',
     height: '100%',
-    'background-image': 'linear-gradient(125deg,#fff,#f3f3f3 41%,#ededed 0,#fff)',
+    'background-image': 'linear-gradient(125deg, #111 0%, #333 50%, #111 50%, #333 100%)',
     'background-size': '200% 100%',
     animation: 'loading 3s ease infinite',
   },

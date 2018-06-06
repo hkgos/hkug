@@ -15,15 +15,35 @@ import { SIDE_MENU_BREAK_POINT } from '../../constants';
 
 const { Content } = Layout;
 
-const styles = {
+const styles = theme => ({
   contentlayout: {
     minHeight: '100vh',
     maxHeight: '100vh',
   },
   content: {
+    color: theme.textColor,
+    '& h1, h2, h3, h4, h5, h6': {
+      color: theme.textColor,
+    },
+    '& a': {
+      color: theme.secondaryTextColor,
+      '&:hover': {
+        color: theme.hoverColor,
+      },
+    },
     overflowX: 'hidden',
     overflowY: 'auto',
+    background: theme.secondaryColor,
     '-webkit-overflow-scrolling': 'touch',
+    '&::-webkit-scrollbar-track': {
+      backgroundColor: theme.primaryColor,
+    },
+    '&::-webkit-scrollbar': {
+      width: '.5em',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: theme.textColor,
+    },
   },
   overlay: {
     display: 'none',
@@ -47,7 +67,7 @@ const styles = {
       display: 'block',
     },
   },
-};
+});
 
 const Home = Loadable({
   loader: () => import('../Home'),

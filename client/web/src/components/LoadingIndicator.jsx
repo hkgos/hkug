@@ -7,12 +7,15 @@ import {
 } from 'recompose';
 import injectSheet from 'react-jss';
 
-const styles = {
+const styles = theme => ({
   loadingIndicator: {
     textAlign: 'center',
     padding: 16,
+    '& i': {
+      color: theme.textColor,
+    },
   },
-};
+});
 
 const LoadingIndicator = ({ classes, className, ...rest }) => (
   <div className={`${classes.loadingIndicator} ${className}`} {...rest}>

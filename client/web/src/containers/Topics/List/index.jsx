@@ -19,10 +19,19 @@ import { matchShape } from '../../../utils/propTypes';
 const { fetchTopics } = modules.topic;
 
 const styles = theme => ({
-  container: {
-    margin: `0 ${theme.margin}px 0`,
-  },
+  container: {},
   listItem: {
+    padding: theme.padding,
+    borderBottom: `.2rem solid ${theme.primaryColor} !important`,
+    '& a': {
+      color: `${theme.textColor} !important`,
+      '&:hover': {
+        color: `${theme.hoverColor} !important`,
+      },
+    },
+    '& span': {
+      color: `${theme.secondaryTextColor}`,
+    },
     '& li': {
       '@media only screen and (max-width: 768px)': {
         width: '33% !important',
@@ -42,10 +51,10 @@ const styles = theme => ({
     padding: theme.padding,
   },
   male: {
-    color: theme.maleColor,
+    color: `${theme.maleColor} !important`,
   },
   female: {
-    color: theme.femaleColor,
+    color: `${theme.femaleColor} !important`,
   },
 });
 
