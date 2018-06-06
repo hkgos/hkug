@@ -14,8 +14,8 @@ function constructBlockquote(q) {
   if (!q) {
     return '';
   }
-  if (!q.quote) {
-    return `<blockquote>${q.msg}</blockquote>`;
+  if (!q.quote && q.quote_post_id && q.quote_post_id !== '') {
+    return `<blockquote><blockquote><button data-quote-post-id="${q.quote_post_id}" /></blockquote>${q.msg}</blockquote>`;
   }
   return `<blockquote>${constructBlockquote(q.quote)}${q.msg}</blockquote>`;
 }
@@ -264,4 +264,11 @@ export async function fetchReplies({ thread, page = 1, forum } = {}) {
       throw new Error('Unknown Forum');
     }
   }
+}
+
+export async function fetchQuote({ thread, quote } = {}) {
+  const url = new URI(`thread/${thread}/${quote}`, LIHKG_API_ENDPOINT);
+  const res = await httpClient.get(url.href());
+  const data = `${constructBlockquote(res.response.post.quote)}${res.response.post.msg}`;
+  return data;
 }
