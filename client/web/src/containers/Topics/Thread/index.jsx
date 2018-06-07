@@ -30,11 +30,12 @@ const styles = theme => ({
     fontSize: 'medium',
     marginTop: '1em',
     marginBottom: '1em',
+    overflow: 'auto',
     '& blockquote': {
       paddingLeft: '.8rem',
       marginBottom: '.8rem',
       marginLeft: '.8rem',
-      borderLeft: `.2rem solid ${theme.textColor}`,
+      borderLeft: `.1rem solid ${theme.textColor}`,
     },
     '& img': {
       maxWidth: '30vw',
