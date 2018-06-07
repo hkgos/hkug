@@ -1,6 +1,6 @@
 import React from 'react';
 import URI from 'urijs';
-import HtmlDomParser from 'html-dom-parser';
+import parse5 from 'parse5';
 import { HKG_HOST, LIHKG_HOST, HKG_MEMBER_ICONS_BASE } from '../constants';
 
 function toCamelCase(string) {
@@ -8,22 +8,25 @@ function toCamelCase(string) {
 }
 
 function createReactElements(nodes, forum, opts) {
-  if (nodes.length === 0) {
+  if (!nodes || nodes.length === 0) {
     return [];
   }
   const result = [];
   let index = 0;
   while (nodes.length > index) {
     const n = nodes[index];
-    if (n.type === 'tag') {
-      const props = { ...n.attribs };
+    if (n.tagName) {
+      const props = {};
+      n.attrs.forEach((a) => {
+        props[a.name] = a.value;
+      });
       if (forum === 'HKG') {
-        if (props.src && props.src.startsWith('/faces/') && n.name === 'img') {
+        if (props.src && props.src.startsWith('/faces/') && n.tagName === 'img') {
           const url = new URI(props.src, HKG_HOST);
           props.src = url.href();
         }
       } else if (forum === 'LIHKG') {
-        if (n.name === 'img' && props.class === 'hkgmoji') {
+        if (n.tagName === 'img' && props.class === 'hkgmoji') {
           const url = new URI(props.src, LIHKG_HOST);
           props.src = url.href();
         }
@@ -41,24 +44,27 @@ function createReactElements(nodes, forum, opts) {
       if (Object.keys(style).length > 0) {
         props.style = style;
       }
-      if (n.name === 'button' && props['data-quote-post-id']) {
+      if (forum === 'HKG' && n.tagName === 'div') {
+        delete props.style.color;
+      }
+      if (n.tagName === 'button' && props['data-quote-post-id']) {
         result.push(React.createElement(
           opts.render,
           {
             onClick: () => { opts.handler(props['data-quote-post-id']); },
             loading: opts.fetchingIds.indexOf(props['data-quote-post-id']) !== -1,
           },
-          ...createReactElements(n.children, forum, opts),
+          ...createReactElements(n.childNodes, forum, opts),
         ));
       } else {
         result.push(React.createElement(
-          n.name,
+          n.tagName,
           props,
-          ...createReactElements(n.children, forum, opts),
+          ...createReactElements(n.childNodes, forum, opts),
         ));
       }
-    } else if (n.type === 'text') {
-      result.push(n.data);
+    } else if (n.nodeName === '#text') {
+      result.push(n.value);
     }
     index += 1;
   }
@@ -106,8 +112,8 @@ export default class Reply {
   }
 
   contentReactElement(options) {
-    const nodes = HtmlDomParser(this.content);
-    const childrens = createReactElements(nodes, this.forum, options);
+    const documentFragment = parse5.parseFragment(this.content);
+    const childrens = createReactElements(documentFragment.childNodes, this.forum, options);
     return React.createElement(
       'div',
       { className: options.className },
