@@ -26,6 +26,7 @@ const NotFound = ({ classes, history }) => (
     <div>
       <Button
         className={classes.button}
+        type="primary"
         size="large"
         shape="circle"
         icon="arrow-left"
@@ -33,6 +34,7 @@ const NotFound = ({ classes, history }) => (
       />
       <Button
         className={classes.button}
+        type="primary"
         size="large"
         shape="circle"
         icon="home"
