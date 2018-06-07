@@ -8,12 +8,14 @@ import { historyShape } from '../../utils/propTypes';
 
 const styles = theme => ({
   container: {
-    marginTop: 'calc(100vh / 4)',
-    textAlign: 'center',
+    height: 'calc(100vh - 64px - 69px)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   text: {
-    marginBottom: 10,
-    fontSize: 'xx-large',
+    margin: `0 ${theme.marginSmall}px 0px ${theme.marginSmall}px`,
+    fontSize: 'x-large',
   },
   button: {
     margin: `0 ${theme.marginSmall}px 0px ${theme.marginSmall}px`,
