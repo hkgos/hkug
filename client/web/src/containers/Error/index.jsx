@@ -21,7 +21,7 @@ const ErrorPage = ({ classes, retry }) => (
     <div className={classes.text}>發生錯誤</div>
     <div>
       <Button
-        type="ghost"
+        type="primary"
         size="large"
         shape="circle"
         icon="reload"
