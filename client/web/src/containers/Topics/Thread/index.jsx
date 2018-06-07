@@ -113,11 +113,11 @@ const Thread = ({
   fetchQuoteAction,
   fetchingQuoteId,
   handlePageChange,
-  handleGoBack,
+  handleBackToList,
 }) => (
   <div className={classes.container}>
     <div className={classes.titleContainer}>
-      <Icon type="arrow-left" onClick={handleGoBack} />
+      <Icon type="arrow-left" onClick={handleBackToList} />
       <h1 className={classes.title}>{title}</h1>
     </div>
     <List
@@ -179,7 +179,7 @@ Thread.propTypes = {
   totalPage: PropTypes.number.isRequired,
   pageOptions: PropTypes.arrayOf(PropTypes.node).isRequired,
   handlePageChange: PropTypes.func.isRequired,
-  handleGoBack: PropTypes.func.isRequired,
+  handleBackToList: PropTypes.func.isRequired,
   fetchQuoteAction: PropTypes.func.isRequired,
   fetchingQuoteId: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
@@ -245,8 +245,8 @@ const enhance = compose(
       <Loading error={isError} retry={initPage} pastDelay={pastDelay} />),
   ),
   withHandlers({
-    handleGoBack: ({ history }) => () => {
-      history.goBack();
+    handleBackToList: ({ history, match }) => () => {
+      history.push(`/topics/${match.params.category}`);
     },
     handlePageChange: ({ history, location }) => (page) => {
       history.push({
