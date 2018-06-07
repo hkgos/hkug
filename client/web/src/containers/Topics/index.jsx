@@ -12,12 +12,12 @@ const allCategories = utils.categories.default;
 const List = Loadable({
   loader: () => import('./List'),
   loading: Loading,
-  delay: 300,
+  delay: 500,
 });
 const Thread = Loadable({
   loader: () => import('./Thread'),
   loading: Loading,
-  delay: 300,
+  delay: 500,
 });
 
 const Topics = () => (
