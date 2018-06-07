@@ -64,6 +64,14 @@ const styles = theme => ({
     padding: theme.padding,
     height: theme.headerHeight,
     lineHeight: `${theme.headerHeight - (theme.padding * 2)}px`,
+    '& i': {
+      fontSize: 'x-large',
+      lineHeight: `${theme.headerHeight - (theme.padding * 2)}px`,
+      color: theme.textColor,
+      float: 'left',
+      marginRight: theme.margin,
+      cursor: 'pointer',
+    },
   },
   title: {
     color: theme.textColor,
@@ -105,9 +113,11 @@ const Thread = ({
   fetchQuoteAction,
   fetchingQuoteId,
   handlePageChange,
+  handleGoBack,
 }) => (
   <div className={classes.container}>
     <div className={classes.titleContainer}>
+      <Icon type="arrow-left" onClick={handleGoBack} />
       <h1 className={classes.title}>{title}</h1>
     </div>
     <List
@@ -169,6 +179,7 @@ Thread.propTypes = {
   totalPage: PropTypes.number.isRequired,
   pageOptions: PropTypes.arrayOf(PropTypes.node).isRequired,
   handlePageChange: PropTypes.func.isRequired,
+  handleGoBack: PropTypes.func.isRequired,
   fetchQuoteAction: PropTypes.func.isRequired,
   fetchingQuoteId: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
@@ -234,6 +245,9 @@ const enhance = compose(
       <Loading error={isError} retry={initPage} pastDelay={pastDelay} />),
   ),
   withHandlers({
+    handleGoBack: ({ history }) => () => {
+      history.goBack();
+    },
     handlePageChange: ({ history, location }) => (page) => {
       history.push({
         pathname: location.pathname,
