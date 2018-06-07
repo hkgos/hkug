@@ -30,7 +30,7 @@ const styles = theme => ({
     fontSize: 'medium',
     marginTop: '1em',
     marginBottom: '1em',
-    overflow: 'auto',
+    wordWrap: 'break-word',
     '& blockquote': {
       paddingLeft: '.8rem',
       marginBottom: '.8rem',
