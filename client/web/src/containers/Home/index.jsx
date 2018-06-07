@@ -1,48 +1,83 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { compose, pure } from 'recompose';
+import { compose, pure, lifecycle, withStateHandlers, withHandlers, branch, renderComponent } from 'recompose';
 import injectSheet from 'react-jss';
+import showdown from 'showdown';
+
+import Loading from '../../containers/Loading';
+
 
 const styles = theme => ({
   container: {
     margin: `${theme.margin}px ${theme.margin}px 0`,
+    '& img': {
+      maxWidth: '100%',
+    },
   },
 });
 
-const GitHubLink = () => (
-  <a
-    target="_blank"
-    rel="noopener noreferrer"
-    href="https://github.com/hkgos/hkug"
-  >
-    GitHub
-  </a>
-);
-
-const Home = ({ classes }) => (
-  <div className={classes.container}>
-    <section>
-      <h1>HKUG 香港聯登</h1>
-      <p>高登 ＋ 連登 ＝ 聯登</p>
-    </section>
-    <section>
-      <h1>目標</h1>
-      <p>建立一個可以同時觀看高登及連登的討論區，方便兩登都想留意的用家。</p>
-    </section>
-    <section>
-      <h1>問題回報</h1>
-      <p>這是一個開源項目，有問題請到 <GitHubLink /> 回報。
-      </p>
-    </section>
-  </div>
+const Home = ({ classes, createMarkup }) => (
+  <div
+    className={classes.container}
+    dangerouslySetInnerHTML={createMarkup()} // eslint-disable-line react/no-danger
+  />
 );
 
 Home.propTypes = {
   classes: PropTypes.shape({}).isRequired,
+  createMarkup: PropTypes.func.isRequired,
 };
 
 const enhance = compose(
   injectSheet(styles),
+  withStateHandlers(
+    () => ({
+      text: '',
+      pastDelay: false,
+      isLoading: false,
+      isError: false,
+    }),
+    {
+      setText: () => value => ({ text: value }),
+      setPastDelay: () => value => ({ pastDelay: value }),
+      setLoading: () => value => ({ isLoading: value }),
+      setError: () => value => ({ isError: value }),
+    },
+  ),
+  withHandlers({
+    fetchReadme: ({
+      setText,
+      setPastDelay,
+      setLoading,
+      setError,
+    }) => () => {
+      setPastDelay(false);
+      setLoading(true);
+      setTimeout(() => { setPastDelay(true); }, 500);
+      fetch('https://raw.githubusercontent.com/hkgos/hkug/master/README.md')
+        .then(res => res.text())
+        .then((text) => { setText(text); setLoading(false); })
+        .catch(() => { setError(true); });
+    },
+    createMarkup: ({ text }) => () => {
+      const converter = new showdown.Converter();
+      converter.setFlavor('github');
+      const html = converter.makeHtml(text);
+      return {
+        __html: html,
+      };
+    },
+  }),
+  lifecycle({
+    componentWillMount() {
+      this.props.fetchReadme();
+    },
+  }),
+  branch(
+    ({ isLoading, isError }) => isLoading || isError,
+    renderComponent(({ fetchReadme, isError, pastDelay }) =>
+      <Loading error={isError} retry={fetchReadme} pastDelay={pastDelay} />),
+  ),
   pure,
 );
 
