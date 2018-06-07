@@ -200,7 +200,7 @@ const enhance = compose(
     componentDidUpdate(prevProps) {
       if (this.props.isLoading && !prevProps.isLoading) {
         this.props.setPastDelay(false);
-        setTimeout(() => { this.props.setPastDelay(true); }, 1000);
+        setTimeout(() => { this.props.setPastDelay(true); }, 500);
       }
       if (this.props.page !== prevProps.page) {
         this.props.fetchReplies({
