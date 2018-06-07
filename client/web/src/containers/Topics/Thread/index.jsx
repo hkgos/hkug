@@ -41,6 +41,23 @@ const styles = theme => ({
       maxWidth: '30vw',
       verticalAlign: 'unset',
     },
+    '& pre': {
+      background: '#222',
+      padding: theme.padding,
+      '&::-webkit-scrollbar-track': {
+        backgroundColor: theme.primaryColor,
+      },
+      '&::-webkit-scrollbar': {
+        width: '.5em',
+        height: '.5em',
+      },
+      '&::-webkit-scrollbar-thumb': {
+        backgroundColor: theme.textColor,
+      },
+    },
+    '& code': {
+      color: theme.secondaryTextColor,
+    },
   },
   titleContainer: {
     background: '#222',
