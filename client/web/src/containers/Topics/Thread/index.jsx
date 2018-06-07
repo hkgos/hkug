@@ -32,10 +32,10 @@ const styles = theme => ({
     marginBottom: '1em',
     wordWrap: 'break-word',
     '& blockquote': {
-      paddingLeft: '.8rem',
-      marginBottom: '.8rem',
-      marginLeft: '.8rem',
-      borderLeft: `.1rem solid ${theme.textColor}`,
+      margin: '0 0 1rem',
+      paddingBottom: '.3rem',
+      paddingLeft: '1rem',
+      borderLeft: `.1rem solid ${theme.secondaryTextColor}`,
     },
     '& img': {
       maxWidth: '30vw',
