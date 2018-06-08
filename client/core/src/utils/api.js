@@ -121,7 +121,7 @@ export async function fetchLihkgTopics({ category, page } = {}) {
       totalReplies: t.no_of_reply,
       like: t.reply_like_count,
       dislike: t.reply_dislike_count,
-      totalPage: t.total_page,
+      totalPage: t.total_page === 0 ? 1 : t.total_page,
     })).sort(sortTopicsByLastReplyDate).reverse();
   }
   return lihkgTopics;
@@ -203,7 +203,7 @@ export async function fetchHkgReplies({ thread, page = 1 } = {}) {
     }));
     return {
       title: res.Message_Title,
-      totalPage: res.Total_Pages,
+      totalPage: res.Total_Pages === 0 ? 1 : res.Total_Pages,
       replies,
     };
   } catch (e) {
@@ -230,7 +230,7 @@ export async function fetchHkgReplies({ thread, page = 1 } = {}) {
     })));
     return {
       title: res.data.title,
-      totalPage: res.data.totalPage,
+      totalPage: res.data.totalPage === 0 ? 1 : res.data.totalPage,
       replies,
     };
   }
@@ -256,7 +256,7 @@ export async function fetchReplies({ thread, page = 1, forum } = {}) {
       }));
       return {
         title: res.response.title,
-        totalPage: res.response.total_page,
+        totalPage: res.response.total_page === 0 ? 1 : res.response.total_page,
         replies,
       };
     }

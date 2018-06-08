@@ -14,7 +14,7 @@ export const defaultState = () => ({
   isFetchingReplies: false,
   isFetchRepliesError: false,
   fetchRepliesError: null,
-  totalPage: 0,
+  totalPage: 1,
   title: '',
   replies: [],
   fetchingQuoteId: [],
