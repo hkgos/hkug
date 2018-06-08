@@ -72,12 +72,12 @@ const styles = theme => ({
 const Home = Loadable({
   loader: () => import('../Home'),
   loading: Loading,
-  delay: 300,
+  delay: 500,
 });
 const Topics = Loadable({
   loader: () => import('../Topics'),
   loading: Loading,
-  delay: 300,
+  delay: 500,
 });
 
 const App = ({ classes, menuCollapsed, setMenuCollapsed }) => (
