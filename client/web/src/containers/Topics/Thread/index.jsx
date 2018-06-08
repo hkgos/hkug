@@ -96,7 +96,7 @@ const styles = theme => ({
     textAlign: 'center',
   },
   select: {
-    width: 96,
+    width: 104,
     marginLeft: `${theme.margin}px !important`,
     marginRight: `${theme.margin}px !important`,
   },

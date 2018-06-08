@@ -19,7 +19,11 @@ import { matchShape } from '../../../utils/propTypes';
 const { fetchTopics } = modules.topic;
 
 const styles = theme => ({
-  container: {},
+  container: {
+    '& .ant-list-empty-text': {
+      color: `${theme.textColor} !important`,
+    },
+  },
   listItem: {
     padding: theme.padding,
     borderBottom: `.2rem solid ${theme.primaryColor} !important`,
