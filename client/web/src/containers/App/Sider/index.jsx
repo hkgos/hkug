@@ -51,6 +51,7 @@ const AppSider = ({
   classes,
   categories,
   handleMenuItemClick,
+  handleHomeIconClick,
   selectedKeys,
   menuCollapsed,
   setMenuCollapse,
@@ -64,7 +65,7 @@ const AppSider = ({
     onCollapse={(collapsed) => { setMenuCollapse(collapsed); }}
   >
     <div className={classes.logo}>
-      <Link to="/" href="/"><img src={logo} alt="Application logo" /></Link>
+      <Link to="/" href="/" onClick={handleHomeIconClick}><img src={logo} alt="Application logo" /></Link>
     </div>
     <Menu
       mode="inline"
@@ -93,6 +94,7 @@ AppSider.propTypes = {
   })).isRequired,
   selectedKeys: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleMenuItemClick: PropTypes.func.isRequired,
+  handleHomeIconClick: PropTypes.func.isRequired,
   menuCollapsed: PropTypes.bool.isRequired,
   setMenuCollapse: PropTypes.func.isRequired,
 };
@@ -110,6 +112,11 @@ const enhance = compose(
     return ({ selectedKeys, categories: allCategories });
   }),
   withHandlers({
+    handleHomeIconClick: props => () => {
+      if (window.innerWidth <= SIDE_MENU_BREAK_POINT) {
+        props.setMenuCollapse(true);
+      }
+    },
     handleMenuItemClick: props => ({ key }) => {
       if (window.innerWidth <= SIDE_MENU_BREAK_POINT) {
         props.setMenuCollapse(true);
