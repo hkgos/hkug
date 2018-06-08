@@ -34,7 +34,7 @@ const styles = theme => ({
     '& blockquote': {
       margin: '0 0 1rem',
       paddingBottom: '.3rem',
-      paddingLeft: '1rem',
+      paddingLeft: '.7rem',
       borderLeft: `.1rem solid ${theme.secondaryTextColor}`,
     },
     '& img': {
@@ -138,12 +138,11 @@ const Thread = ({
             className: classes.content,
             render: props => (
               <Button
+                shape="circle"
                 icon="ellipsis"
                 type="primary"
                 {...props}
-              >
-                顯示更多
-              </Button>
+              />
             ),
             handler: (quote) => {
               fetchQuoteAction({ quote, thread }, { replyId: item.replyId, quote });
