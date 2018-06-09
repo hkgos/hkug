@@ -14,10 +14,8 @@
   Nodejs 8 (Nodejs 6.x 可能有問題) or Docker (Web client only)
 
   不使用Docker的話強烈建議使用yarn進行install
-
-  特別是run mobile app, 用npm install 會有build不到的問題
-
-  #### 再強調一次：不要使用npm，可能會build不到mobile client
+  
+  React Native bundler not follow symlinks created by npm [#1](https://github.com/facebook/metro/issues/1)
 
 ## Build & Run
 
