@@ -25,6 +25,20 @@ const devServer = devMode ? {
   hotOnly: true,
   // static content base path
   contentBase: path.resolve(__dirname, contentBase),
+  proxy: {
+    '/hkg-api-web': {
+      target: 'https://web.hkgolden.com/api/',
+      changeOrigin: true,
+      pathRewrite: { '^/hkg-api-web': '' },
+      followRedirects: true,
+    },
+    '/hkg-api-android': {
+      changeOrigin: true,
+      pathRewrite: { '^/hkg-api-android': '' },
+      followRedirects: true,
+      target: 'https://api-1.hkgolden.com/',
+    },
+  },
 } : undefined;
 const optimization = {
   splitChunks: {
@@ -65,7 +79,14 @@ const plugins = [
   new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /zh-tw/),
 ];
 if (devMode) {
-  plugins.push(new webpack.HotModuleReplacementPlugin());
+  plugins.push(
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        PROXY: JSON.stringify(true),
+      },
+    }),
+  );
 } else {
   plugins.push(
     new webpack.DefinePlugin({
@@ -102,58 +123,57 @@ module.exports = {
     symlinks: false,
   },
   module: {
-    rules: [
-      {
-        test: /\.jsx?$/,
-        use: ['babel-loader'],
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.css$/,
-        use: [devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              minimize: !devMode,
-            },
+    rules: [{
+      test: /\.jsx?$/,
+      use: ['babel-loader'],
+      exclude: /node_modules/,
+    },
+    {
+      test: /\.css$/,
+      use: [devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+        {
+          loader: 'css-loader',
+          options: {
+            minimize: !devMode,
           },
-        ],
-      },
-      {
-        test: /\.less$/,
-        use: [devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              minimize: !devMode,
-            },
-          },
-          {
-            loader: 'less-loader',
-            options: {
-              javascriptEnabled: true,
-              modifyVars: {
-                'primary-color': '#111',
-              },
-            },
-          },
-        ],
-      },
-      {
-        test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
-        loader: 'url-loader',
-        options: {
-          limit: 8192,
-          name: path.join(assetsPrefix, 'media', devMode ? '[name].[ext]' : '[name].[hash].[ext]'),
         },
-      },
-      {
-        test: [/\.eot$/, /\.ttf$/, /\.svg$/, /\.woff$/, /\.woff2$/],
-        loader: 'file-loader',
-        options: {
-          name: path.join(assetsPrefix, 'media', devMode ? '[name].[ext]' : '[name].[hash].[ext]'),
+      ],
+    },
+    {
+      test: /\.less$/,
+      use: [devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+        {
+          loader: 'css-loader',
+          options: {
+            minimize: !devMode,
+          },
         },
+        {
+          loader: 'less-loader',
+          options: {
+            javascriptEnabled: true,
+            modifyVars: {
+              'primary-color': '#111',
+            },
+          },
+        },
+      ],
+    },
+    {
+      test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+      loader: 'url-loader',
+      options: {
+        limit: 8192,
+        name: path.join(assetsPrefix, 'media', devMode ? '[name].[ext]' : '[name].[hash].[ext]'),
       },
+    },
+    {
+      test: [/\.eot$/, /\.ttf$/, /\.svg$/, /\.woff$/, /\.woff2$/],
+      loader: 'file-loader',
+      options: {
+        name: path.join(assetsPrefix, 'media', devMode ? '[name].[ext]' : '[name].[hash].[ext]'),
+      },
+    },
     ],
   },
   output: {
