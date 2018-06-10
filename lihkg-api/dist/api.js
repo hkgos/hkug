@@ -29,7 +29,8 @@ function getEmoji() {
 }
 exports.getEmoji = getEmoji;
 ;
-function create() {
+function create(config) {
+    const configWithDefault = Object.assign({ baseURL: defaultBaseURL }, config);
     let device = crypto_js_1.enc.Hex.stringify(crypto_js_1.SHA1(uuid_1.v4()));
     let instance = axios_1.default.create({
         headers: {
@@ -39,18 +40,30 @@ function create() {
             'orginal': 'https://lihkg.com',
             'referer': 'https://lihkg.com/category/1',
         },
-        baseURL: 'https://lihkg.com/api_v2/',
+        baseURL: configWithDefault.baseURL,
         transformResponse: req => req
     });
     let token = '';
     let login = false;
     let initProperty = false;
     let property;
+    if (config.user_id !== undefined && config.token !== undefined) {
+        token = config.token;
+        login = true;
+        instance.defaults.headers.common['X-LI-USER'] = config.user_id;
+    }
     const apiEndPoint = {
         getProperty: () => instance
             .get('system/property')
             .then(response => {
             const propertyJson = model_1.Convert.toPropertyJSON(response.data);
+            // validate the login user
+            if (login && (propertyJson.success == 0 || propertyJson.response.me === undefined)) {
+                login = false;
+                token = '';
+                delete instance.defaults.headers.common['X-LI-USER'];
+                return apiEndPoint.getProperty();
+            }
             property = propertyJson.response.category_list;
             return propertyJson;
         }),
@@ -120,11 +133,9 @@ function create() {
                 ? crypto_js_1.enc.Hex.stringify(crypto_js_1.SHA1(['jeams', config.method, config.baseURL + config.url.replace('[', '%5b').replace(']', '%5d').replace(',', '%2c'), config.data, token, timeStamp].join('$')))
                 : crypto_js_1.enc.Hex.stringify(crypto_js_1.SHA1(['jeams', config.method, config.baseURL + config.url, config.data, token, timeStamp].join('$')));
             const newConfig = Object.assign({}, config, { headers: Object.assign({}, config.headers, { 'X-LI-REQUEST-TIME': timeStamp, 'X-LI-DIGEST': digest }) });
-            console.log(newConfig);
             return newConfig;
         }
         else {
-            console.log(config);
             return config;
         }
     };
@@ -140,7 +151,6 @@ function create() {
         }
     });
     instance.interceptors.response.use(response => {
-        console.log(JSON.parse(response.data));
         return response;
     });
     return apiEndPoint.getProperty().then(() => apiEndPoint);

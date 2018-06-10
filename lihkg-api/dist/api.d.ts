@@ -1,19 +1,19 @@
 import { PropertyJSON, Emoji, LoginJSON, TopicListJSON, ContentJSON, ImagesListJSON, LikeJSON, ProfileJSON, BlockedUserJSON, FollowingUserJSON } from './model';
 export interface LIHKG {
-    getProperty(): Promise<PropertyJSON>;
-    login(request: LoginRequest): Promise<LoginJSON>;
     getTopicList(request: TopicListRequest): Promise<TopicListJSON>;
     getTopicListByThreadId(threadIds: String[]): any;
     getThreadContent(request: ThreadContentRequest): Promise<ContentJSON>;
-    reply(request: ReplyRequest): Promise<any>;
     getThreadMedia(request: ThreadMediaRequest): Promise<ImagesListJSON>;
-    likeThread(request: LikeThreadRequest): Promise<LikeJSON>;
-    likePost(request: LikePostRequest): Promise<any>;
     getBookmark(request: BookmarkRequest): Promise<TopicListJSON>;
+    getProperty(): Promise<PropertyJSON>;
     getProfile(request: ProfileRequest): Promise<ProfileJSON>;
     getBlockedUser(): Promise<BlockedUserJSON>;
     getFollowingUser(): Promise<FollowingUserJSON>;
     search(request: SearchRequest): Promise<TopicListJSON>;
+    login(request: LoginRequest): Promise<LoginJSON>;
+    reply(request: ReplyRequest): Promise<any>;
+    likeThread(request: LikeThreadRequest): Promise<LikeJSON>;
+    likePost(request: LikePostRequest): Promise<any>;
 }
 export declare enum PostOrder {
     replyTime = "reply_time",
@@ -75,4 +75,9 @@ export interface SearchRequest {
     sub_cat_id?: number;
 }
 export declare function getEmoji(): Promise<Emoji[]>;
-export declare function create(): Promise<LIHKG>;
+export interface LIHKGConfig {
+    baseURL?: string;
+    user_id?: string;
+    token?: string;
+}
+export declare function create(config?: LIHKGConfig): Promise<LIHKG>;
