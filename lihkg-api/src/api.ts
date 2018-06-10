@@ -6,20 +6,20 @@ import { URLSearchParams } from 'url';
 
 const defaultBaseURL = 'https://lihkg.com/api_v2/';
 export interface LIHKG {
-    getProperty(): Promise<PropertyJSON>;
-    login(request: LoginRequest): Promise<LoginJSON>;
     getTopicList(request: TopicListRequest): Promise<TopicListJSON>;
     getTopicListByThreadId(threadIds: String[]);
     getThreadContent(request: ThreadContentRequest): Promise<ContentJSON>;
-    reply(request: ReplyRequest): Promise<any>;
     getThreadMedia(request: ThreadMediaRequest): Promise<ImagesListJSON>;
-    likeThread(request: LikeThreadRequest): Promise<LikeJSON>;
-    likePost(request: LikePostRequest): Promise<any>;
     getBookmark(request: BookmarkRequest): Promise<TopicListJSON>;
+    getProperty(): Promise<PropertyJSON>;
     getProfile(request: ProfileRequest): Promise<ProfileJSON>;
     getBlockedUser(): Promise<BlockedUserJSON>;
     getFollowingUser(): Promise<FollowingUserJSON>;
     search(request: SearchRequest): Promise<TopicListJSON>;
+    login(request: LoginRequest): Promise<LoginJSON>;
+    reply(request: ReplyRequest): Promise<any>;
+    likeThread(request: LikeThreadRequest): Promise<LikeJSON>;
+    likePost(request: LikePostRequest): Promise<any>;
 }
 
 export enum PostOrder {
@@ -54,8 +54,6 @@ export interface ThreadMediaRequest {
     thread_id: number,
     include_link: ThreadMediaIncludeLink
 }
-
-
 
 export interface TopicListRequest {
     cat_id: string,
@@ -101,7 +99,16 @@ export function getEmoji() {
         .then(response => Convert.toEmojis(response.data));
 };
 
-export function create(baseURL = 'defaultBaseURL'): Promise<LIHKG> {
+export interface LIHKGConfig {
+    baseURL? : string,
+    user_id?: string,
+    token?: string,
+}
+export function create(config?: LIHKGConfig): Promise<LIHKG> {
+    const configWithDefault: LIHKGConfig = {
+        baseURL: defaultBaseURL,
+        ...config
+    };    
     let device = enc.Hex.stringify(SHA1(uuidv4()));
     let instance = axios.create({
         headers: {
@@ -111,19 +118,31 @@ export function create(baseURL = 'defaultBaseURL'): Promise<LIHKG> {
             'orginal': 'https://lihkg.com',
             'referer': 'https://lihkg.com/category/1',
         },
-        baseURL: baseURL,
+        baseURL: configWithDefault.baseURL,
         transformResponse: req => req
     });
     let token = '';
     let login = false;
     let initProperty = false;
     let property: Category[];
+    if(config.user_id !== undefined && config.token !== undefined) {
+        token = config.token;
+        login = true;
+        instance.defaults.headers.common['X-LI-USER'] = config.user_id;
+    }
     const apiEndPoint: LIHKG = {
         getProperty: () =>
             instance
                 .get('system/property')
                 .then(response => {
                     const propertyJson = Convert.toPropertyJSON(response.data);
+                    // validate the login user
+                    if (login && (propertyJson.success == 0 || propertyJson.response.me === undefined)) {
+                        login = false;
+                        token = '';
+                        delete instance.defaults.headers.common['X-LI-USER'];
+                        return apiEndPoint.getProperty();
+                    }
                     property = propertyJson.response.category_list;
                     return propertyJson;
                 }),
@@ -218,10 +237,8 @@ export function create(baseURL = 'defaultBaseURL'): Promise<LIHKG> {
                     'X-LI-DIGEST': digest
                 }
             };
-            console.log(newConfig);
             return newConfig;
         } else {
-            console.log(config);
             return config;
         }
     };
@@ -236,7 +253,6 @@ export function create(baseURL = 'defaultBaseURL'): Promise<LIHKG> {
         }
     });
     instance.interceptors.response.use(response => {
-        console.log(JSON.parse(response.data));
         return response;
     });
     return apiEndPoint.getProperty().then(()=> apiEndPoint);
