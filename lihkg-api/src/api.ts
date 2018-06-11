@@ -71,6 +71,7 @@ export interface ThreadContentRequest {
 export interface ReplyRequest {
     thread_id: number,
     content: string,
+    quote_post_id?: string,
 }
 
 export interface LikeThreadRequest {
