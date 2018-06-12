@@ -14,7 +14,7 @@
   Nodejs 8 (Nodejs 6.x 可能有問題) or Docker (Web client only)
 
   不使用Docker的話強烈建議使用yarn進行install
-  
+
   React Native bundler not follow symlinks created by npm [#1](https://github.com/facebook/metro/issues/1)
 
 ## Build & Run
@@ -27,11 +27,18 @@ $ git clone https://github.com/hkgos/hkug.git
 
 #### 用Docker直接 run web client: go to client folder and do the following:
 
-```bash
-$ docker build -t hkug .
-$ docker run -p 8080:8080 hkug
-```
-open your browser and go to http://localhost:8080
+  * Build the image:
+
+  ```bash
+  $ docker build -t hkug .
+  ```
+
+  * Run the image:
+
+  ```bash
+  $ docker run -p 8080:8080 hkug
+  ```
+  open your browser and go to http://localhost:8080
 
 #### 不使用docker, 首先build core
 
@@ -50,15 +57,15 @@ open your browser and go to http://localhost:8080
   $ yarn install
   ```
 
-  * Run dev sever:
+  * Run dev server:
 
     ```bash
     $ yarn run dev
     ```
-    
+
     open your browser and go to http://localhost:8080
 
-  * Run production sever:
+  * Run production server:
 
     ```bash
     $ yarn run build:prod
