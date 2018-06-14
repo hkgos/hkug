@@ -101,12 +101,12 @@ const styles = theme => ({
     marginRight: `${theme.margin}px !important`,
   },
   floatButton: {
-  	background: theme.primaryColor,
-  	padding: '1px',
-  	borderRadius: '12px',
-  	position: 'fixed',
-  	bottom: '210px',
-  	right: '4%',
+    background: theme.primaryColor,
+    padding: '1px',
+    borderRadius: '12px',
+    position: 'fixed',
+    bottom: '210px',
+    right: '4%',
   }
 });
 
@@ -179,7 +179,8 @@ const Thread = ({
       <Button disabled={page === 1} type="primary" onClick={() => { handlePageChange(page - 1); }}>
         <Icon type="left" />
       </Button>
-      <Select value={page} className={classes.floatSelect} showArrow={false} onChange={handlePageChange} dropdownMatchSelectWidth={false} style={{ width: 80 }}>
+      <Select value={page} className={classes.floatSelect} showArrow={false} 
+      onChange={handlePageChange} dropdownMatchSelectWidth={false} style={{ width: 80 }}>
         {pageOptions}
       </Select>
       <Button disabled={page === totalPage} type="primary" onClick={() => { handlePageChange(page + 1); }}>
