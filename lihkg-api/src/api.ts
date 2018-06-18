@@ -105,6 +105,11 @@ export interface LIHKGConfig {
     user_id?: string,
     token?: string,
 }
+
+const getFormData = function(request) {
+    return new URLSearchParams(Object.entries(request)).toString().replace('+', '%20');
+};
+
 export function create(config?: LIHKGConfig): Promise<LIHKG> {
     const configWithDefault: LIHKGConfig = {
         baseURL: defaultBaseURL,
@@ -149,7 +154,7 @@ export function create(config?: LIHKGConfig): Promise<LIHKG> {
                 }),
         login: (request) =>
             instance
-                .post('auth/login', new URLSearchParams(Object.entries(request)).toString())
+                .post('auth/login', getFormData(request))
                 .then(function (response) {
                     let loginJson = Convert.toLoginJSON(response.data);
                     if (loginJson.success) {
@@ -189,7 +194,7 @@ export function create(config?: LIHKGConfig): Promise<LIHKG> {
                 .then(response => Convert.toContentJSON(response.data)),
         reply: request =>
             instance
-                .post('thread/reply', new URLSearchParams(Object.entries(request)).toString())
+                .post('thread/reply', getFormData(request))
                 .then(response => JSON.parse(response.data)),
         getThreadMedia: request =>
             instance
