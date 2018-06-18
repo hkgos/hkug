@@ -126,10 +126,10 @@ export function create(config?: LIHKGConfig): Promise<LIHKG> {
     let login = false;
     let initProperty = false;
     let property: Category[];
-    if(config.user_id !== undefined && config.token !== undefined) {
-        token = config.token;
+    if(configWithDefault.user_id !== undefined && configWithDefault.token !== undefined) {
+        token = configWithDefault.token;
         login = true;
-        instance.defaults.headers.common['X-LI-USER'] = config.user_id;
+        instance.defaults.headers.common['X-LI-USER'] = configWithDefault.user_id;
     }
     const apiEndPoint: LIHKG = {
         getProperty: () =>
