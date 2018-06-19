@@ -153,7 +153,14 @@ module.exports = {
           options: {
             javascriptEnabled: true,
             modifyVars: {
-              'primary-color': '#111',
+              'primary-color': '#424242',
+              'layout-header-background': '#212121',
+              'layout-body-background': '#e0e0e0',
+              'layout-footer-background': '#212121',
+              'border-color-split': 'rgba(0, 0, 0, 0.45)',
+              'back-top-color': '#fff',
+              'back-top-bg': '#424242',
+              'back-top-hover-bg': '#4f4a4a',
             },
           },
         },

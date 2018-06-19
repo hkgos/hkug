@@ -31,13 +31,12 @@ const styles = theme => ({
   },
   header: {
     zIndex: 100,
-    background: theme.primaryColor,
     padding: 0,
     textAlign: 'center',
-    color: theme.textColor,
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     textOverflow: 'clip',
+    color: 'rgba(255, 255, 255, 0.85)',
   },
   headerText: {
     fontSize: '1.5em',
@@ -125,6 +124,8 @@ const enhance = compose(
       const query = new URLSearchParams(location.search);
       threadPage = query.get('page') || 1;
     }
+    const queryParams = new URLSearchParams(location.search);
+    const type = queryParams.get('type');
     return ({
       header,
       categoryId,
@@ -134,6 +135,7 @@ const enhance = compose(
       showReloadButton,
       isTopics,
       isThread,
+      type,
     });
   }),
   withHandlers({
@@ -145,7 +147,7 @@ const enhance = compose(
           forum: props.threadForum,
         });
       } else if (props.isTopics) {
-        props.fetchTopics({ category: props.categoryId }, { reset: true });
+        props.fetchTopics({ category: props.categoryId, type: props.type }, { reset: true });
       }
     },
   }),

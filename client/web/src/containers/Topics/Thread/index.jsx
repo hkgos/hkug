@@ -35,46 +35,29 @@ const styles = theme => ({
       margin: '0 0 1rem',
       paddingBottom: '.3rem',
       paddingLeft: '.7rem',
-      borderLeft: `.1rem solid ${theme.secondaryTextColor}`,
+      borderLeft: `.1rem solid ${theme['border-color-split']}`,
     },
     '& img': {
       maxWidth: '30vw',
       verticalAlign: 'unset',
     },
     '& pre': {
-      background: '#222',
-      padding: theme.padding,
-      '&::-webkit-scrollbar-track': {
-        backgroundColor: theme.primaryColor,
-      },
-      '&::-webkit-scrollbar': {
-        width: '.5em',
-        height: '.5em',
-      },
-      '&::-webkit-scrollbar-thumb': {
-        backgroundColor: theme.textColor,
-      },
-    },
-    '& code': {
-      color: theme.secondaryTextColor,
     },
   },
   titleContainer: {
-    background: '#222',
     padding: theme.padding,
     height: theme.headerHeight,
+    borderBottom: `1px solid ${theme['border-color-split']}`,
     lineHeight: `${theme.headerHeight - (theme.padding * 2)}px`,
     '& i': {
       fontSize: 'x-large',
       lineHeight: `${theme.headerHeight - (theme.padding * 2)}px`,
-      color: theme.textColor,
       float: 'left',
       marginRight: theme.margin,
       cursor: 'pointer',
     },
   },
   title: {
-    color: theme.textColor,
     margin: 0,
     fontSize: 'large',
     textOverflow: 'ellipsis',
@@ -86,12 +69,10 @@ const styles = theme => ({
     padding: '0 !important',
   },
   item: {
-    borderBottom: `.2rem solid ${theme.primaryColor} !important`,
+    borderBottom: `1px solid ${theme['border-color-split']} !important`,
     padding: theme.padding,
-    color: theme.textColor,
   },
   pagination: {
-    background: '#222',
     padding: theme.padding,
     textAlign: 'center',
   },

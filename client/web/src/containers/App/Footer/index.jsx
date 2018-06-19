@@ -7,17 +7,16 @@ import { SIDE_MENU_BREAK_POINT } from '../../../constants';
 
 const { Footer } = Layout;
 
-const styles = theme => ({
+const styles = ({
   footer: {
     zIndex: 10,
     textAlign: 'center',
     overflow: 'hidden',
     textOverflow: 'clip',
     whiteSpace: 'nowrap',
-    color: theme.textColor,
-    background: theme.primaryColor,
+    color: 'rgba(255, 255, 255, 0.85)',
     '& i': {
-      color: theme.textColor,
+      color: 'rgba(255, 255, 255, 0.85)',
     },
   },
   [`@media only screen and (max-width: ${SIDE_MENU_BREAK_POINT}px)`]: {

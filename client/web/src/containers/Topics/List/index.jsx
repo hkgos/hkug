@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { List, Button, message } from 'antd';
+import { List, Button, Menu, message } from 'antd';
 import {
   compose,
   withHandlers,
   lifecycle,
+  withProps,
   pure,
 } from 'recompose';
 import { Link } from 'react-router-dom';
@@ -19,23 +20,8 @@ import { matchShape } from '../../../utils/propTypes';
 const { fetchTopics } = modules.topic;
 
 const styles = theme => ({
-  container: {
-    '& .ant-list-empty-text': {
-      color: `${theme.textColor} !important`,
-    },
-  },
   listItem: {
     padding: theme.padding,
-    borderBottom: `.2rem solid ${theme.primaryColor} !important`,
-    '& a': {
-      color: `${theme.textColor} !important`,
-      '&:hover': {
-        color: `${theme.hoverColor} !important`,
-      },
-    },
-    '& span': {
-      color: `${theme.secondaryTextColor}`,
-    },
     '& li': {
       '@media only screen and (max-width: 768px)': {
         width: '33% !important',
@@ -127,8 +113,40 @@ const Topics = ({
   topics,
   loading,
   handleLoadMore,
+  category,
+  type,
+  handleTypeChange,
 }) => (
-  <div className={classes.container}>
+  <div>
+    {
+      category !== 3 && category !== 2 &&
+      <Menu
+        onClick={handleTypeChange}
+        selectedKeys={[type]}
+        theme="dark"
+        mode="horizontal"
+      >
+        <Menu.Item key="all">全部</Menu.Item>
+        <Menu.Item key="hkg">高登</Menu.Item>
+        <Menu.Item key="lihkg">LIHKG</Menu.Item>
+        <Menu.Item key="hot">熱門 (LIHKG)</Menu.Item>
+      </Menu>
+    }
+    {
+      category === 2 &&
+      <Menu
+        onClick={handleTypeChange}
+        selectedKeys={[type]}
+        theme="dark"
+        mode="horizontal"
+      >
+        <Menu.Item key="all">全部</Menu.Item>
+        <Menu.Item key="hkg">高登</Menu.Item>
+        <Menu.Item key="lihkg">LIHKG</Menu.Item>
+        <Menu.Item key="daily">本日 (LIHKG)</Menu.Item>
+        <Menu.Item key="weekly">本週 (LIHKG)</Menu.Item>
+      </Menu>
+    }
     <List
       locale={{
         emptyText: '乜都冇，試下F5',
@@ -137,6 +155,7 @@ const Topics = ({
       dataSource={topics}
       renderItem={renderItem(classes, match)}
       footer={
+        Number(match.params.category) !== 2 &&
         topics.length > 0 &&
         !loading &&
         <Footer className={classes.footer} loadMore={handleLoadMore} />
@@ -147,6 +166,9 @@ const Topics = ({
   </div>
 );
 Topics.propTypes = {
+  category: PropTypes.number.isRequired,
+  type: PropTypes.string.isRequired,
+  handleTypeChange: PropTypes.func.isRequired,
   classes: PropTypes.shape({}).isRequired,
   match: matchShape.isRequired,
   topics: PropTypes.arrayOf(PropTypes.shape({
@@ -173,10 +195,25 @@ const enhance = compose(
     isError: state.topic.isFetchTopicsError,
     error: state.topic.fetchTopicsError,
   }), { fetchTopics }),
+  withProps((props) => {
+    const { category } = props.match.params;
+    const queryParams = new URLSearchParams(props.location.search);
+    const q = queryParams.get('type');
+    let type = 'all';
+    if (Number(category) === 2 && (q === 'daily' || q === 'weekly' || q === 'lihkg' || q === 'hkg')) {
+      type = q;
+    } else if (Number(category) !== 2 && (q === 'hot' || q === 'hkg' || q === 'lihkg')) {
+      type = q;
+    }
+    return ({
+      category: Number(category),
+      type,
+    });
+  }),
   lifecycle({
     componentWillMount() {
-      const { category } = this.props.match.params;
-      this.props.fetchTopics({ category }, { reset: true });
+      const { category, type } = this.props;
+      this.props.fetchTopics({ category, type }, { reset: true });
     },
     componentDidUpdate(prevProps) {
       if (!prevProps.isError && this.props.isError) {
@@ -190,8 +227,13 @@ const enhance = compose(
     },
   }),
   withHandlers({
+    handleTypeChange: props => ({ key }) => {
+      props.history.push(`/topics/${props.match.params.category}?type=${key}`);
+      props.fetchTopics({ category: props.category, type: key }, { reset: true });
+    },
     handleLoadMore: props => () => {
-      props.fetchTopics({ category: props.match.params.category });
+      const { category, type } = props;
+      props.fetchTopics({ category, type });
     },
   }),
   injectSheet(styles),

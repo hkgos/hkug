@@ -27,6 +27,7 @@ function* doFetchTopics(action) {
   }
   const res = yield call(API.fetchTopics, {
     category: action.payload.category,
+    type: action.payload.type,
     page: page + 1,
   });
   if (res.hkgError && res.lihkgError) {
