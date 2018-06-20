@@ -91,19 +91,19 @@ const styles = theme => ({
   },
   floatButton: {
     position: 'fixed',
-    right: '4%',
+    right: 50,
     '&[data-nav="prev"]': {
-      bottom: '370px',
+      bottom: 370,
     },
     '&[data-nav="page"]': {
-      right: '4.25%',
-      bottom: '316px',
+      right: 53,
+      bottom: 316,
     },
     '&[data-nav="next"]': {
-      bottom: '270px',
+      bottom: 270,
     },
     '&[data-nav="back"]': {
-      bottom: '220px',
+      bottom: 220,
     },
   },
 });

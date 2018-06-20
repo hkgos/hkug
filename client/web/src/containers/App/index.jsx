@@ -47,7 +47,7 @@ const styles = ({
   },
   backTop: {
     bottom: 150,
-    right: '4%',
+    right: 53,
   },
   [`@media only screen and (max-width: ${SIDE_MENU_BREAK_POINT}px)`]: {
     content: {
