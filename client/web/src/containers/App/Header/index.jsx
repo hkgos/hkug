@@ -6,7 +6,7 @@ import { compose, withProps, withHandlers, pure } from 'recompose';
 import injectSheet from 'react-jss';
 import { matchPath, withRouter } from 'react-router-dom';
 import { utils, modules } from 'hkug-client-core';
-import { SIDE_MENU_BREAK_POINT } from '../../../constants';
+import { SIDE_MENU_BREAK_POINT, PAGE_TITLE_BASE } from '../../../constants';
 
 const allCategories = utils.categories.default;
 const { fetchTopics } = modules.topic;
@@ -31,13 +31,12 @@ const styles = theme => ({
   },
   header: {
     zIndex: 100,
-    background: theme.primaryColor,
     padding: 0,
     textAlign: 'center',
-    color: theme.textColor,
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     textOverflow: 'clip',
+    color: theme.invertTextColor,
   },
   headerText: {
     fontSize: '1.5em',
@@ -102,7 +101,7 @@ const enhance = compose(
   withProps(({ location }) => {
     const matchCategory = matchPath(location.pathname, { path: '/topics/:category' });
     const matchThread = matchPath(location.pathname, { path: '/topics/:category/:theadId', exact: true });
-    let header = 'HKUG 香港聯登';
+    let header = PAGE_TITLE_BASE;
     let categoryId = null;
     let showReloadButton = false;
     let isTopics = false;
@@ -125,6 +124,8 @@ const enhance = compose(
       const query = new URLSearchParams(location.search);
       threadPage = query.get('page') || 1;
     }
+    const queryParams = new URLSearchParams(location.search);
+    const type = queryParams.get('type');
     return ({
       header,
       categoryId,
@@ -134,6 +135,7 @@ const enhance = compose(
       showReloadButton,
       isTopics,
       isThread,
+      type,
     });
   }),
   withHandlers({
@@ -145,7 +147,7 @@ const enhance = compose(
           forum: props.threadForum,
         });
       } else if (props.isTopics) {
-        props.fetchTopics({ category: props.categoryId }, { reset: true });
+        props.fetchTopics({ category: props.categoryId, type: props.type }, { reset: true });
       }
     },
   }),

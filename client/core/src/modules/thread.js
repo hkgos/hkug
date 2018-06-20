@@ -17,6 +17,8 @@ export const defaultState = () => ({
   totalPage: 1,
   title: '',
   replies: [],
+  like: 0,
+  dislike: 0,
   fetchingQuoteId: [],
   isFetchQuoteError: false,
 });

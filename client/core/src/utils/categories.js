@@ -248,4 +248,13 @@ export function getLihkgId(id) {
   return category ? category.lihkgId : null;
 }
 
+export function getCategoryName(id) {
+  const cast = Number(id);
+  if (!cast) {
+    return null;
+  }
+  const category = categories.find(c => c.id === cast);
+  return category ? category.name : null;
+}
+
 export default categories;

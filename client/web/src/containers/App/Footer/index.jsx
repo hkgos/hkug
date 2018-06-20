@@ -14,10 +14,9 @@ const styles = theme => ({
     overflow: 'hidden',
     textOverflow: 'clip',
     whiteSpace: 'nowrap',
-    color: theme.textColor,
-    background: theme.primaryColor,
+    color: theme.invertTextColor,
     '& i': {
-      color: theme.textColor,
+      color: theme.invertTextColor,
     },
   },
   [`@media only screen and (max-width: ${SIDE_MENU_BREAK_POINT}px)`]: {

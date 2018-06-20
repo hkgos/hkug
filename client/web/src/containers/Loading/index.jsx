@@ -4,7 +4,7 @@ import { compose, pure } from 'recompose';
 import injectSheet from 'react-jss';
 import ErrorPage from '../Error';
 
-const styles = {
+const styles = theme => ({
   container: {
     height: 'calc(100vh - 64px - 69px)',
     display: 'flex',
@@ -23,10 +23,10 @@ const styles = {
       width: 51,
       height: 51,
       margin: 6,
-      border: '6px solid #fff',
+      border: `6px solid ${theme.primaryColor}`,
       borderRadius: '50%',
       animation: 'loading 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite',
-      borderColor: '#fff transparent transparent transparent',
+      borderColor: `${theme.primaryColor} transparent transparent transparent`,
       '&:nth-child(1)': {
         animationDelay: '-0.45s',
       },
@@ -42,7 +42,7 @@ const styles = {
     '0%': 'transform: rotate(0deg)',
     '100%': 'transform: rotate(360deg)',
   },
-};
+});
 
 // const styles = {
 //   '@keyframes loading': {

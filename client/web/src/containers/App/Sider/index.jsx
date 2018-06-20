@@ -20,23 +20,18 @@ const styles = theme => ({
     maxHeight: '100vh',
     overflowY: 'auto',
     overflowX: 'hidden',
-    background: theme.primaryColor,
     '-webkit-overflow-scrolling': 'touch',
     '&::-webkit-scrollbar-track': {
-      backgroundColor: theme.primaryColor,
+      backgroundColor: '#212121',
     },
     '&::-webkit-scrollbar': {
       width: '.5em',
     },
     '&::-webkit-scrollbar-thumb': {
-      backgroundColor: theme.textColor,
+      backgroundColor: '#a2a2a2',
     },
   },
   menu: {
-    background: theme.primaryColor,
-    '& .ant-menu-item-selected': {
-      backgroundColor: `${theme.secondaryColor} !important`,
-    },
   },
   logo: {
     textAlign: 'center',

@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { List, Row, Select, Button, Icon } from 'antd';
+import { Helmet } from 'react-helmet';
+import { List, Row, Button, Icon, Dropdown, Menu } from 'antd';
 import {
   compose,
   lifecycle,
@@ -18,14 +19,13 @@ import { modules, models } from 'hkug-client-core';
 import Avatar from '../../../components/Avatar';
 import IconText from '../../../components/IconText';
 import Loading from '../../../containers/Loading';
+import { PAGE_TITLE_BASE } from '../../../constants';
 
-const { Option } = Select;
 const { Reply } = models;
 const { fetchReplies, fetchQuote } = modules.thread;
+const ButtonGroup = Button.Group;
 
 const styles = theme => ({
-  container: {
-  },
   content: {
     fontSize: 'medium',
     marginTop: '1em',
@@ -35,46 +35,33 @@ const styles = theme => ({
       margin: '0 0 1rem',
       paddingBottom: '.3rem',
       paddingLeft: '.7rem',
-      borderLeft: `.1rem solid ${theme.secondaryTextColor}`,
+      borderLeft: `.1rem solid ${theme.secondaryColor}`,
     },
     '& img': {
       maxWidth: '30vw',
       verticalAlign: 'unset',
     },
     '& pre': {
-      background: '#222',
+      color: '#0FFF1A',
+      background: '#0B0B0C',
       padding: theme.padding,
-      '&::-webkit-scrollbar-track': {
-        backgroundColor: theme.primaryColor,
-      },
-      '&::-webkit-scrollbar': {
-        width: '.5em',
-        height: '.5em',
-      },
-      '&::-webkit-scrollbar-thumb': {
-        backgroundColor: theme.textColor,
-      },
-    },
-    '& code': {
-      color: theme.secondaryTextColor,
+      borderRadius: '.2rem',
     },
   },
   titleContainer: {
-    background: '#222',
     padding: theme.padding,
     height: theme.headerHeight,
+    borderBottom: `1px solid ${theme.secondaryColor}`,
     lineHeight: `${theme.headerHeight - (theme.padding * 2)}px`,
     '& i': {
       fontSize: 'x-large',
       lineHeight: `${theme.headerHeight - (theme.padding * 2)}px`,
-      color: theme.textColor,
       float: 'left',
       marginRight: theme.margin,
       cursor: 'pointer',
     },
   },
   title: {
-    color: theme.textColor,
     margin: 0,
     fontSize: 'large',
     textOverflow: 'ellipsis',
@@ -86,19 +73,40 @@ const styles = theme => ({
     padding: '0 !important',
   },
   item: {
-    borderBottom: `.2rem solid ${theme.primaryColor} !important`,
+    borderBottom: `1px solid ${theme.secondaryColor} !important`,
     padding: theme.padding,
-    color: theme.textColor,
   },
   pagination: {
-    background: '#222',
+    height: '100%',
     padding: theme.padding,
     textAlign: 'center',
   },
-  select: {
+  dropDownMenu: {
     width: 104,
-    marginLeft: `${theme.margin}px !important`,
-    marginRight: `${theme.margin}px !important`,
+    maxHeight: 200,
+    overflow: 'auto',
+  },
+  floatButton: {
+    opacity: 0.7,
+    textAlign: 'center',
+    position: 'fixed',
+    right: '4%',
+    bottom: 250,
+    '& div': {
+      marginBottom: theme.margin,
+      '& button': {
+        border: 'rgba(0, 0, 0, 0.65)',
+        backgroundColor: 'rgba(0, 0, 0, 0.65)',
+        color: '#fff',
+        '&:hover': {
+          borderColor: '#1c1a1a',
+          backgroundColor: '#1c1a1a',
+        },
+      },
+    },
+    '& div:last-child': {
+      marginBottom: 0,
+    },
   },
 });
 
@@ -109,13 +117,18 @@ const Thread = ({
   title,
   page,
   totalPage,
-  pageOptions,
+  like,
+  dislike,
+  pageMenuItems,
   fetchQuoteAction,
   fetchingQuoteId,
   handlePageChange,
   handleBackToList,
 }) => (
-  <div className={classes.container}>
+  <div>
+    <Helmet>
+      <title>{`${title} | ${PAGE_TITLE_BASE}`}</title>
+    </Helmet>
     <div className={classes.titleContainer}>
       <Icon type="arrow-left" onClick={handleBackToList} />
       <h1 className={classes.title}>{title}</h1>
@@ -150,22 +163,99 @@ const Thread = ({
             fetchingIds: fetchingQuoteId,
           })}
           <Row gutter={16}>
-            <IconText icon="pushpin-o" text={item.index} />
+            <IconText icon="tag-o" text={item.index} />
             <IconText icon="clock-circle-o" text={moment(item.replyDate).fromNow()} />
+            {Number(item.index) === 1 && <IconText icon="like-o" text={like} />}
+            {Number(item.index) === 1 && <IconText icon="dislike-o" text={dislike} />}
           </Row>
         </div>
       )}
     />
+    <div className={classes.floatButton}>
+      <div>
+        <Button
+          disabled={page === 1}
+          type="primary"
+          onClick={() => { handlePageChange(page - 1); }}
+        >
+          <Icon type="up" />
+        </Button>
+      </div>
+      <div>
+        <Dropdown
+          placement="bottomCenter"
+          trigger={['click']}
+          overlay={
+            <Menu
+              theme="dark"
+              className={classes.dropDownMenu}
+              selectable
+              selectedKeys={[String(page)]}
+              onClick={({ key }) => { handlePageChange(key); }}
+            >
+              {pageMenuItems}
+            </Menu>
+          }
+        >
+          <Button
+            size="large"
+            shape="circle"
+            type="primary"
+          >
+            {page}
+          </Button>
+        </Dropdown>
+      </div>
+      <div>
+        <Button
+          disabled={page === totalPage}
+          type="primary"
+          onClick={() => { handlePageChange(page + 1); }}
+        >
+          <Icon type="down" />
+        </Button>
+      </div>
+      <div>
+        <Button
+          type="primary"
+          onClick={handleBackToList}
+        >
+          <Icon type="arrow-left" />
+        </Button>
+      </div>
+    </div>
     <div className={classes.pagination}>
-      <Button disabled={page === 1} type="primary" onClick={() => { handlePageChange(page - 1); }}>
-        <Icon type="left" />上一頁
-      </Button>
-      <Select value={page} className={classes.select} onChange={handlePageChange}>
-        {pageOptions}
-      </Select>
-      <Button disabled={page === totalPage} type="primary" onClick={() => { handlePageChange(page + 1); }}>
-        下一頁<Icon type="right" />
-      </Button>
+      <ButtonGroup style={{ marginRight: 16 }}>
+        <Button disabled={page === 1} size="large" type="primary" icon="verticle-right" onClick={() => { handlePageChange(1); }} />
+        <Button disabled={page === 1} size="large" type="primary" icon="left" onClick={() => { handlePageChange(page - 1); }} />
+      </ButtonGroup>
+      <Dropdown
+        placement="topCenter"
+        trigger={['click']}
+        overlay={
+          <Menu
+            theme="dark"
+            className={classes.dropDownMenu}
+            selectable
+            selectedKeys={[String(page)]}
+            onClick={({ key }) => { handlePageChange(key); }}
+          >
+            {pageMenuItems}
+          </Menu>
+        }
+      >
+        <Button
+          data-nav="page"
+          size="large"
+          type="primary"
+        >
+          {`第 ${page} 頁`}<Icon type="down" />
+        </Button>
+      </Dropdown>
+      <ButtonGroup style={{ marginLeft: 16 }}>
+        <Button disabled={page === totalPage} size="large" type="primary" icon="right" onClick={() => { handlePageChange(page + 1); }} />
+        <Button disabled={page === totalPage} size="large" type="primary" icon="verticle-left" onClick={() => { handlePageChange(totalPage); }} />
+      </ButtonGroup>
     </div>
   </div>
 );
@@ -176,7 +266,9 @@ Thread.propTypes = {
   replies: PropTypes.arrayOf(PropTypes.instanceOf(Reply)).isRequired,
   page: PropTypes.number.isRequired,
   totalPage: PropTypes.number.isRequired,
-  pageOptions: PropTypes.arrayOf(PropTypes.node).isRequired,
+  like: PropTypes.number.isRequired,
+  dislike: PropTypes.number.isRequired,
+  pageMenuItems: PropTypes.arrayOf(PropTypes.node).isRequired,
   handlePageChange: PropTypes.func.isRequired,
   handleBackToList: PropTypes.func.isRequired,
   fetchQuoteAction: PropTypes.func.isRequired,
@@ -189,6 +281,8 @@ const enhance = compose(
     title: state.thread.title,
     replies: state.thread.replies,
     totalPage: state.thread.totalPage,
+    like: state.thread.like,
+    dislike: state.thread.dislike,
     isLoading: state.thread.isFetchingReplies,
     isError: state.thread.isFetchRepliesError,
     fetchingQuoteId: state.thread.fetchingQuoteId,
@@ -201,17 +295,17 @@ const enhance = compose(
     }
     const [forum, thread] = props.match.params.thread.split('+');
 
-    const pageOptions = [];
+    const pageMenuItems = [];
 
     for (let i = 0; i < props.totalPage; i += 1) {
-      pageOptions.push(<Option key={i + 1} value={i + 1}>{`第 ${i + 1} 頁`}</Option>);
+      pageMenuItems.push(<Menu.Item key={i + 1}>{`第 ${i + 1} 頁`}</Menu.Item>);
     }
     return ({
       initPage: () => { props.fetchReplies({ thread, page, forum }); },
       page: Number(page),
       thread,
       forum,
-      pageOptions,
+      pageMenuItems,
     });
   }),
   withStateHandlers(
@@ -244,13 +338,19 @@ const enhance = compose(
       <Loading error={isError} retry={initPage} pastDelay={pastDelay} />),
   ),
   withHandlers({
-    handleBackToList: ({ history, match }) => () => {
-      history.push(`/topics/${match.params.category}`);
+    handleBackToList: ({ history, match, location }) => () => {
+      const { state } = location;
+      if (state && state.type) {
+        history.push(`/topics/${match.params.category}?type=${state.type}`);
+      } else {
+        history.push(`/topics/${match.params.category}`);
+      }
     },
     handlePageChange: ({ history, location }) => (page) => {
       history.push({
         pathname: location.pathname,
         search: `?page=${page}`,
+        state: location.state,
       });
     },
   }),

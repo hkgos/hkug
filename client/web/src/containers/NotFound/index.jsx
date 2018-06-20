@@ -24,7 +24,7 @@ const styles = theme => ({
 
 const NotFound = ({ classes, history }) => (
   <div className={classes.container}>
-    <div className={classes.text}>404</div>
+    <div className={classes.text}>找不到網頁</div>
     <div>
       <Button
         className={classes.button}

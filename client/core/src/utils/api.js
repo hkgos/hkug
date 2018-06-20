@@ -87,26 +87,40 @@ export async function fetchHkgTopics({ category, page } = {}) {
   return hkgTopics;
 }
 
-export async function fetchLihkgTopics({ category, page } = {}) {
+export async function fetchLihkgTopics({ category, page, type } = {}) {
   let lihkgTopics = [];
   const lihkgId = getLihkgId(category);
-  if (lihkgId && !(page >= 2 && lihkgId === 2)) {
+  if (lihkgId) {
     let url;
-    if (lihkgId === 1) {
-      url = new URI('thread/latest', LIHKG_API_ENDPOINT);
-    } else if (lihkgId === 2) {
-      url = new URI('thread/hot', LIHKG_API_ENDPOINT);
-    } else if (lihkgId === 3) {
+    if (lihkgId === 3) {
+      // If 3 (new topics), ignore type.
       url = new URI('thread/news', LIHKG_API_ENDPOINT);
+      url.search({
+        cat_id: lihkgId,
+        page,
+        type: 'now',
+      });
+    } else if (lihkgId === 2) {
+      // If 2 (hot topics), param should be put in type.
+      url = new URI('thread/hot', LIHKG_API_ENDPOINT);
+      url.search({
+        cat_id: lihkgId,
+        page,
+        type,
+      });
     } else {
-      url = new URI('thread/category', LIHKG_API_ENDPOINT);
+      if (lihkgId === 1) {
+        url = new URI('thread/latest', LIHKG_API_ENDPOINT);
+      } else {
+        url = new URI('thread/category', LIHKG_API_ENDPOINT);
+      }
+      url.search({
+        cat_id: lihkgId,
+        page,
+        type: 'now',
+        order: type,
+      });
     }
-    url.search({
-      cat_id: lihkgId,
-      page,
-      count: 30,
-      type: 'now',
-    });
     const res = await httpClient.get(url.href());
     lihkgTopics = [].concat(res.response.items).map(t => new Topic({
       topicId: t.thread_id,
@@ -119,30 +133,59 @@ export async function fetchLihkgTopics({ category, page } = {}) {
       authorGender: t.user_gender,
       lastReplyDate: t.last_reply_time * 1000,
       totalReplies: t.no_of_reply,
-      like: t.reply_like_count,
-      dislike: t.reply_dislike_count,
+      like: t.like_count,
+      dislike: t.dislike_count,
       totalPage: t.total_page === 0 ? 1 : t.total_page,
     })).sort(sortTopicsByLastReplyDate).reverse();
   }
   return lihkgTopics;
 }
 
-export async function fetchTopics({ category, page } = {}) {
-  const t1 = fetchHkgTopics({ category, page });
-  const t2 = fetchLihkgTopics({ category, page });
+export async function fetchTopics({ category, page, type } = { type: 'all' }) {
+  let t1;
+  let t2;
+  switch (type) {
+    case 'all':
+      t1 = fetchHkgTopics({ category, page });
+      t2 = fetchLihkgTopics({ category, page, type: 'now' });
+      break;
+    case 'hkg':
+      t1 = fetchHkgTopics({ category, page });
+      break;
+    case 'lihkg':
+      t2 = fetchLihkgTopics({ category, page, type: 'now' });
+      break;
+    case 'hot':
+      t2 = fetchLihkgTopics({ category, page, type });
+      break;
+    case 'daily':
+      t2 = fetchLihkgTopics({ category, page, type });
+      break;
+    case 'weekly':
+      t2 = fetchLihkgTopics({ category, page, type });
+      break;
+    default:
+      t1 = fetchHkgTopics({ category, page });
+      t2 = fetchLihkgTopics({ category, page, type: 'now' });
+      break;
+  }
   let hkgTopics = [];
   let hkgError;
   let lihkgTopics = [];
   let lihkgError;
-  try {
-    hkgTopics = await t1;
-  } catch (e) {
-    hkgError = new Error('高登冇應機');
+  if (t1) {
+    try {
+      hkgTopics = await t1;
+    } catch (e) {
+      hkgError = new Error('高登冇應機');
+    }
   }
-  try {
-    lihkgTopics = await t2;
-  } catch (e) {
-    lihkgError = new Error('連登冇應機');
+  if (t2) {
+    try {
+      lihkgTopics = await t2;
+    } catch (e) {
+      lihkgError = new Error('連登冇應機');
+    }
   }
   const topics = [];
   while (hkgTopics.length > 0 || lihkgTopics.length > 0) {
@@ -205,6 +248,8 @@ export async function fetchHkgReplies({ thread, page = 1 } = {}) {
       title: res.Message_Title,
       totalPage: res.Total_Pages === 0 ? 1 : res.Total_Pages,
       replies,
+      like: Number(res.Rating_Good),
+      dislike: Number(res.Rating_Bad),
     };
   } catch (e) {
     // Fallback to WEB API
@@ -258,6 +303,8 @@ export async function fetchReplies({ thread, page = 1, forum } = {}) {
         title: res.response.title,
         totalPage: res.response.total_page === 0 ? 1 : res.response.total_page,
         replies,
+        like: Number(res.response.like_count),
+        dislike: Number(res.response.dislike_count),
       };
     }
     default: {
