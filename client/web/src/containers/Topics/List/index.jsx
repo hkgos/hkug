@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
 import moment from 'moment';
 import { List, Button, Menu, message } from 'antd';
 import {
@@ -12,12 +13,14 @@ import {
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import injectSheet from 'react-jss';
-import { modules } from 'hkug-client-core';
+import { utils, modules } from 'hkug-client-core';
 import LoadingIndicator from '../../../components/LoadingIndicator';
 import IconText from '../../../components/IconText';
 import { matchShape } from '../../../utils/propTypes';
+import { PAGE_TITLE_BASE } from '../../../constants';
 
 const { fetchTopics } = modules.topic;
+const { getCategoryName } = utils.categories;
 
 const styles = theme => ({
   listItem: {
@@ -118,6 +121,9 @@ const Topics = ({
   handleTypeChange,
 }) => (
   <div>
+    <Helmet>
+      <title>{`${getCategoryName(category)} | ${PAGE_TITLE_BASE}`}</title>
+    </Helmet>
     {
       category !== 3 && category !== 2 &&
       <Menu

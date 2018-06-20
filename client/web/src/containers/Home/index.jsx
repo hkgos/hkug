@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
 import { compose, pure, lifecycle, withStateHandlers, withHandlers, branch, renderComponent } from 'recompose';
 import injectSheet from 'react-jss';
 import showdown from 'showdown';
 
+import { PAGE_TITLE_BASE } from '../../constants';
 import Loading from '../../containers/Loading';
 
 
@@ -17,10 +19,15 @@ const styles = theme => ({
 });
 
 const Home = ({ classes, createMarkup }) => (
-  <div
-    className={classes.container}
-    dangerouslySetInnerHTML={createMarkup()} // eslint-disable-line react/no-danger
-  />
+  <div>
+    <Helmet>
+      <title>{PAGE_TITLE_BASE}</title>
+    </Helmet>
+    <div
+      className={classes.container}
+      dangerouslySetInnerHTML={createMarkup()} // eslint-disable-line react/no-danger
+    />
+  </div>
 );
 
 Home.propTypes = {

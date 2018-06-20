@@ -6,7 +6,7 @@ import { compose, withProps, withHandlers, pure } from 'recompose';
 import injectSheet from 'react-jss';
 import { matchPath, withRouter } from 'react-router-dom';
 import { utils, modules } from 'hkug-client-core';
-import { SIDE_MENU_BREAK_POINT } from '../../../constants';
+import { SIDE_MENU_BREAK_POINT, PAGE_TITLE_BASE } from '../../../constants';
 
 const allCategories = utils.categories.default;
 const { fetchTopics } = modules.topic;
@@ -36,7 +36,7 @@ const styles = theme => ({
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     textOverflow: 'clip',
-    color: 'rgba(255, 255, 255, 0.85)',
+    color: theme.invertTextColor,
   },
   headerText: {
     fontSize: '1.5em',
@@ -101,7 +101,7 @@ const enhance = compose(
   withProps(({ location }) => {
     const matchCategory = matchPath(location.pathname, { path: '/topics/:category' });
     const matchThread = matchPath(location.pathname, { path: '/topics/:category/:theadId', exact: true });
-    let header = 'HKUG 香港聯登';
+    let header = PAGE_TITLE_BASE;
     let categoryId = null;
     let showReloadButton = false;
     let isTopics = false;

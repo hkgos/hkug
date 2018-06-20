@@ -23,10 +23,10 @@ const styles = theme => ({
       width: 51,
       height: 51,
       margin: 6,
-      border: `6px solid ${theme['primary-color']}`,
+      border: `6px solid ${theme.primaryColor}`,
       borderRadius: '50%',
       animation: 'loading 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite',
-      borderColor: `${theme['primary-color']} transparent transparent transparent`,
+      borderColor: `${theme.primaryColor} transparent transparent transparent`,
       '&:nth-child(1)': {
         animationDelay: '-0.45s',
       },

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import { Helmet } from 'react-helmet';
 import { List, Row, Select, Button, Icon } from 'antd';
 import {
   compose,
@@ -18,14 +19,13 @@ import { modules, models } from 'hkug-client-core';
 import Avatar from '../../../components/Avatar';
 import IconText from '../../../components/IconText';
 import Loading from '../../../containers/Loading';
+import { PAGE_TITLE_BASE } from '../../../constants';
 
 const { Option } = Select;
 const { Reply } = models;
 const { fetchReplies, fetchQuote } = modules.thread;
 
 const styles = theme => ({
-  container: {
-  },
   content: {
     fontSize: 'medium',
     marginTop: '1em',
@@ -35,19 +35,23 @@ const styles = theme => ({
       margin: '0 0 1rem',
       paddingBottom: '.3rem',
       paddingLeft: '.7rem',
-      borderLeft: `.1rem solid ${theme['border-color-split']}`,
+      borderLeft: `.1rem solid ${theme.secondaryColor}`,
     },
     '& img': {
       maxWidth: '30vw',
       verticalAlign: 'unset',
     },
     '& pre': {
+      color: '#0FFF1A',
+      background: '#0B0B0C',
+      padding: theme.padding,
+      borderRadius: '.2rem',
     },
   },
   titleContainer: {
     padding: theme.padding,
     height: theme.headerHeight,
-    borderBottom: `1px solid ${theme['border-color-split']}`,
+    borderBottom: `1px solid ${theme.secondaryColor}`,
     lineHeight: `${theme.headerHeight - (theme.padding * 2)}px`,
     '& i': {
       fontSize: 'x-large',
@@ -69,7 +73,7 @@ const styles = theme => ({
     padding: '0 !important',
   },
   item: {
-    borderBottom: `1px solid ${theme['border-color-split']} !important`,
+    borderBottom: `1px solid ${theme.secondaryColor} !important`,
     padding: theme.padding,
   },
   pagination: {
@@ -90,13 +94,18 @@ const Thread = ({
   title,
   page,
   totalPage,
+  like,
+  dislike,
   pageOptions,
   fetchQuoteAction,
   fetchingQuoteId,
   handlePageChange,
   handleBackToList,
 }) => (
-  <div className={classes.container}>
+  <div>
+    <Helmet>
+      <title>{`${title} | ${PAGE_TITLE_BASE}`}</title>
+    </Helmet>
     <div className={classes.titleContainer}>
       <Icon type="arrow-left" onClick={handleBackToList} />
       <h1 className={classes.title}>{title}</h1>
@@ -131,8 +140,10 @@ const Thread = ({
             fetchingIds: fetchingQuoteId,
           })}
           <Row gutter={16}>
-            <IconText icon="pushpin-o" text={item.index} />
+            <IconText icon="tag-o" text={item.index} />
             <IconText icon="clock-circle-o" text={moment(item.replyDate).fromNow()} />
+            {Number(item.index) === 1 && <IconText icon="like-o" text={like} />}
+            {Number(item.index) === 1 && <IconText icon="dislike-o" text={dislike} />}
           </Row>
         </div>
       )}
@@ -157,6 +168,8 @@ Thread.propTypes = {
   replies: PropTypes.arrayOf(PropTypes.instanceOf(Reply)).isRequired,
   page: PropTypes.number.isRequired,
   totalPage: PropTypes.number.isRequired,
+  like: PropTypes.number.isRequired,
+  dislike: PropTypes.number.isRequired,
   pageOptions: PropTypes.arrayOf(PropTypes.node).isRequired,
   handlePageChange: PropTypes.func.isRequired,
   handleBackToList: PropTypes.func.isRequired,
@@ -170,6 +183,8 @@ const enhance = compose(
     title: state.thread.title,
     replies: state.thread.replies,
     totalPage: state.thread.totalPage,
+    like: state.thread.like,
+    dislike: state.thread.dislike,
     isLoading: state.thread.isFetchingReplies,
     isError: state.thread.isFetchRepliesError,
     fetchingQuoteId: state.thread.fetchingQuoteId,
