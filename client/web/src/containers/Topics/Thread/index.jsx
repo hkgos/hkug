@@ -108,6 +108,14 @@ const styles = theme => ({
       marginBottom: 0,
     },
   },
+  floatButton: {
+    background: theme.primaryColor,
+    padding: '1px',
+    borderRadius: '12px',
+    position: 'fixed',
+    bottom: '210px',
+    right: '4%',
+  }
 });
 
 const Thread = ({
@@ -256,6 +264,18 @@ const Thread = ({
         <Button disabled={page === totalPage} size="large" type="primary" icon="right" onClick={() => { handlePageChange(page + 1); }} />
         <Button disabled={page === totalPage} size="large" type="primary" icon="verticle-left" onClick={() => { handlePageChange(totalPage); }} />
       </ButtonGroup>
+    </div>
+    <div className={classes.floatButton}>
+      <Button disabled={page === 1} type="primary" onClick={() => { handlePageChange(page - 1); }}>
+        <Icon type="left" />
+      </Button>
+      <Select value={page} className={classes.floatSelect} showArrow={false} 
+      onChange={handlePageChange} dropdownMatchSelectWidth={false} style={{ width: 80 }}>
+        {pageOptions}
+      </Select>
+      <Button disabled={page === totalPage} type="primary" onClick={() => { handlePageChange(page + 1); }}>
+        <Icon type="right" />
+      </Button>  
     </div>
   </div>
 );
