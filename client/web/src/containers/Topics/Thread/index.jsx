@@ -94,6 +94,15 @@ const styles = theme => ({
     bottom: 250,
     '& div': {
       marginBottom: theme.margin,
+      '& button': {
+        border: 'rgba(0, 0, 0, 0.65)',
+        backgroundColor: 'rgba(0, 0, 0, 0.65)',
+        color: '#fff',
+        '&:hover': {
+          borderColor: '#1c1a1a',
+          backgroundColor: '#1c1a1a',
+        },
+      },
     },
     '& div:last-child': {
       marginBottom: 0,
