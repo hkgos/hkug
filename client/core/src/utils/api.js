@@ -133,8 +133,8 @@ export async function fetchLihkgTopics({ category, page, type } = {}) {
       authorGender: t.user_gender,
       lastReplyDate: t.last_reply_time * 1000,
       totalReplies: t.no_of_reply,
-      like: t.reply_like_count,
-      dislike: t.reply_dislike_count,
+      like: t.like_count,
+      dislike: t.dislike_count,
       totalPage: t.total_page === 0 ? 1 : t.total_page,
     })).sort(sortTopicsByLastReplyDate).reverse();
   }
@@ -248,6 +248,8 @@ export async function fetchHkgReplies({ thread, page = 1 } = {}) {
       title: res.Message_Title,
       totalPage: res.Total_Pages === 0 ? 1 : res.Total_Pages,
       replies,
+      like: Number(res.Rating_Good),
+      dislike: Number(res.Rating_Bad),
     };
   } catch (e) {
     // Fallback to WEB API
@@ -301,6 +303,8 @@ export async function fetchReplies({ thread, page = 1, forum } = {}) {
         title: res.response.title,
         totalPage: res.response.total_page === 0 ? 1 : res.response.total_page,
         replies,
+        like: Number(res.response.like_count),
+        dislike: Number(res.response.dislike_count),
       };
     }
     default: {
