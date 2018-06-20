@@ -86,24 +86,16 @@ const styles = theme => ({
     maxHeight: 200,
     overflow: 'auto',
   },
-  select: {
-    width: 104,
-  },
   floatButton: {
+    textAlign: 'center',
     position: 'fixed',
-    right: 50,
-    '&[data-nav="prev"]': {
-      bottom: 370,
+    right: '4%',
+    bottom: 250,
+    '& div': {
+      marginBottom: theme.margin,
     },
-    '&[data-nav="page"]': {
-      right: 53,
-      bottom: 316,
-    },
-    '&[data-nav="next"]': {
-      bottom: 270,
-    },
-    '&[data-nav="back"]': {
-      bottom: 220,
+    '& div:last-child': {
+      marginBottom: 0,
     },
   },
 });
@@ -169,57 +161,59 @@ const Thread = ({
         </div>
       )}
     />
-    <Button
-      data-nav="prev"
-      className={classes.floatButton}
-      disabled={page === 1}
-      type="primary"
-      onClick={() => { handlePageChange(page - 1); }}
-    >
-      <Icon type="up" />
-    </Button>
-    <Dropdown
-      placement="bottomCenter"
-      trigger={['click']}
-      overlay={
-        <Menu
-          theme="dark"
-          className={classes.dropDownMenu}
-          selectable
-          selectedKeys={[String(page)]}
-          onClick={({ key }) => { handlePageChange(key); }}
+    <div className={classes.floatButton}>
+      <div>
+        <Button
+          disabled={page === 1}
+          type="primary"
+          onClick={() => { handlePageChange(page - 1); }}
         >
-          {pageMenuItems}
-        </Menu>
-      }
-    >
-      <Button
-        data-nav="page"
-        size="large"
-        className={classes.floatButton}
-        shape="circle"
-        type="primary"
-      >
-        {page}
-      </Button>
-    </Dropdown>
-    <Button
-      data-nav="next"
-      className={classes.floatButton}
-      disabled={page === totalPage}
-      type="primary"
-      onClick={() => { handlePageChange(page + 1); }}
-    >
-      <Icon type="down" />
-    </Button>
-    <Button
-      data-nav="back"
-      className={classes.floatButton}
-      type="primary"
-      onClick={handleBackToList}
-    >
-      <Icon type="arrow-left" />
-    </Button>
+          <Icon type="up" />
+        </Button>
+      </div>
+      <div>
+        <Dropdown
+          placement="bottomCenter"
+          trigger={['click']}
+          overlay={
+            <Menu
+              theme="dark"
+              className={classes.dropDownMenu}
+              selectable
+              selectedKeys={[String(page)]}
+              onClick={({ key }) => { handlePageChange(key); }}
+            >
+              {pageMenuItems}
+            </Menu>
+          }
+        >
+          <Button
+            size="large"
+            shape="circle"
+            type="primary"
+          >
+            {page}
+          </Button>
+        </Dropdown>
+      </div>
+      <div>
+        <Button
+          disabled={page === totalPage}
+          type="primary"
+          onClick={() => { handlePageChange(page + 1); }}
+        >
+          <Icon type="down" />
+        </Button>
+      </div>
+      <div>
+        <Button
+          type="primary"
+          onClick={handleBackToList}
+        >
+          <Icon type="arrow-left" />
+        </Button>
+      </div>
+    </div>
     <div className={classes.pagination}>
       <ButtonGroup style={{ marginRight: 16 }}>
         <Button disabled={page === 1} size="large" type="primary" icon="verticle-right" onClick={() => { handlePageChange(1); }} />
