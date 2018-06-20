@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Helmet } from 'react-helmet';
-import { List, Row, Select, Button, Icon } from 'antd';
+import { List, Row, Button, Icon, Dropdown, Menu } from 'antd';
 import {
   compose,
   lifecycle,
@@ -21,9 +21,9 @@ import IconText from '../../../components/IconText';
 import Loading from '../../../containers/Loading';
 import { PAGE_TITLE_BASE } from '../../../constants';
 
-const { Option } = Select;
 const { Reply } = models;
 const { fetchReplies, fetchQuote } = modules.thread;
+const ButtonGroup = Button.Group;
 
 const styles = theme => ({
   content: {
@@ -77,13 +77,34 @@ const styles = theme => ({
     padding: theme.padding,
   },
   pagination: {
+    height: '100%',
     padding: theme.padding,
     textAlign: 'center',
   },
+  dropDownMenu: {
+    width: 104,
+    maxHeight: 200,
+    overflow: 'auto',
+  },
   select: {
     width: 104,
-    marginLeft: `${theme.margin}px !important`,
-    marginRight: `${theme.margin}px !important`,
+  },
+  floatButton: {
+    position: 'fixed',
+    right: '4%',
+    '&[data-nav="prev"]': {
+      bottom: '370px',
+    },
+    '&[data-nav="page"]': {
+      right: '4.25%',
+      bottom: '316px',
+    },
+    '&[data-nav="next"]': {
+      bottom: '270px',
+    },
+    '&[data-nav="back"]': {
+      bottom: '220px',
+    },
   },
 });
 
@@ -96,7 +117,7 @@ const Thread = ({
   totalPage,
   like,
   dislike,
-  pageOptions,
+  pageMenuItems,
   fetchQuoteAction,
   fetchingQuoteId,
   handlePageChange,
@@ -148,16 +169,89 @@ const Thread = ({
         </div>
       )}
     />
+    <Button
+      data-nav="prev"
+      className={classes.floatButton}
+      disabled={page === 1}
+      type="primary"
+      onClick={() => { handlePageChange(page - 1); }}
+    >
+      <Icon type="up" />
+    </Button>
+    <Dropdown
+      placement="bottomCenter"
+      trigger={['click']}
+      overlay={
+        <Menu
+          theme="dark"
+          className={classes.dropDownMenu}
+          selectable
+          selectedKeys={[String(page)]}
+          onClick={({ key }) => { handlePageChange(key); }}
+        >
+          {pageMenuItems}
+        </Menu>
+      }
+    >
+      <Button
+        data-nav="page"
+        size="large"
+        className={classes.floatButton}
+        shape="circle"
+        type="primary"
+      >
+        {page}
+      </Button>
+    </Dropdown>
+    <Button
+      data-nav="next"
+      className={classes.floatButton}
+      disabled={page === totalPage}
+      type="primary"
+      onClick={() => { handlePageChange(page + 1); }}
+    >
+      <Icon type="down" />
+    </Button>
+    <Button
+      data-nav="back"
+      className={classes.floatButton}
+      type="primary"
+      onClick={handleBackToList}
+    >
+      <Icon type="arrow-left" />
+    </Button>
     <div className={classes.pagination}>
-      <Button disabled={page === 1} type="primary" onClick={() => { handlePageChange(page - 1); }}>
-        <Icon type="left" />上一頁
-      </Button>
-      <Select value={page} className={classes.select} onChange={handlePageChange}>
-        {pageOptions}
-      </Select>
-      <Button disabled={page === totalPage} type="primary" onClick={() => { handlePageChange(page + 1); }}>
-        下一頁<Icon type="right" />
-      </Button>
+      <ButtonGroup style={{ marginRight: 16 }}>
+        <Button disabled={page === 1} size="large" type="primary" icon="verticle-right" onClick={() => { handlePageChange(1); }} />
+        <Button disabled={page === 1} size="large" type="primary" icon="left" onClick={() => { handlePageChange(page - 1); }} />
+      </ButtonGroup>
+      <Dropdown
+        placement="topCenter"
+        trigger={['click']}
+        overlay={
+          <Menu
+            theme="dark"
+            className={classes.dropDownMenu}
+            selectable
+            selectedKeys={[String(page)]}
+            onClick={({ key }) => { handlePageChange(key); }}
+          >
+            {pageMenuItems}
+          </Menu>
+        }
+      >
+        <Button
+          data-nav="page"
+          size="large"
+          type="primary"
+        >
+          {`第 ${page} 頁`}<Icon type="down" />
+        </Button>
+      </Dropdown>
+      <ButtonGroup style={{ marginLeft: 16 }}>
+        <Button disabled={page === totalPage} size="large" type="primary" icon="right" onClick={() => { handlePageChange(page + 1); }} />
+        <Button disabled={page === totalPage} size="large" type="primary" icon="verticle-left" onClick={() => { handlePageChange(totalPage); }} />
+      </ButtonGroup>
     </div>
   </div>
 );
@@ -170,7 +264,7 @@ Thread.propTypes = {
   totalPage: PropTypes.number.isRequired,
   like: PropTypes.number.isRequired,
   dislike: PropTypes.number.isRequired,
-  pageOptions: PropTypes.arrayOf(PropTypes.node).isRequired,
+  pageMenuItems: PropTypes.arrayOf(PropTypes.node).isRequired,
   handlePageChange: PropTypes.func.isRequired,
   handleBackToList: PropTypes.func.isRequired,
   fetchQuoteAction: PropTypes.func.isRequired,
@@ -197,17 +291,17 @@ const enhance = compose(
     }
     const [forum, thread] = props.match.params.thread.split('+');
 
-    const pageOptions = [];
+    const pageMenuItems = [];
 
     for (let i = 0; i < props.totalPage; i += 1) {
-      pageOptions.push(<Option key={i + 1} value={i + 1}>{`第 ${i + 1} 頁`}</Option>);
+      pageMenuItems.push(<Menu.Item key={i + 1}>{`第 ${i + 1} 頁`}</Menu.Item>);
     }
     return ({
       initPage: () => { props.fetchReplies({ thread, page, forum }); },
       page: Number(page),
       thread,
       forum,
-      pageOptions,
+      pageMenuItems,
     });
   }),
   withStateHandlers(
@@ -240,13 +334,19 @@ const enhance = compose(
       <Loading error={isError} retry={initPage} pastDelay={pastDelay} />),
   ),
   withHandlers({
-    handleBackToList: ({ history, match }) => () => {
-      history.push(`/topics/${match.params.category}`);
+    handleBackToList: ({ history, match, location }) => () => {
+      const { state } = location;
+      if (state && state.type) {
+        history.push(`/topics/${match.params.category}?type=${state.type}`);
+      } else {
+        history.push(`/topics/${match.params.category}`);
+      }
     },
     handlePageChange: ({ history, location }) => (page) => {
       history.push({
         pathname: location.pathname,
         search: `?page=${page}`,
+        state: location.state,
       });
     },
   }),

@@ -83,7 +83,7 @@ const renderActions = item => [
   />,
 ];
 
-const renderItem = (classes, match) => item => (
+const renderItem = (classes, match, type) => item => (
   <List.Item
     key={`${item.forum}+${item.topicId}`}
     actions={renderActions(item)}
@@ -92,7 +92,10 @@ const renderItem = (classes, match) => item => (
     <List.Item.Meta
       title={
         <Link
-          to={`${match.url}/${item.forum}+${item.topicId}`}
+          to={{
+            pathname: `${match.url}/${item.forum}+${item.topicId}`,
+            state: { type },
+          }}
           href={`${match.url}/${item.forum}+${item.topicId}`}
         >
           {item.title}
@@ -159,7 +162,7 @@ const Topics = ({
       }}
       itemLayout="vertical"
       dataSource={topics}
-      renderItem={renderItem(classes, match)}
+      renderItem={renderItem(classes, match, type)}
       footer={
         Number(match.params.category) !== 2 &&
         topics.length > 0 &&
