@@ -87,6 +87,7 @@ const styles = theme => ({
     overflow: 'auto',
   },
   floatButton: {
+    opacity: 0.7,
     textAlign: 'center',
     position: 'fixed',
     right: '4%',
