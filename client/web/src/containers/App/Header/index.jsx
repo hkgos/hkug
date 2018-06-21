@@ -120,9 +120,10 @@ const enhance = compose(
     }
     if (matchThread && categoryId !== null) {
       isThread = true;
-      [threadForum, threadId] = matchThread.params.theadId.split('+');
+      threadId = matchThread.params.theadId;
       const query = new URLSearchParams(location.search);
       threadPage = query.get('page') || 1;
+      threadForum = query.get('forum');
     }
     const queryParams = new URLSearchParams(location.search);
     const type = queryParams.get('type');
