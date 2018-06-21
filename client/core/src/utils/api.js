@@ -235,31 +235,35 @@ export async function fetchHkgReplies({ thread, page = 1 } = {}) {
   };
 }
 
+export async function fetchLihkgReplies({ thread, page = 1 } = {}) {
+  const url = new URI(`thread/${thread}/page/${page}`, LIHKG_API_ENDPOINT);
+  const res = await httpClient.get(url.href());
+  const replies = [].concat(res.response.item_data).map(r => new Reply({
+    replyId: r.post_id,
+    forum: 'LIHKG',
+    index: r.msg_num,
+    authorId: r.user.user_id,
+    authorName: r.user_nickname,
+    authorGender: r.user_gender,
+    content: `${constructBlockquote(r.quote)}${r.msg}`,
+    replyDate: r.reply_time * 1000,
+  }));
+  return {
+    title: res.response.title,
+    totalPage: res.response.total_page === 0 ? 1 : res.response.total_page,
+    replies,
+    like: Number(res.response.like_count),
+    dislike: Number(res.response.dislike_count),
+  };
+}
+
 export async function fetchReplies({ thread, page = 1, forum } = {}) {
   switch (forum) {
     case 'HKG': {
       return fetchHkgReplies({ thread, page });
     }
     case 'LIHKG': {
-      const url = new URI(`thread/${thread}/page/${page}`, LIHKG_API_ENDPOINT);
-      const res = await httpClient.get(url.href());
-      const replies = [].concat(res.response.item_data).map(r => new Reply({
-        replyId: r.post_id,
-        forum: 'LIHKG',
-        index: r.msg_num,
-        authorId: r.user.user_id,
-        authorName: r.user_nickname,
-        authorGender: r.user_gender,
-        content: `${constructBlockquote(r.quote)}${r.msg}`,
-        replyDate: r.reply_time * 1000,
-      }));
-      return {
-        title: res.response.title,
-        totalPage: res.response.total_page === 0 ? 1 : res.response.total_page,
-        replies,
-        like: Number(res.response.like_count),
-        dislike: Number(res.response.dislike_count),
-      };
+      return fetchLihkgReplies({ thread, page });
     }
     default: {
       throw new Error('Unknown Forum');
