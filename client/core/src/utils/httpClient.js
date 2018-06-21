@@ -67,7 +67,7 @@ client.interceptors.response.use(
       // that falls out of the range of 2xx
 
       // TODO: Map known API error response to Error object
-      const err = new Error('未知的錯誤');
+      const err = new Error(error.response.statusText);
       return Promise.reject(err);
     } else if (error.request) {
       // The request was made but no response was received
