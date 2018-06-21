@@ -82,8 +82,7 @@ const styles = theme => ({
     textAlign: 'center',
   },
   dropDownMenu: {
-    width: 104,
-    maxHeight: 200,
+    maxHeight: 150,
     overflow: 'auto',
   },
   floatButton: {
@@ -91,7 +90,7 @@ const styles = theme => ({
     textAlign: 'center',
     position: 'fixed',
     right: '4%',
-    bottom: 250,
+    bottom: 220,
     '& div': {
       marginBottom: theme.margin,
       '& button': {
@@ -174,6 +173,14 @@ const Thread = ({
     <div className={classes.floatButton}>
       <div>
         <Button
+          type="primary"
+          onClick={handleBackToList}
+        >
+          <Icon type="arrow-left" />
+        </Button>
+      </div>
+      <div>
+        <Button
           disabled={page === 1}
           type="primary"
           onClick={() => { handlePageChange(page - 1); }}
@@ -215,46 +222,36 @@ const Thread = ({
           <Icon type="down" />
         </Button>
       </div>
-      <div>
-        <Button
-          type="primary"
-          onClick={handleBackToList}
-        >
-          <Icon type="arrow-left" />
-        </Button>
-      </div>
     </div>
     <div className={classes.pagination}>
-      <ButtonGroup style={{ marginRight: 16 }}>
-        <Button disabled={page === 1} size="large" type="primary" icon="verticle-right" onClick={() => { handlePageChange(1); }} />
-        <Button disabled={page === 1} size="large" type="primary" icon="left" onClick={() => { handlePageChange(page - 1); }} />
-      </ButtonGroup>
-      <Dropdown
-        placement="topCenter"
-        trigger={['click']}
-        overlay={
-          <Menu
-            theme="dark"
-            className={classes.dropDownMenu}
-            selectable
-            selectedKeys={[String(page)]}
-            onClick={({ key }) => { handlePageChange(key); }}
-          >
-            {pageMenuItems}
-          </Menu>
-        }
-      >
-        <Button
-          data-nav="page"
-          size="large"
-          type="primary"
+      <ButtonGroup>
+        <Button shape="circle" disabled={page === 1} size="large" type="primary" icon="verticle-right" onClick={() => { handlePageChange(1); }} />
+        <Button shape="circle" disabled={page === 1} size="large" type="primary" icon="left" onClick={() => { handlePageChange(page - 1); }} />
+        <Dropdown
+          placement="topCenter"
+          trigger={['click']}
+          overlay={
+            <Menu
+              theme="dark"
+              className={classes.dropDownMenu}
+              selectable
+              selectedKeys={[String(page)]}
+              onClick={({ key }) => { handlePageChange(key); }}
+            >
+              {pageMenuItems}
+            </Menu>
+          }
         >
-          {`第 ${page} 頁`}<Icon type="down" />
-        </Button>
-      </Dropdown>
-      <ButtonGroup style={{ marginLeft: 16 }}>
-        <Button disabled={page === totalPage} size="large" type="primary" icon="right" onClick={() => { handlePageChange(page + 1); }} />
-        <Button disabled={page === totalPage} size="large" type="primary" icon="verticle-left" onClick={() => { handlePageChange(totalPage); }} />
+          <Button
+            data-nav="page"
+            size="large"
+            type="primary"
+          >
+            {`第 ${page} 頁`}<Icon type="down" />
+          </Button>
+        </Dropdown>
+        <Button shape="circle" disabled={page === totalPage} size="large" type="primary" icon="right" onClick={() => { handlePageChange(page + 1); }} />
+        <Button shape="circle" disabled={page === totalPage} size="large" type="primary" icon="verticle-left" onClick={() => { handlePageChange(totalPage); }} />
       </ButtonGroup>
     </div>
   </div>
