@@ -39,22 +39,48 @@ const client = axios.create({
 // }, error => Promise.reject(error)); // Should be a configration error
 
 // Response Interceptor
-client.interceptors.response.use(res => res.data, (error) => {
-  if (error.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    return Promise.reject(error);
-  } else if (error.request) {
-    // The request was made but no response was received
-    // Most likely a network problem
-    const err = new Error('網絡發生問題');
-    err.network = true;
+client.interceptors.response.use(
+  (res) => {
+    // Bad practice to check error in a success (2xx) response
+    // Since the APIs handle error in this way, don't really have a choice...
+    if (res.data.success === false || res.data.success === 0) {
+      // try to get the error message
+      /* eslint-disable camelcase */
+      const { error_message, error_msg } = res.data;
+      if (typeof error_message === 'string' && error_message.trim() !== '') {
+        const err = new Error(error_message);
+        return Promise.reject(err);
+      }
+      if (typeof error_msg === 'string' && error_msg.trim() !== '') {
+        const err = new Error(error_msg);
+        return Promise.reject(err);
+      }
+      /* eslint-enable */
+      const err = new Error('未知的錯誤');
+      return Promise.reject(err);
+    }
+    return res.data;
+  },
+  (error) => {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+
+      // TODO: Map known API error response to Error object
+      const err = new Error('未知的錯誤');
+      return Promise.reject(err);
+    } else if (error.request) {
+      // The request was made but no response was received
+      // Most likely a network problem
+      const err = new Error('網絡發生問題');
+      err.network = true;
+      return Promise.reject(err);
+    }
+    // Something happened in setting up the request that triggered an Error
+    const err = new Error('內部錯誤');
+    err.internal = true;
     return Promise.reject(err);
-  }
-  // Something happened in setting up the request that triggered an Error
-  const err = new Error('內部錯誤');
-  err.internal = true;
-  return Promise.reject(err);
-});
+  },
+);
 
 export default client;

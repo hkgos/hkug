@@ -164,7 +164,6 @@ const Topics = ({
       dataSource={topics}
       renderItem={renderItem(classes, match, type)}
       footer={
-        Number(match.params.category) !== 2 &&
         topics.length > 0 &&
         !loading &&
         <Footer className={classes.footer} loadMore={handleLoadMore} />
@@ -231,11 +230,6 @@ const enhance = compose(
         this.props.fetchTopics({ category, type }, { reset: true });
       }
       if (!prevProps.isError && this.props.isError) {
-        message.config({
-          top: 72,
-          duration: 3,
-          maxCount: 1,
-        });
         message.error(this.props.error.message);
       }
     },

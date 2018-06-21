@@ -160,14 +160,14 @@ export async function fetchTopics({ category, page, type } = { type: 'all' }) {
     try {
       hkgTopics = await t1;
     } catch (e) {
-      hkgError = new Error('高登冇應機');
+      hkgError = e;
     }
   }
   if (t2) {
     try {
       lihkgTopics = await t2;
     } catch (e) {
-      lihkgError = new Error('連登冇應機');
+      lihkgError = e;
     }
   }
   const topics = [];
