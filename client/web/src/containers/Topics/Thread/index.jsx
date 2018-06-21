@@ -295,7 +295,8 @@ const enhance = compose(
     if (!page || page < 1) {
       page = 1;
     }
-    const [forum, thread] = props.match.params.thread.split('+');
+    const forum = query.get('forum');
+    const { thread } = props.match.params;
 
     const pageMenuItems = [];
 
@@ -348,10 +349,11 @@ const enhance = compose(
         history.push(`/topics/${match.params.category}`);
       }
     },
-    handlePageChange: ({ history, location }) => (page) => {
+    handlePageChange: ({ history, location, forum }) => (page) => {
+      const params = new URLSearchParams({ forum, page });
       history.push({
         pathname: location.pathname,
-        search: `?page=${page}`,
+        search: `?${params}`,
         state: location.state,
       });
     },

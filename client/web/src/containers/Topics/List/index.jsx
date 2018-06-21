@@ -93,10 +93,11 @@ const renderItem = (classes, match, type) => item => (
       title={
         <Link
           to={{
-            pathname: `${match.url}/${item.forum}+${item.topicId}`,
+            pathname: `${match.url}/${item.topicId}`,
+            search: `?forum=${item.forum}`,
             state: { type },
           }}
-          href={`${match.url}/${item.forum}+${item.topicId}`}
+          href={`${match.url}/${item.topicId}?forum=${item.forum}`}
         >
           {item.title}
         </Link>
