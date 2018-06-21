@@ -225,6 +225,11 @@ const enhance = compose(
       this.props.fetchTopics({ category, type }, { reset: true });
     },
     componentDidUpdate(prevProps) {
+      if (prevProps.category !== this.props.category || prevProps.type !== this.props.type) {
+        // Changed to other category / type, fetch with reset
+        const { category, type } = this.props;
+        this.props.fetchTopics({ category, type }, { reset: true });
+      }
       if (!prevProps.isError && this.props.isError) {
         message.config({
           top: 72,
@@ -238,7 +243,6 @@ const enhance = compose(
   withHandlers({
     handleTypeChange: props => ({ key }) => {
       props.history.push(`/topics/${props.match.params.category}?type=${key}`);
-      props.fetchTopics({ category: props.category, type: key }, { reset: true });
     },
     handleLoadMore: props => () => {
       const { category, type } = props;

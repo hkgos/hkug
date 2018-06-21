@@ -1,16 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Layout, Menu } from 'antd';
 import { compose, withProps, withHandlers, pure } from 'recompose';
 import injectSheet from 'react-jss';
 import { withRouter, matchPath, Link } from 'react-router-dom';
-import { utils, modules } from 'hkug-client-core';
+import { utils } from 'hkug-client-core';
 import { SIDE_MENU_BREAK_POINT } from '../../../constants';
 import logo from '../../../img/logo.png';
 
 const allCategories = utils.categories.default;
-const { fetchTopics } = modules.topic;
 const { Sider } = Layout;
 
 const styles = theme => ({
@@ -97,7 +95,6 @@ AppSider.propTypes = {
 const enhance = compose(
   injectSheet(styles),
   withRouter,
-  connect(() => ({}), { fetchTopics }),
   withProps(({ location }) => {
     const match = matchPath(location.pathname, { path: '/topics/:category' });
     const selectedKeys = [];
@@ -116,7 +113,6 @@ const enhance = compose(
       if (window.innerWidth <= SIDE_MENU_BREAK_POINT) {
         props.setMenuCollapse(true);
       }
-      props.fetchTopics({ category: key }, { reset: true });
       props.history.push(`/topics/${key}`);
     },
   }),
