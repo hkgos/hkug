@@ -8,7 +8,7 @@ const proxy = httpProxy.createProxyServer({});
 
 app.use(express.static('public'));
 
-app.use('/hkg-api-android', (req, res, next) => {
+app.use('/hkg-api-mobile', (req, res, next) => {
   proxy.web(req, res, {
     changeOrigin: true,
     autoRewrite: true,

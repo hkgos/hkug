@@ -1,6 +1,6 @@
 /* eslint-env browser */
 export const HKG_API_ENDPOINT_MOBILE = process.env.PROXY ?
-  new URL('/hkg-api-android/', window.location.origin).href : 'https://api-1.hkgolden.com/';
+  new URL('/hkg-api-mobile/', window.location.origin).href : 'https://api-1.hkgolden.com/';
 export const LIHKG_API_ENDPOINT = 'https://lihkg.com/api_v2/';
 export const HKG_HOST = 'https://forum.hkgolden.com/';
 export const LIHKG_HOST = 'https://lihkg.com/';
