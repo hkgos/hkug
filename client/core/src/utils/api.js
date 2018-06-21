@@ -5,7 +5,6 @@ import Topic from '../models/Topic';
 import Reply from '../models/Reply';
 import { getHkgId, getLihkgId } from './categories';
 import {
-  HKG_API_ENDPOINT_WEB,
   HKG_API_ENDPOINT_MOBILE,
   LIHKG_API_ENDPOINT,
 } from '../constants';
@@ -34,55 +33,39 @@ export async function fetchHkgTopics({ category, page } = {}) {
   let hkgTopics = [];
   const hkgId = getHkgId(category);
   if (hkgId) {
-    try {
-      const url = new URI('newTopics.aspx', HKG_API_ENDPOINT_MOBILE);
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth() + 1 >= 10 ? String(now.getMonth() + 1) : `0${now.getMonth() + 1}`;
-      const day = now.getDate() >= 10 ? String(now.getDate()) : `0${now.getDate()}`;
-      const userId = 0;
-      const block = 'N';
-      const filter = 'N';
-      const s = md5(`${year}${month}${day}_HKGOLDEN_%GUEST%_$API#Android_1_2^${hkgId}_${page}_${filter}_N`).toString();
-      url.search({
-        s,
-        user_id: userId,
-        type: hkgId,
-        page,
-        filtermode: filter,
-        block,
-        sensormode: 'N',
-        returntype: 'json',
-      });
-      const res = await httpClient.get(url.href());
-      hkgTopics = [].concat(res.topic_list).map(t => new Topic({
-        topicId: t.Message_ID,
-        forum: 'HKG',
-        category,
-        title: t.Message_Title,
-        createdDate: t.MessageDate.substring(t.MessageDate.lastIndexOf('(') + 1, t.MessageDate.lastIndexOf(')')),
-        authorId: t.Author_ID,
-        authorName: t.Author_Name,
-        lastReplyDate: t.Last_Reply_Date.substring(t.Last_Reply_Date.lastIndexOf('(') + 1, t.Last_Reply_Date.lastIndexOf(')')),
-        totalReplies: t.Total_Replies,
-        like: t.Marks_Good,
-        dislike: t.Marks_Bad,
-      })).sort(sortTopicsByLastReplyDate).reverse();
-    } catch (e) {
-      // Fallback to WEB API
-      const url = new URI(`topics/${hkgId}/${page}`, HKG_API_ENDPOINT_WEB);
-      const res = await httpClient.get(url.href());
-      hkgTopics = [].concat(res.data.list).map(t => new Topic({
-        ...t,
-        topicId: t.id,
-        forum: 'HKG',
-        category,
-        authorGender: t.authorGender ? 'M' : 'F',
-        createdDate: t.messageDate,
-        like: t.marksGood,
-        dislike: t.marksBad,
-      })).sort(sortTopicsByLastReplyDate).reverse();
-    }
+    const url = new URI('newTopics.aspx', HKG_API_ENDPOINT_MOBILE);
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1 >= 10 ? String(now.getMonth() + 1) : `0${now.getMonth() + 1}`;
+    const day = now.getDate() >= 10 ? String(now.getDate()) : `0${now.getDate()}`;
+    const userId = 0;
+    const block = 'N';
+    const filter = 'N';
+    const s = md5(`${year}${month}${day}_HKGOLDEN_%GUEST%_$API#Android_1_2^${hkgId}_${page}_${filter}_N`).toString();
+    url.search({
+      s,
+      user_id: userId,
+      type: hkgId,
+      page,
+      filtermode: filter,
+      block,
+      sensormode: 'N',
+      returntype: 'json',
+    });
+    const res = await httpClient.get(url.href());
+    hkgTopics = [].concat(res.topic_list).map(t => new Topic({
+      topicId: t.Message_ID,
+      forum: 'HKG',
+      category,
+      title: t.Message_Title,
+      createdDate: t.MessageDate.substring(t.MessageDate.lastIndexOf('(') + 1, t.MessageDate.lastIndexOf(')')),
+      authorId: t.Author_ID,
+      authorName: t.Author_Name,
+      lastReplyDate: t.Last_Reply_Date.substring(t.Last_Reply_Date.lastIndexOf('(') + 1, t.Last_Reply_Date.lastIndexOf(')')),
+      totalReplies: t.Total_Replies,
+      like: t.Marks_Good,
+      dislike: t.Marks_Bad,
+    })).sort(sortTopicsByLastReplyDate).reverse();
   }
   return hkgTopics;
 }
@@ -209,76 +192,47 @@ export async function fetchTopics({ category, page, type } = { type: 'all' }) {
 }
 
 export async function fetchHkgReplies({ thread, page = 1 } = {}) {
-  try {
-    const url = new URI('newView.aspx', HKG_API_ENDPOINT_MOBILE);
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1 >= 10 ? String(now.getMonth() + 1) : `0${now.getMonth() + 1}`;
-    const day = now.getDate() >= 10 ? String(now.getDate()) : `0${now.getDate()}`;
-    const userId = 0;
-    const block = 'N';
-    const filter = 'N';
-    const limit = 25;
-    const start = (page - 1) * limit;
-    const s = md5(`${year}${month}${day}_HKGOLDEN_%GUEST%_$API#Android_1_2^${thread}_${start}_${filter}_N`).toString();
-    url.search({
-      s,
-      user_id: userId,
-      message: thread,
-      limit,
-      start,
-      page,
-      block,
-      filtermode: filter,
-      sensormode: 'N',
-      returntype: 'json',
-    });
-    const res = await httpClient.get(url.href());
-    const replies = res.messages.map((r, i) => new Reply({
-      replyId: r.Reply_ID,
-      forum: 'HKG',
-      index: start + i + 1,
-      authorId: r.Author_ID,
-      authorName: r.Author_Name,
-      authorGender: r.Author_Gender,
-      content: r.Message_Body,
-      replyDate: r.Message_Date.substring(r.Message_Date.lastIndexOf('(') + 1, r.Message_Date.lastIndexOf(')')),
-    }));
-    return {
-      title: res.Message_Title,
-      totalPage: res.Total_Pages === 0 ? 1 : res.Total_Pages,
-      replies,
-      like: Number(res.Rating_Good),
-      dislike: Number(res.Rating_Bad),
-    };
-  } catch (e) {
-    // Fallback to WEB API
-    const url = new URI(`view/${thread}/${page}`, HKG_API_ENDPOINT_WEB);
-    const res = await httpClient.get(url.href());
-    let first = [];
-    if (page === 1) {
-      first = [new Reply({
-        ...res.data,
-        replyId: res.data.id,
-        forum: 'HKG',
-        index: 0,
-        authorGender: res.data.authorGender ? 'M' : 'F',
-        replyDate: res.data.messageDate,
-      })];
-    }
-    const replies = first.concat((res.data.replies).map(r => new Reply({
-      ...r,
-      replyId: r.id,
-      forum: 'HKG',
-      index: r.index,
-      authorGender: r.authorGender ? 'M' : 'F',
-    })));
-    return {
-      title: res.data.title,
-      totalPage: res.data.totalPage === 0 ? 1 : res.data.totalPage,
-      replies,
-    };
-  }
+  const url = new URI('newView.aspx', HKG_API_ENDPOINT_MOBILE);
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1 >= 10 ? String(now.getMonth() + 1) : `0${now.getMonth() + 1}`;
+  const day = now.getDate() >= 10 ? String(now.getDate()) : `0${now.getDate()}`;
+  const userId = 0;
+  const block = 'N';
+  const filter = 'N';
+  const limit = 25;
+  const start = (page - 1) * limit;
+  const s = md5(`${year}${month}${day}_HKGOLDEN_%GUEST%_$API#Android_1_2^${thread}_${start}_${filter}_N`).toString();
+  url.search({
+    s,
+    user_id: userId,
+    message: thread,
+    limit,
+    start,
+    page,
+    block,
+    filtermode: filter,
+    sensormode: 'N',
+    returntype: 'json',
+  });
+  const res = await httpClient.get(url.href());
+  const replies = res.messages.map((r, i) => new Reply({
+    replyId: r.Reply_ID,
+    forum: 'HKG',
+    index: start + i + 1,
+    authorId: r.Author_ID,
+    authorName: r.Author_Name,
+    authorGender: r.Author_Gender,
+    content: r.Message_Body,
+    replyDate: r.Message_Date.substring(r.Message_Date.lastIndexOf('(') + 1, r.Message_Date.lastIndexOf(')')),
+  }));
+  return {
+    title: res.Message_Title,
+    totalPage: res.Total_Pages === 0 ? 1 : res.Total_Pages,
+    replies,
+    like: Number(res.Rating_Good),
+    dislike: Number(res.Rating_Bad),
+  };
 }
 
 export async function fetchReplies({ thread, page = 1, forum } = {}) {

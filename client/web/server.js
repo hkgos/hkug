@@ -8,18 +8,6 @@ const proxy = httpProxy.createProxyServer({});
 
 app.use(express.static('public'));
 
-app.use('/hkg-api-web', (req, res, next) => {
-  proxy.web(req, res, {
-    changeOrigin: true,
-    autoRewrite: true,
-    followRedirects: true,
-    target: 'https://web.hkgolden.com/api/',
-  }, (err) => {
-    console.error(err);
-    next(err);
-  });
-});
-
 app.use('/hkg-api-android', (req, res, next) => {
   proxy.web(req, res, {
     changeOrigin: true,

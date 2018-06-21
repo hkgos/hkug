@@ -26,12 +26,6 @@ const devServer = devMode ? {
   // static content base path
   contentBase: path.resolve(__dirname, contentBase),
   proxy: {
-    '/hkg-api-web': {
-      target: 'https://web.hkgolden.com/api/',
-      changeOrigin: true,
-      pathRewrite: { '^/hkg-api-web': '' },
-      followRedirects: true,
-    },
     '/hkg-api-android': {
       changeOrigin: true,
       pathRewrite: { '^/hkg-api-android': '' },
