@@ -77,9 +77,14 @@ const styles = theme => ({
     padding: theme.padding,
   },
   pagination: {
-    height: '100%',
     padding: theme.padding,
     textAlign: 'center',
+    '& div:first-child': {
+      marginRight: theme.margin,
+    },
+    '& div:last-child': {
+      marginLeft: theme.margin,
+    },
   },
   dropDownMenu: {
     maxHeight: 150,
@@ -225,33 +230,33 @@ const Thread = ({
     </div>
     <div className={classes.pagination}>
       <ButtonGroup>
-        <Button shape="circle" disabled={page === 1} size="large" type="primary" icon="verticle-right" onClick={() => { handlePageChange(1); }} />
-        <Button shape="circle" disabled={page === 1} size="large" type="primary" icon="left" onClick={() => { handlePageChange(page - 1); }} />
-        <Dropdown
-          placement="topCenter"
-          trigger={['click']}
-          overlay={
-            <Menu
-              theme="dark"
-              className={classes.dropDownMenu}
-              selectable
-              selectedKeys={[String(page)]}
-              onClick={({ key }) => { handlePageChange(key); }}
-            >
-              {pageMenuItems}
-            </Menu>
-          }
-        >
-          <Button
-            data-nav="page"
-            size="large"
-            type="primary"
+        <Button disabled={page === 1} type="primary" icon="verticle-right" onClick={() => { handlePageChange(1); }} />
+        <Button disabled={page === 1} type="primary" icon="left" onClick={() => { handlePageChange(page - 1); }} />
+      </ButtonGroup>
+      <Dropdown
+        placement="topCenter"
+        trigger={['click']}
+        overlay={
+          <Menu
+            className={classes.dropDownMenu}
+            selectable
+            selectedKeys={[String(page)]}
+            onClick={({ key }) => { handlePageChange(key); }}
           >
-            {`第 ${page} 頁`}<Icon type="down" />
-          </Button>
-        </Dropdown>
-        <Button shape="circle" disabled={page === totalPage} size="large" type="primary" icon="right" onClick={() => { handlePageChange(page + 1); }} />
-        <Button shape="circle" disabled={page === totalPage} size="large" type="primary" icon="verticle-left" onClick={() => { handlePageChange(totalPage); }} />
+            {pageMenuItems}
+          </Menu>
+        }
+      >
+        <Button
+          size="large"
+          data-nav="page"
+        >
+          {`第 ${page} 頁`}<Icon type="down" />
+        </Button>
+      </Dropdown>
+      <ButtonGroup>
+        <Button disabled={page === totalPage} type="primary" icon="right" onClick={() => { handlePageChange(page + 1); }} />
+        <Button disabled={page === totalPage} type="primary" icon="verticle-left" onClick={() => { handlePageChange(totalPage); }} />
       </ButtonGroup>
     </div>
   </div>
