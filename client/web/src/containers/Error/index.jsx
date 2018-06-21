@@ -12,32 +12,48 @@ const styles = theme => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  text: {
-    margin: `0 ${theme.marginSmall}px 0px ${theme.marginSmall}px`,
+  content: {
+    textAlign: 'center',
+  },
+  title: {
+    display: 'inline-block',
+    margin: theme.marginSmall,
     fontSize: 'x-large',
   },
   button: {
-    margin: `0 ${theme.marginSmall}px 0px ${theme.marginSmall}px`,
+    display: 'inline-block',
+    margin: theme.marginSmall,
+  },
+  detail: {
+    color: theme.secondaryColor,
+    margin: theme.margin,
   },
 });
 
-const ErrorPage = ({ classes, retry }) => (
+const ErrorPage = ({ classes, retry, detail }) => (
   <div className={classes.container}>
-    <div className={classes.text}>發生錯誤</div>
-    <div className={classes.button}>
-      <Button
-        type="primary"
-        size="large"
-        shape="circle"
-        icon="reload"
-        onClick={retry}
-      />
+    <div className={classes.content}>
+      <div className={classes.title}>發生錯誤</div>
+      <div className={classes.button}>
+        <Button
+          type="primary"
+          size="large"
+          shape="circle"
+          icon="reload"
+          onClick={retry}
+        />
+      </div>
+      <div className={classes.detail}>{detail}</div>
     </div>
   </div>
 );
 ErrorPage.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   retry: PropTypes.func.isRequired,
+  detail: PropTypes.string,
+};
+ErrorPage.defaultProps = {
+  detail: '未知的錯誤',
 };
 
 const enhance = compose(

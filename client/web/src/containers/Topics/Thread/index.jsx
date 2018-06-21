@@ -287,6 +287,7 @@ const enhance = compose(
     dislike: state.thread.dislike,
     isLoading: state.thread.isFetchingReplies,
     isError: state.thread.isFetchRepliesError,
+    fetchRepliesError: state.thread.fetchRepliesError,
     fetchingQuoteId: state.thread.fetchingQuoteId,
   }), { fetchReplies, fetchQuoteAction: fetchQuote }),
   withProps((props) => {
@@ -337,8 +338,19 @@ const enhance = compose(
   }),
   branch(
     ({ isLoading, isError }) => isLoading || isError,
-    renderComponent(({ initPage, isError, pastDelay }) =>
-      <Loading error={isError} retry={initPage} pastDelay={pastDelay} />),
+    renderComponent(({
+      initPage,
+      isError,
+      pastDelay,
+      fetchRepliesError,
+    }) => (
+      <Loading
+        error={isError}
+        retry={initPage}
+        pastDelay={pastDelay}
+        detail={fetchRepliesError && fetchRepliesError.message}
+      />
+    )),
   ),
   withHandlers({
     handleBackToList: ({ history, match, location }) => () => {

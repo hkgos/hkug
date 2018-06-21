@@ -63,11 +63,12 @@ const styles = theme => ({
 const Loading = ({
   classes,
   error,
+  detail,
   pastDelay,
   retry,
 }) => {
   if (error) {
-    return <ErrorPage retry={retry} />;
+    return <ErrorPage retry={retry} detail={detail} />;
   } else if (pastDelay) {
     return (
       <div className={classes.container}>
@@ -85,12 +86,14 @@ const Loading = ({
 Loading.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   error: PropTypes.bool,
+  detail: PropTypes.string,
   pastDelay: PropTypes.bool,
   retry: PropTypes.func.isRequired,
 };
 Loading.defaultProps = {
   error: false,
   pastDelay: true,
+  detail: '伺服器沒有回應',
 };
 
 const enhance = compose(
