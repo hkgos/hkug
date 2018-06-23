@@ -29,6 +29,9 @@ function getEmoji() {
 }
 exports.getEmoji = getEmoji;
 ;
+const getFormData = function (request) {
+    return new url_1.URLSearchParams(Object.entries(request)).toString().replace(new RegExp('\\+', 'g'), '%20');
+};
 function create(config) {
     const configWithDefault = Object.assign({ baseURL: defaultBaseURL }, config);
     let device = crypto_js_1.enc.Hex.stringify(crypto_js_1.SHA1(uuid_1.v4()));
@@ -47,10 +50,10 @@ function create(config) {
     let login = false;
     let initProperty = false;
     let property;
-    if (config.user_id !== undefined && config.token !== undefined) {
-        token = config.token;
+    if (configWithDefault.user_id !== undefined && configWithDefault.token !== undefined) {
+        token = configWithDefault.token;
         login = true;
-        instance.defaults.headers.common['X-LI-USER'] = config.user_id;
+        instance.defaults.headers.common['X-LI-USER'] = configWithDefault.user_id;
     }
     const apiEndPoint = {
         getProperty: () => instance
@@ -68,7 +71,7 @@ function create(config) {
             return propertyJson;
         }),
         login: (request) => instance
-            .post('auth/login', new url_1.URLSearchParams(Object.entries(request)).toString())
+            .post('auth/login', getFormData(request))
             .then(function (response) {
             let loginJson = model_1.Convert.toLoginJSON(response.data);
             if (loginJson.success) {
@@ -99,7 +102,7 @@ function create(config) {
             .get(`thread/${request.thread_id}/page/${request.page}?order=${request.order}`)
             .then(response => model_1.Convert.toContentJSON(response.data)),
         reply: request => instance
-            .post('thread/reply', new url_1.URLSearchParams(Object.entries(request)).toString())
+            .post('thread/reply', getFormData(request))
             .then(response => JSON.parse(response.data)),
         getThreadMedia: request => instance
             .get(`thread/${request.thread_id}/media?` + new url_1.URLSearchParams(Object.entries(request)).toString())

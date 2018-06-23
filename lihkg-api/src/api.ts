@@ -71,6 +71,7 @@ export interface ThreadContentRequest {
 export interface ReplyRequest {
     thread_id: number,
     content: string,
+    quote_post_id?: string,
 }
 
 export interface LikeThreadRequest {
@@ -104,6 +105,11 @@ export interface LIHKGConfig {
     user_id?: string,
     token?: string,
 }
+
+const getFormData = function(request) {
+    return new URLSearchParams(Object.entries(request)).toString().replace(new RegExp('\\+', 'g'), '%20');
+};
+
 export function create(config?: LIHKGConfig): Promise<LIHKG> {
     const configWithDefault: LIHKGConfig = {
         baseURL: defaultBaseURL,
@@ -125,10 +131,10 @@ export function create(config?: LIHKGConfig): Promise<LIHKG> {
     let login = false;
     let initProperty = false;
     let property: Category[];
-    if(config.user_id !== undefined && config.token !== undefined) {
-        token = config.token;
+    if(configWithDefault.user_id !== undefined && configWithDefault.token !== undefined) {
+        token = configWithDefault.token;
         login = true;
-        instance.defaults.headers.common['X-LI-USER'] = config.user_id;
+        instance.defaults.headers.common['X-LI-USER'] = configWithDefault.user_id;
     }
     const apiEndPoint: LIHKG = {
         getProperty: () =>
@@ -148,7 +154,7 @@ export function create(config?: LIHKGConfig): Promise<LIHKG> {
                 }),
         login: (request) =>
             instance
-                .post('auth/login', new URLSearchParams(Object.entries(request)).toString())
+                .post('auth/login', getFormData(request))
                 .then(function (response) {
                     let loginJson = Convert.toLoginJSON(response.data);
                     if (loginJson.success) {
@@ -188,7 +194,7 @@ export function create(config?: LIHKGConfig): Promise<LIHKG> {
                 .then(response => Convert.toContentJSON(response.data)),
         reply: request =>
             instance
-                .post('thread/reply', new URLSearchParams(Object.entries(request)).toString())
+                .post('thread/reply', getFormData(request))
                 .then(response => JSON.parse(response.data)),
         getThreadMedia: request =>
             instance
