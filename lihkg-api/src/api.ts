@@ -107,7 +107,7 @@ export interface LIHKGConfig {
 }
 
 const getFormData = function(request) {
-    return new URLSearchParams(Object.entries(request)).toString().replace('+', '%20');
+    return new URLSearchParams(Object.entries(request)).toString().replace(new RegExp('\\+', 'g'), '%20');
 };
 
 export function create(config?: LIHKGConfig): Promise<LIHKG> {

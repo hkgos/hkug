@@ -30,7 +30,7 @@ function getEmoji() {
 exports.getEmoji = getEmoji;
 ;
 const getFormData = function (request) {
-    return new url_1.URLSearchParams(Object.entries(request)).toString().replace('+', '%20');
+    return new url_1.URLSearchParams(Object.entries(request)).toString().replace(new RegExp('\\+', 'g'), '%20');
 };
 function create(config) {
     const configWithDefault = Object.assign({ baseURL: defaultBaseURL }, config);
