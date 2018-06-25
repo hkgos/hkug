@@ -1,4 +1,4 @@
-const categories = [
+export const list = [
   {
     id: 1,
     hkgId: 'BW',
@@ -235,7 +235,7 @@ export function getHkgId(id) {
   if (!cast) {
     return null;
   }
-  const category = categories.find(c => c.id === cast);
+  const category = list.find(c => c.id === cast);
   return category ? category.hkgId : null;
 }
 
@@ -244,7 +244,7 @@ export function getLihkgId(id) {
   if (!cast) {
     return null;
   }
-  const category = categories.find(c => c.id === cast);
+  const category = list.find(c => c.id === cast);
   return category ? category.lihkgId : null;
 }
 
@@ -253,8 +253,6 @@ export function getCategoryName(id) {
   if (!cast) {
     return null;
   }
-  const category = categories.find(c => c.id === cast);
+  const category = list.find(c => c.id === cast);
   return category ? category.name : null;
 }
-
-export default categories;

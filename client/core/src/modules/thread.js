@@ -1,4 +1,9 @@
-import { call, put, takeLatest, takeEvery } from 'redux-saga/effects';
+import {
+  call,
+  put,
+  takeLatest,
+  takeEvery,
+} from 'redux-saga/effects';
 import * as API from '../utils/api';
 import Reply from '../models/Reply';
 // Actions
@@ -11,21 +16,19 @@ export const FETCH_QUOTE_FAILED = 'FETCH_QUOTE_FAILED';
 
 // Default state
 export const defaultState = () => ({
-  isFetchingReplies: false,
-  isFetchRepliesError: false,
-  fetchRepliesError: null,
-  totalPage: 1,
+  status: 'DONE',
+  error: null,
+  totalPage: 0,
   title: '',
   replies: [],
   like: 0,
   dislike: 0,
-  fetchingQuoteId: [],
-  isFetchQuoteError: false,
+  quoteFetchingList: [],
 });
 
 // Action creator
-export function fetchReplies(payload = {}) {
-  return ({ type: FETCH_REPLIES, payload });
+export function fetchReplies(payload = {}, meta = {}) {
+  return ({ type: FETCH_REPLIES, payload, meta });
 }
 export function fetchQuote(payload = {}, meta = {}) {
   return ({ type: FETCH_QUOTE, payload, meta });
@@ -38,9 +41,10 @@ function* doFetchReplies(action) {
     yield put({
       type: FETCH_REPLIES_SUCCEEDED,
       payload: res,
+      meta: action.meta,
     });
   } catch (error) {
-    yield put({ type: FETCH_REPLIES_FAILED, error });
+    yield put({ type: FETCH_REPLIES_FAILED, error, meta: action.meta });
   }
 }
 function* doFetchQuote(action) {
@@ -67,33 +71,34 @@ export default function reducer(state = defaultState(), action) {
     case FETCH_REPLIES:
       return {
         ...state,
-        isFetchingReplies: true,
-        isFetchRepliesError: false,
+        status: FETCH_REPLIES,
+        error: null,
         replies: [],
       };
     case FETCH_REPLIES_SUCCEEDED:
       return {
         ...state,
-        isFetchingReplies: false,
+        status: 'DONE',
         ...action.payload,
       };
     case FETCH_REPLIES_FAILED:
       return {
         ...state,
-        isFetchingReplies: false,
-        isFetchRepliesError: true,
-        fetchRepliesError: action.error,
+        status: 'ERROR',
+        error: action.error,
       };
     case FETCH_QUOTE:
       return {
         ...state,
-        fetchingQuoteId: [action.payload.quote].concat(state.fetchingQuoteId),
-        isFetchQuoteError: false,
+        status: FETCH_QUOTE,
+        quoteFetchingList: [action.payload.quote].concat(state.quoteFetchingList),
+        error: null,
       };
     case FETCH_QUOTE_SUCCEEDED:
       return {
         ...state,
-        fetchingQuoteId: state.fetchingQuoteId.filter(a => a !== action.meta.quote),
+        status: 'DONE',
+        quoteFetchingList: state.quoteFetchingList.filter(a => a !== action.meta.quote),
         replies: state.replies.map((r) => {
           if (r.replyId === action.meta.replyId) {
             return new Reply({
@@ -107,9 +112,9 @@ export default function reducer(state = defaultState(), action) {
     case FETCH_QUOTE_FAILED:
       return {
         ...state,
-        fetchingQuoteId: state.fetchingQuoteId.filter(a => a !== action.meta.quote),
-        isFetchQuoteError: true,
-        fetchQuoteError: action.error,
+        status: 'ERROR',
+        quoteFetchingList: state.quoteFetchingList.filter(a => a !== action.meta.quote),
+        error: action.error,
       };
     default:
       return state;

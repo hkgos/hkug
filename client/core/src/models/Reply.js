@@ -94,6 +94,14 @@ export default class Reply {
     this.replyDate = new Date(Number(replyDate));
   }
 
+  get isMaleAuthor() {
+    return this.authorGender === 'M';
+  }
+
+  get isFemaleAuthor() {
+    return this.authorGender === 'F';
+  }
+
   get hasIcon() {
     if (this.forum === 'HKG') {
       if (this.authorIcon && this.authorIcon !== '1') {

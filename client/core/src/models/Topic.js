@@ -36,6 +36,14 @@ export default class Topic {
     this.totalPage = Number(totalPage);
   }
 
+  get isMaleAuthor() {
+    return this.authorGender === 'M';
+  }
+
+  get isFemaleAuthor() {
+    return this.authorGender === 'F';
+  }
+
   get href() {
     switch (this.forum) {
       case 'HKG': {

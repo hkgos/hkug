@@ -1,4 +1,9 @@
-import { call, put, select, takeLatest } from 'redux-saga/effects';
+import {
+  call,
+  put,
+  select,
+  takeLatest,
+} from 'redux-saga/effects';
 import * as API from '../utils/api';
 // Actions
 export const FETCH_TOPICS = 'FETCH_TOPICS';
@@ -7,9 +12,8 @@ export const FETCH_TOPICS_FAILED = 'FETCH_TOPICS_FAILED';
 
 // Default state
 export const defaultState = () => ({
-  isFetchingTopics: false,
-  isFetchTopicsError: false,
-  fetchTopicsError: null,
+  status: 'DONE',
+  error: null,
   topics: [],
   page: 0,
 });
@@ -37,6 +41,7 @@ function* doFetchTopics(action) {
         topics: [],
         page,
       },
+      meta: action.mata,
       error: new Error('網絡發生問題'),
     });
   } else if (res.hkgError || res.lihkgError) {
@@ -46,6 +51,7 @@ function* doFetchTopics(action) {
         topics: res.topics,
         page: page + 1,
       },
+      meta: action.mata,
       error: res.hkgError || res.lihkgError,
     });
   } else {
@@ -80,25 +86,24 @@ export default function reducer(state = defaultState(), action) {
     case FETCH_TOPICS:
       return {
         ...state,
-        isFetchingTopics: true,
-        isFetchTopicsError: false,
+        status: FETCH_TOPICS,
+        error: null,
         topics: action.meta.reset ? [] : state.topics,
       };
     case FETCH_TOPICS_SUCCEEDED:
       return {
         ...state,
-        isFetchingTopics: false,
+        status: 'DONE',
         topics: mergeTopics(state.topics, action.payload.topics),
         page: action.payload.page,
       };
     case FETCH_TOPICS_FAILED:
       return {
         ...state,
-        isFetchingTopics: false,
+        status: 'ERROR',
         topics: mergeTopics(state.topics, action.payload.topics),
         page: action.payload.page,
-        isFetchTopicsError: true,
-        fetchTopicsError: action.error,
+        error: action.error,
       };
     default:
       return state;

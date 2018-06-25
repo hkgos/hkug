@@ -161,6 +161,7 @@ export async function fetchTopics({ category, page, type } = { type: 'all' }) {
       hkgTopics = await t1;
     } catch (e) {
       hkgError = e;
+      hkgError.message = `高登: ${hkgError.message}`;
     }
   }
   if (t2) {
@@ -168,6 +169,7 @@ export async function fetchTopics({ category, page, type } = { type: 'all' }) {
       lihkgTopics = await t2;
     } catch (e) {
       lihkgError = e;
+      lihkgError.message = `LIHKG: ${lihkgError.message}`;
     }
   }
   const topics = [];

@@ -69,7 +69,8 @@ client.interceptors.response.use(
       // TODO: Map known API error response to Error object
       const err = new Error(error.response.statusText);
       return Promise.reject(err);
-    } else if (error.request) {
+    }
+    if (error.request) {
       // The request was made but no response was received
       // Most likely a network problem
       const err = new Error('網絡發生問題');
