@@ -2,7 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import moment from 'moment';
-import { List, Button, Menu, message } from 'antd';
+import {
+  List,
+  Button,
+  Menu,
+  message,
+} from 'antd';
 import {
   compose,
   withHandlers,
@@ -13,14 +18,14 @@ import {
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import injectSheet from 'react-jss';
-import { utils, modules } from 'hkug-client-core';
+import { categories, modules } from 'hkug-client-core';
 import LoadingIndicator from '../../../components/LoadingIndicator';
 import IconText from '../../../components/IconText';
 import { matchShape } from '../../../utils/propTypes';
 import { PAGE_TITLE_BASE } from '../../../constants';
 
-const { fetchTopics } = modules.topic;
-const { getCategoryName } = utils.categories;
+const { fetchTopics, FETCH_TOPICS } = modules.topic;
+const { getCategoryName } = categories;
 
 const styles = theme => ({
   listItem: {
@@ -53,7 +58,9 @@ const styles = theme => ({
 
 const Footer = ({ loadMore, className }) => ( // eslint-disable-line react/prop-types
   <div className={className}>
-    <Button icon="ellipsis" type="primary" onClick={loadMore}>繼續睇</Button>
+    <Button icon="ellipsis" type="primary" onClick={loadMore}>
+      繼續睇
+    </Button>
   </div>
 );
 
@@ -64,7 +71,11 @@ const AuthorName = ({ name, gender, classes }) => { // eslint-disable-line react
   } else if (gender === 'F') {
     className = classes.female;
   }
-  return <span className={className}>{name}</span>;
+  return (
+    <span className={className}>
+      {name}
+    </span>
+  );
 };
 
 const renderActions = item => [
@@ -90,7 +101,7 @@ const renderItem = (classes, match, type) => item => (
     className={classes.listItem}
   >
     <List.Item.Meta
-      title={
+      title={(
         <Link
           to={{
             pathname: `${match.url}/${item.topicId}`,
@@ -101,14 +112,14 @@ const renderItem = (classes, match, type) => item => (
         >
           {item.title}
         </Link>
-      }
-      description={
+      )}
+      description={(
         <AuthorName
           name={item.authorName}
           gender={item.authorGender}
           classes={classes}
         />
-      }
+      )}
     />
     {item.content}
   </List.Item>
@@ -126,36 +137,58 @@ const Topics = ({
 }) => (
   <div>
     <Helmet>
-      <title>{`${getCategoryName(category)} | ${PAGE_TITLE_BASE}`}</title>
+      <title>
+        {`${getCategoryName(category)} | ${PAGE_TITLE_BASE}`}
+      </title>
     </Helmet>
     {
-      category !== 3 && category !== 2 &&
-      <Menu
-        onClick={handleTypeChange}
-        selectedKeys={[type]}
-        theme="dark"
-        mode="horizontal"
-      >
-        <Menu.Item key="all">全部</Menu.Item>
-        <Menu.Item key="hkg">高登</Menu.Item>
-        <Menu.Item key="lihkg">LIHKG</Menu.Item>
-        <Menu.Item key="hot">熱門 (LIHKG)</Menu.Item>
-      </Menu>
+      category !== 3 && category !== 2 && (
+        <Menu
+          onClick={handleTypeChange}
+          selectedKeys={[type]}
+          theme="dark"
+          mode="horizontal"
+        >
+          <Menu.Item key="all">
+            全部
+          </Menu.Item>
+          <Menu.Item key="hkg">
+            高登
+          </Menu.Item>
+          <Menu.Item key="lihkg">
+            LIHKG
+          </Menu.Item>
+          <Menu.Item key="hot">
+            熱門 (LIHKG)
+          </Menu.Item>
+        </Menu>
+      )
     }
     {
-      category === 2 &&
-      <Menu
-        onClick={handleTypeChange}
-        selectedKeys={[type]}
-        theme="dark"
-        mode="horizontal"
-      >
-        <Menu.Item key="all">全部</Menu.Item>
-        <Menu.Item key="hkg">高登</Menu.Item>
-        <Menu.Item key="lihkg">LIHKG</Menu.Item>
-        <Menu.Item key="daily">本日 (LIHKG)</Menu.Item>
-        <Menu.Item key="weekly">本週 (LIHKG)</Menu.Item>
-      </Menu>
+      category === 2 && (
+        <Menu
+          onClick={handleTypeChange}
+          selectedKeys={[type]}
+          theme="dark"
+          mode="horizontal"
+        >
+          <Menu.Item key="all">
+            全部
+          </Menu.Item>
+          <Menu.Item key="hkg">
+            高登
+          </Menu.Item>
+          <Menu.Item key="lihkg">
+            LIHKG
+          </Menu.Item>
+          <Menu.Item key="daily">
+            本日 (LIHKG)
+          </Menu.Item>
+          <Menu.Item key="weekly">
+            本週 (LIHKG)
+          </Menu.Item>
+        </Menu>
+      )
     }
     <List
       locale={{
@@ -165,9 +198,9 @@ const Topics = ({
       dataSource={topics}
       renderItem={renderItem(classes, match, type)}
       footer={
-        topics.length > 0 &&
-        !loading &&
-        <Footer className={classes.footer} loadMore={handleLoadMore} />
+        topics.length > 0
+        && !loading
+        && <Footer className={classes.footer} loadMore={handleLoadMore} />
       }
     >
       {loading && <LoadingIndicator />}
@@ -200,13 +233,16 @@ Topics.propTypes = {
 const enhance = compose(
   connect(state => ({
     topics: state.topic.topics,
-    loading: state.topic.isFetchingTopics,
-    isError: state.topic.isFetchTopicsError,
-    error: state.topic.fetchTopicsError,
-  }), { fetchTopics }),
-  withProps((props) => {
-    const { category } = props.match.params;
-    const queryParams = new URLSearchParams(props.location.search);
+    status: state.topic.status,
+    loading: state.topic.status === FETCH_TOPICS,
+    error: state.topic.error,
+  }), { fetchTopicsAction: fetchTopics }),
+  withProps(({
+    match,
+    location,
+  }) => {
+    const { category } = match.params;
+    const queryParams = new URLSearchParams(location.search);
     const q = queryParams.get('type');
     let type = 'all';
     if (Number(category) === 2 && (q === 'daily' || q === 'weekly' || q === 'lihkg' || q === 'hkg')) {
@@ -221,27 +257,26 @@ const enhance = compose(
   }),
   lifecycle({
     componentDidMount() {
-      const { category, type } = this.props;
-      this.props.fetchTopics({ category, type }, { reset: true });
+      const { category, type, fetchTopicsAction } = this.props;
+      fetchTopicsAction({ category, type }, { reset: true });
     },
     componentDidUpdate(prevProps) {
       if (prevProps.category !== this.props.category || prevProps.type !== this.props.type) {
         // Changed to other category / type, fetch with reset
         const { category, type } = this.props;
-        this.props.fetchTopics({ category, type }, { reset: true });
+        this.props.fetchTopicsAction({ category, type }, { reset: true });
       }
-      if (!prevProps.isError && this.props.isError) {
+      if (prevProps.status !== 'ERROR' && this.props.status === 'ERROR') {
         message.error(this.props.error.message);
       }
     },
   }),
   withHandlers({
-    handleTypeChange: props => ({ key }) => {
-      props.history.push(`/topics/${props.match.params.category}?type=${key}`);
+    handleTypeChange: ({ history, match }) => ({ key }) => {
+      history.push(`/topics/${match.params.category}?type=${key}`);
     },
-    handleLoadMore: props => () => {
-      const { category, type } = props;
-      props.fetchTopics({ category, type });
+    handleLoadMore: ({ category, type, fetchTopicsAction }) => () => {
+      fetchTopicsAction({ category, type });
     },
   }),
   injectSheet(styles),

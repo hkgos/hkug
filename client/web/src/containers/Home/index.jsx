@@ -1,7 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
-import { compose, pure, lifecycle, withStateHandlers, withHandlers, branch, renderComponent } from 'recompose';
+import {
+  compose,
+  pure,
+  lifecycle,
+  withStateHandlers,
+  withHandlers,
+  branch,
+  renderComponent,
+} from 'recompose';
 import injectSheet from 'react-jss';
 import showdown from 'showdown';
 
@@ -21,7 +29,9 @@ const styles = theme => ({
 const Home = ({ classes, createMarkup }) => (
   <div>
     <Helmet>
-      <title>{PAGE_TITLE_BASE}</title>
+      <title>
+        {PAGE_TITLE_BASE}
+      </title>
     </Helmet>
     <div
       className={classes.container}
@@ -78,7 +88,9 @@ const enhance = compose(
   branch(
     ({ isLoading, isError }) => isLoading || isError,
     renderComponent(({ fetchReadme, isError }) => (
-      <Delay><Loading error={isError} retry={fetchReadme} /></Delay>
+      <Delay>
+        <Loading error={isError} retry={fetchReadme} />
+      </Delay>
     )),
   ),
   pure,

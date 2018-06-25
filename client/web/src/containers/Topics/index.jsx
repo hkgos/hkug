@@ -1,13 +1,18 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Loadable from 'react-loadable';
-import { compose, branch, renderComponent, pure } from 'recompose';
-import { utils } from 'hkug-client-core';
+import {
+  compose,
+  branch,
+  renderComponent,
+  pure,
+} from 'recompose';
+import { categories } from 'hkug-client-core';
 
 import Loading from '../../components/Loading';
 import NotFound from '../NotFound';
 
-const allCategories = utils.categories.default;
+const allCategories = categories.list;
 
 const List = Loadable({
   loader: () => import('./List'),

@@ -2,7 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Helmet } from 'react-helmet';
-import { List, Row, Button, Icon, Dropdown, Menu } from 'antd';
+import {
+  List,
+  Row,
+  Button,
+  Icon,
+  Dropdown,
+  Menu,
+  message,
+} from 'antd';
 import {
   compose,
   lifecycle,
@@ -22,7 +30,7 @@ import Delay from '../../../components/Delay';
 import { PAGE_TITLE_BASE } from '../../../constants';
 
 const { Reply } = models;
-const { fetchReplies, fetchQuote } = modules.thread;
+const { fetchReplies, fetchQuote, FETCH_REPLIES } = modules.thread;
 const ButtonGroup = Button.Group;
 
 const styles = theme => ({
@@ -131,11 +139,15 @@ const Thread = ({
 }) => (
   <div>
     <Helmet>
-      <title>{`${title} | ${PAGE_TITLE_BASE}`}</title>
+      <title>
+        {`${title} | ${PAGE_TITLE_BASE}`}
+      </title>
     </Helmet>
     <div className={classes.titleContainer}>
       <Icon type="arrow-left" onClick={handleBackToList} />
-      <h1 className={classes.title}>{title}</h1>
+      <h1 className={classes.title}>
+        {title}
+      </h1>
     </div>
     <List
       className={classes.list}
@@ -197,7 +209,7 @@ const Thread = ({
         <Dropdown
           placement="bottomCenter"
           trigger={['click']}
-          overlay={
+          overlay={(
             <Menu
               theme="dark"
               className={classes.dropDownMenu}
@@ -207,7 +219,7 @@ const Thread = ({
             >
               {pageMenuItems}
             </Menu>
-          }
+          )}
         >
           <Button
             size="large"
@@ -236,7 +248,7 @@ const Thread = ({
       <Dropdown
         placement="topCenter"
         trigger={['click']}
-        overlay={
+        overlay={(
           <Menu
             className={classes.dropDownMenu}
             selectable
@@ -245,13 +257,14 @@ const Thread = ({
           >
             {pageMenuItems}
           </Menu>
-        }
+        )}
       >
         <Button
           size="large"
           data-nav="page"
         >
-          {`第 ${page} 頁`}<Icon type="down" />
+          {`第 ${page} 頁`}
+          <Icon type="down" />
         </Button>
       </Dropdown>
       <ButtonGroup>
@@ -285,24 +298,27 @@ const enhance = compose(
     totalPage: state.thread.totalPage,
     like: state.thread.like,
     dislike: state.thread.dislike,
-    isLoading: state.thread.isFetchingReplies,
-    isError: state.thread.isFetchRepliesError,
-    fetchRepliesError: state.thread.fetchRepliesError,
-    fetchingQuoteId: state.thread.fetchingQuoteId,
-  }), { fetchReplies, fetchQuoteAction: fetchQuote }),
-  withProps((props) => {
-    const query = new URLSearchParams(props.location.search);
+    status: state.thread.status,
+    error: state.thread.error,
+    fetchingQuoteId: state.thread.quoteFetchingList,
+  }), { fetchRepliesAction: fetchReplies, fetchQuoteAction: fetchQuote }),
+  withProps(({ location, match, totalPage }) => {
+    const query = new URLSearchParams(location.search);
     let page = query.get('page');
     if (!page || page < 1) {
       page = 1;
     }
     const forum = query.get('forum');
-    const { thread } = props.match.params;
+    const { thread } = match.params;
 
     const pageMenuItems = [];
 
-    for (let i = 0; i < props.totalPage; i += 1) {
-      pageMenuItems.push(<Menu.Item key={i + 1}>{`第 ${i + 1} 頁`}</Menu.Item>);
+    for (let i = 0; i < totalPage; i += 1) {
+      pageMenuItems.push(
+        <Menu.Item key={i + 1}>
+          {`第 ${i + 1} 頁`}
+        </Menu.Item>,
+      );
     }
     return ({
       page: Number(page),
@@ -312,11 +328,16 @@ const enhance = compose(
     });
   }),
   withHandlers({
-    loadReplies: props => () => {
-      props.fetchReplies({
-        thread: props.thread,
-        page: props.page,
-        forum: props.forum,
+    loadReplies: ({
+      fetchRepliesAction,
+      thread,
+      page,
+      forum,
+    }) => () => {
+      fetchRepliesAction({
+        thread,
+        page,
+        forum,
       });
     },
     handleBackToList: ({ history, match, location }) => () => {
@@ -344,20 +365,23 @@ const enhance = compose(
       if (this.props.page !== prevProps.page) {
         this.props.loadReplies();
       }
+      if (prevProps.status !== 'ERROR' && this.props.status === 'ERROR') {
+        message.error(this.props.error.message);
+      }
     },
   }),
   branch(
-    ({ isLoading, isError }) => isLoading || isError,
+    ({ status, replies }) => (replies.length <= 0 && status === 'ERROR') || status === FETCH_REPLIES,
     renderComponent(({
+      status,
+      error,
       loadReplies,
-      isError,
-      fetchRepliesError,
     }) => (
       <Delay>
         <Loading
-          error={isError}
+          error={status === 'ERROR'}
           retry={loadReplies}
-          detail={fetchRepliesError && fetchRepliesError.message}
+          detail={status === 'ERROR' ? error.message : undefined}
         />
       </Delay>
     )),

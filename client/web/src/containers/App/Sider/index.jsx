@@ -1,14 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Layout, Menu } from 'antd';
-import { compose, withProps, withHandlers, pure } from 'recompose';
+import {
+  compose,
+  withProps,
+  withHandlers,
+  pure,
+} from 'recompose';
 import injectSheet from 'react-jss';
 import { withRouter, matchPath, Link } from 'react-router-dom';
-import { utils } from 'hkug-client-core';
+import { categories as categoryList } from 'hkug-client-core';
 import { SIDE_MENU_BREAK_POINT } from '../../../constants';
 import logo from '../../../img/logo.png';
 
-const allCategories = utils.categories.default;
+const allCategories = categoryList.list;
 const { Sider } = Layout;
 
 const styles = theme => ({
@@ -58,7 +63,9 @@ const AppSider = ({
     onCollapse={(collapsed) => { setMenuCollapse(collapsed); }}
   >
     <div className={classes.logo}>
-      <Link to="/" href="/" onClick={handleHomeIconClick}><img src={logo} alt="Application logo" /></Link>
+      <Link to="/" href="/" onClick={handleHomeIconClick}>
+        <img src={logo} alt="Application logo" />
+      </Link>
     </div>
     <Menu
       mode="inline"
@@ -70,7 +77,9 @@ const AppSider = ({
       {
         categories.map(c => (
           <Menu.Item key={c.id}>
-            <span>{c.name}</span>
+            <span>
+              {c.name}
+            </span>
           </Menu.Item>
         ))
       }
@@ -109,11 +118,11 @@ const enhance = compose(
         props.setMenuCollapse(true);
       }
     },
-    handleMenuItemClick: props => ({ key }) => {
+    handleMenuItemClick: ({ history, setMenuCollapse }) => ({ key }) => {
       if (window.innerWidth <= SIDE_MENU_BREAK_POINT) {
-        props.setMenuCollapse(true);
+        setMenuCollapse(true);
       }
-      props.history.push(`/topics/${key}`);
+      history.push(`/topics/${key}`);
     },
   }),
   pure,

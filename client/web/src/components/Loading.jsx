@@ -53,7 +53,8 @@ const Loading = ({
 }) => {
   if (error) {
     return <ErrorPage retry={retry} detail={detail} />;
-  } else if (pastDelay) {
+  }
+  if (pastDelay) {
     return (
       <div className={classes.container}>
         <div className={classes.loading}>

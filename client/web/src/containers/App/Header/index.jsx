@@ -2,13 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Layout, Icon } from 'antd';
-import { compose, withProps, withHandlers, pure } from 'recompose';
+import {
+  compose,
+  withProps,
+  withHandlers,
+  pure,
+} from 'recompose';
 import injectSheet from 'react-jss';
 import { matchPath, withRouter } from 'react-router-dom';
-import { utils, modules } from 'hkug-client-core';
+import { categories, modules } from 'hkug-client-core';
 import { SIDE_MENU_BREAK_POINT, PAGE_TITLE_BASE } from '../../../constants';
 
-const allCategories = utils.categories.default;
+const allCategories = categories.list;
 const { fetchTopics } = modules.topic;
 const { fetchReplies } = modules.thread;
 
@@ -76,12 +81,14 @@ const AppHeader = ({
     >
       {header}
     </span>
-    {showReloadButton && <Icon
-      style={{ fontSize: 22 }}
-      className={classes.rightIcon}
-      type="reload"
-      onClick={handleReloadClick}
-    />}
+    {showReloadButton && (
+      <Icon
+        style={{ fontSize: 22 }}
+        className={classes.rightIcon}
+        type="reload"
+        onClick={handleReloadClick}
+      />
+    )}
   </Header>
 );
 
@@ -97,7 +104,7 @@ AppHeader.propTypes = {
 const enhance = compose(
   injectSheet(styles),
   withRouter,
-  connect(() => ({}), { fetchTopics, fetchReplies }),
+  connect(() => ({}), { fetchTopicsAction: fetchTopics, fetchRepliesAction: fetchReplies }),
   withProps(({ location }) => {
     const matchCategory = matchPath(location.pathname, { path: '/topics/:category' });
     const matchThread = matchPath(location.pathname, { path: '/topics/:category/:theadId', exact: true });
@@ -106,9 +113,9 @@ const enhance = compose(
     let showReloadButton = false;
     let isTopics = false;
     let isThread = false;
-    let threadId;
-    let threadPage;
-    let threadForum;
+    let thread;
+    let page;
+    let forum;
     if (matchCategory && matchCategory.params.category) {
       const category = allCategories.find(c => c.id === Number(matchCategory.params.category));
       if (category) {
@@ -120,19 +127,19 @@ const enhance = compose(
     }
     if (matchThread && categoryId !== null) {
       isThread = true;
-      threadId = matchThread.params.theadId;
+      thread = matchThread.params.theadId;
       const query = new URLSearchParams(location.search);
-      threadPage = query.get('page') || 1;
-      threadForum = query.get('forum');
+      page = query.get('page') || 1;
+      forum = query.get('forum');
     }
     const queryParams = new URLSearchParams(location.search);
     const type = queryParams.get('type');
     return ({
       header,
       categoryId,
-      threadId,
-      threadPage,
-      threadForum,
+      thread,
+      page,
+      forum,
       showReloadButton,
       isTopics,
       isThread,
@@ -140,15 +147,25 @@ const enhance = compose(
     });
   }),
   withHandlers({
-    handleReloadClick: props => () => {
-      if (props.isThread) {
-        props.fetchReplies({
-          thread: props.threadId,
-          page: props.threadPage,
-          forum: props.threadForum,
+    handleReloadClick: ({
+      isThread,
+      isTopics,
+      fetchTopicsAction,
+      fetchRepliesAction,
+      thread,
+      page,
+      forum,
+      categoryId,
+      type,
+    }) => () => {
+      if (isThread) {
+        fetchRepliesAction({
+          thread,
+          page,
+          forum,
         });
-      } else if (props.isTopics) {
-        props.fetchTopics({ category: props.categoryId, type: props.type }, { reset: true });
+      } else if (isTopics) {
+        fetchTopicsAction({ category: categoryId, type }, { reset: true });
       }
     },
   }),

@@ -20,11 +20,12 @@ class Delay extends Component {
   }
 
   componentDidMount() {
+    const { wait } = this.props;
     this.timer = setTimeout(() => {
       this.setState({
         waiting: false,
       });
-    }, this.props.wait);
+    }, wait);
   }
 
   componentWillUnmount() {
@@ -32,10 +33,12 @@ class Delay extends Component {
   }
 
   render() {
-    if (this.state.waiting) {
+    const { waiting } = this.state;
+    const { children } = this.props;
+    if (waiting) {
       return null;
     }
-    return this.props.children;
+    return children;
   }
 }
 

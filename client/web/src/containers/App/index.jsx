@@ -75,14 +75,14 @@ const App = ({ classes, menuCollapsed, setMenuCollapsed }) => (
       <Sider menuCollapsed={menuCollapsed} setMenuCollapse={setMenuCollapsed} />
       <Layout className={classes.contentlayout}>
         <Header menuCollapsed={menuCollapsed} setMenuCollapsed={setMenuCollapsed} />
-        {!menuCollapsed &&
+        {!menuCollapsed && (
           <div
             className={classes.overlay}
             role="presentation"
             onClick={() => { setMenuCollapsed(true); }}
             onKeyPress={() => { setMenuCollapsed(true); }}
           />
-        }
+        )}
         <Content className={classes.content}>
           <Switch>
             <Route exact path="/" component={Home} />

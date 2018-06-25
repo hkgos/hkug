@@ -32,7 +32,9 @@ const styles = theme => ({
 const ErrorPage = ({ classes, retry, detail }) => (
   <div className={classes.container}>
     <div className={classes.content}>
-      <div className={classes.title}>發生錯誤</div>
+      <div className={classes.title}>
+        發生錯誤
+      </div>
       <div className={classes.button}>
         <Button
           type="primary"
@@ -42,7 +44,9 @@ const ErrorPage = ({ classes, retry, detail }) => (
           onClick={retry}
         />
       </div>
-      <div className={classes.detail}>{detail}</div>
+      <div className={classes.detail}>
+        {detail}
+      </div>
     </div>
   </div>
 );
