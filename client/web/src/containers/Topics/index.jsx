@@ -4,7 +4,7 @@ import Loadable from 'react-loadable';
 import { compose, branch, renderComponent, pure } from 'recompose';
 import { utils } from 'hkug-client-core';
 
-import Loading from '../Loading';
+import Loading from '../../components/Loading';
 import NotFound from '../NotFound';
 
 const allCategories = utils.categories.default;

@@ -8,7 +8,6 @@ import {
   lifecycle,
   withProps,
   withHandlers,
-  withStateHandlers,
   branch,
   renderComponent,
   pure,
@@ -18,7 +17,8 @@ import injectSheet from 'react-jss';
 import { modules, models } from 'hkug-client-core';
 import Avatar from '../../../components/Avatar';
 import IconText from '../../../components/IconText';
-import Loading from '../../../containers/Loading';
+import Loading from '../../../components/Loading';
+import Delay from '../../../components/Delay';
 import { PAGE_TITLE_BASE } from '../../../constants';
 
 const { Reply } = models;
@@ -305,54 +305,20 @@ const enhance = compose(
       pageMenuItems.push(<Menu.Item key={i + 1}>{`第 ${i + 1} 頁`}</Menu.Item>);
     }
     return ({
-      initPage: () => { props.fetchReplies({ thread, page, forum }); },
       page: Number(page),
       thread,
       forum,
       pageMenuItems,
     });
   }),
-  withStateHandlers(
-    () => ({ pastDelay: false }),
-    {
-      setPastDelay: () => value => ({ pastDelay: value }),
-    },
-  ),
-  lifecycle({
-    componentWillMount() {
-      this.props.initPage();
-    },
-    componentDidUpdate(prevProps) {
-      if (this.props.isLoading && !prevProps.isLoading) {
-        this.props.setPastDelay(false);
-        setTimeout(() => { this.props.setPastDelay(true); }, 500);
-      }
-      if (this.props.page !== prevProps.page) {
-        this.props.fetchReplies({
-          thread: this.props.thread,
-          page: this.props.page,
-          forum: this.props.forum,
-        });
-      }
-    },
-  }),
-  branch(
-    ({ isLoading, isError }) => isLoading || isError,
-    renderComponent(({
-      initPage,
-      isError,
-      pastDelay,
-      fetchRepliesError,
-    }) => (
-      <Loading
-        error={isError}
-        retry={initPage}
-        pastDelay={pastDelay}
-        detail={fetchRepliesError && fetchRepliesError.message}
-      />
-    )),
-  ),
   withHandlers({
+    loadReplies: props => () => {
+      props.fetchReplies({
+        thread: props.thread,
+        page: props.page,
+        forum: props.forum,
+      });
+    },
     handleBackToList: ({ history, match, location }) => () => {
       const { state } = location;
       if (state && state.type) {
@@ -370,6 +336,32 @@ const enhance = compose(
       });
     },
   }),
+  lifecycle({
+    componentDidMount() {
+      this.props.loadReplies();
+    },
+    componentDidUpdate(prevProps) {
+      if (this.props.page !== prevProps.page) {
+        this.props.loadReplies();
+      }
+    },
+  }),
+  branch(
+    ({ isLoading, isError }) => isLoading || isError,
+    renderComponent(({
+      loadReplies,
+      isError,
+      fetchRepliesError,
+    }) => (
+      <Delay>
+        <Loading
+          error={isError}
+          retry={loadReplies}
+          detail={fetchRepliesError && fetchRepliesError.message}
+        />
+      </Delay>
+    )),
+  ),
   pure,
 );
 

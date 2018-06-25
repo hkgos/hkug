@@ -220,7 +220,7 @@ const enhance = compose(
     });
   }),
   lifecycle({
-    componentWillMount() {
+    componentDidMount() {
       const { category, type } = this.props;
       this.props.fetchTopics({ category, type }, { reset: true });
     },

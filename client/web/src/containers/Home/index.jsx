@@ -1,12 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
+import { compose, pure, lifecycle, withStateHandlers, withHandlers, branch, renderComponent } from 'recompose';
 import injectSheet from 'react-jss';
 import showdown from 'showdown';
 
 import { PAGE_TITLE_BASE } from '../../constants';
-import Loading from '../../containers/Loading';
-
+import Loading from '../../components/Loading';
+import Delay from '../../components/Delay';
 
 const styles = theme => ({
   container: {
@@ -17,71 +18,70 @@ const styles = theme => ({
   },
 });
 
-class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.abortController = new AbortController();
-    this.converter = new showdown.Converter();
-    this.state = {
-      text: '',
-      pastDelay: false,
-      isLoading: false,
-      isError: false,
-    };
-  }
-
-  componentWillMount() {
-    this.fetchReadme();
-  }
-
-  componentWillUnmount() {
-    // Clear all async tasks
-    clearTimeout(this.timer);
-    this.abortController.abort();
-  }
-
-  fetchReadme = () => {
-    this.setState({ pastDelay: false, isLoading: true });
-    this.timer = setTimeout(() => { this.setState({ pastDelay: true }); }, 500);
-    fetch('https://raw.githubusercontent.com/hkgos/hkug/master/README.md', {
-      method: 'get',
-      signal: this.abortController.signal,
-    })
-      .then(res => res.text())
-      .then((text) => { this.setState({ text, isLoading: false, isError: false }); })
-      .catch(() => { this.setState({ isError: true }); });
-  }
-
-  createMarkup = () => {
-    this.converter.setFlavor('github');
-    const html = this.converter.makeHtml(this.state.text);
-    return {
-      __html: html,
-    };
-  }
-
-  render() {
-    const { isLoading, isError, pastDelay } = this.state;
-    const { classes } = this.props;
-    if (isLoading || isError) {
-      return <Loading error={isError} retry={this.fetchReadme} pastDelay={pastDelay} />;
-    }
-    return (
-      <div>
-        <Helmet>
-          <title>{PAGE_TITLE_BASE}</title>
-        </Helmet>
-        <div
-          className={classes.container}
-          dangerouslySetInnerHTML={this.createMarkup()} // eslint-disable-line react/no-danger
-        />
-      </div>
-    );
-  }
-}
+const Home = ({ classes, createMarkup }) => (
+  <div>
+    <Helmet>
+      <title>{PAGE_TITLE_BASE}</title>
+    </Helmet>
+    <div
+      className={classes.container}
+      dangerouslySetInnerHTML={createMarkup()} // eslint-disable-line react/no-danger
+    />
+  </div>
+);
 
 Home.propTypes = {
   classes: PropTypes.shape({}).isRequired,
+  createMarkup: PropTypes.func.isRequired,
 };
 
-export default injectSheet(styles)(Home);
+const enhance = compose(
+  injectSheet(styles),
+  withStateHandlers(
+    () => ({
+      text: '',
+      isLoading: false,
+      isError: false,
+    }),
+    {
+      setText: () => value => ({ text: value }),
+      setLoading: () => value => ({ isLoading: value }),
+      setError: () => value => ({ isError: value }),
+    },
+  ),
+  withHandlers({
+    fetchReadme: ({
+      setText,
+      setLoading,
+      setError,
+    }) => () => {
+      setLoading(true);
+      fetch('https://raw.githubusercontent.com/hkgos/hkug/master/README.md')
+        .then(res => res.text())
+        .then((text) => { setText(text); setLoading(false); })
+        .catch(() => { setError(true); });
+    },
+    createMarkup: ({ text }) => () => {
+      const converter = new showdown.Converter();
+      converter.setFlavor('github');
+      const html = converter.makeHtml(text);
+      return {
+        __html: html,
+      };
+    },
+  }),
+  lifecycle({
+    componentDidMount() {
+      this.props.fetchReadme();
+    },
+  }),
+  branch(
+    ({ isLoading, isError }) => isLoading || isError,
+    renderComponent(({ fetchReadme, isError }) => (
+      <Delay><Loading error={isError} retry={fetchReadme} /></Delay>
+    )),
+  ),
+  pure,
+);
+
+export default enhance(Home);

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Button } from 'antd';
 import { compose, pure } from 'recompose';
 import injectSheet from 'react-jss';
-import { withRouter } from 'react-router-dom';
 
 const styles = theme => ({
   container: {
@@ -58,7 +57,6 @@ ErrorPage.defaultProps = {
 
 const enhance = compose(
   injectSheet(styles),
-  withRouter,
   pure,
 );
 

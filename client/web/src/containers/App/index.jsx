@@ -9,7 +9,7 @@ import Loadable from 'react-loadable';
 import Sider from './Sider';
 import Header from './Header';
 import Footer from './Footer';
-import Loading from '../Loading';
+import Loading from '../../components/Loading';
 import NotFound from '../NotFound';
 import { SIDE_MENU_BREAK_POINT } from '../../constants';
 
