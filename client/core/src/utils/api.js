@@ -20,10 +20,10 @@ function constructBlockquote(q) {
 }
 
 function sortTopicsByLastReplyDate(a, b) {
-  if (a.lastReplyDate.getTime() < b.lastReplyDate.getTime()) {
+  if (new Date(a.lastReplyDate).getTime() < new Date(b.lastReplyDate).getTime()) {
     return -1;
   }
-  if (a.lastReplyDate.getTime() > b.lastReplyDate.getTime()) {
+  if (new Date(a.lastReplyDate).getTime() > new Date(b.lastReplyDate).getTime()) {
     return 1;
   }
   return 0;
@@ -53,7 +53,7 @@ export async function fetchHkgTopics({ category, page } = {}) {
       returntype: 'json',
     });
     const res = await httpClient.get(url.href());
-    hkgTopics = [].concat(res.topic_list).map(t => new Topic({
+    hkgTopics = [].concat(res.topic_list).map(t => Topic({
       topicId: t.Message_ID,
       forum: 'HKG',
       category,
@@ -105,7 +105,7 @@ export async function fetchLihkgTopics({ category, page, type } = {}) {
       });
     }
     const res = await httpClient.get(url.href());
-    lihkgTopics = [].concat(res.response.items).map(t => new Topic({
+    lihkgTopics = [].concat(res.response.items).map(t => Topic({
       topicId: t.thread_id,
       forum: 'LIHKG',
       category,
@@ -175,7 +175,10 @@ export async function fetchTopics({ category, page, type } = { type: 'all' }) {
   const topics = [];
   while (hkgTopics.length > 0 || lihkgTopics.length > 0) {
     if (hkgTopics.length > 0 && lihkgTopics.length > 0) {
-      if (hkgTopics[0].lastReplyDate.getTime() > lihkgTopics[0].lastReplyDate.getTime()) {
+      if (
+        new Date(hkgTopics[0].lastReplyDate).getTime()
+        > new Date(lihkgTopics[0].lastReplyDate).getTime()
+      ) {
         topics.push(hkgTopics.shift());
       } else {
         topics.push(lihkgTopics.shift());
@@ -218,7 +221,7 @@ export async function fetchHkgReplies({ thread, page = 1 } = {}) {
     returntype: 'json',
   });
   const res = await httpClient.get(url.href());
-  const replies = res.messages.map((r, i) => new Reply({
+  const replies = res.messages.map((r, i) => Reply({
     replyId: r.Reply_ID,
     forum: 'HKG',
     index: start + i + 1,
@@ -240,7 +243,7 @@ export async function fetchHkgReplies({ thread, page = 1 } = {}) {
 export async function fetchLihkgReplies({ thread, page = 1 } = {}) {
   const url = new URI(`thread/${thread}/page/${page}`, LIHKG_API_ENDPOINT);
   const res = await httpClient.get(url.href());
-  const replies = [].concat(res.response.item_data).map(r => new Reply({
+  const replies = [].concat(res.response.item_data).map(r => Reply({
     replyId: r.post_id,
     forum: 'LIHKG',
     index: r.msg_num,

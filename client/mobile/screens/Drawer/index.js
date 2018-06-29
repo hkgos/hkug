@@ -8,10 +8,8 @@ import {
   ListItem,
   Content,
 } from 'native-base';
-import { utils } from 'hkug-client-core';
+import { categories } from 'hkug-client-core';
 import { version } from '../../package.json';
-
-const categories = utils.categories.default;
 
 const styles = StyleSheet.create({
   safeAreaView: {
@@ -48,12 +46,12 @@ const Drawer = ({ navigation }) => (
           source={require('../../img/logo.png')} // eslint-disable-line global-require
         />
         <List
-          dataArray={categories}
+          dataArray={categories.list}
           contentContainerStyle={{ marginTop: 120 }}
           renderRow={(c, _, i) => (
             <ListItem
               first={Number(i) === 0}
-              last={Number(i) === categories.length - 1}
+              last={Number(i) === categories.list.length - 1}
               button
               onPress={() => {
                 navigation.navigate('Topics', { category: c.id, title: c.name });

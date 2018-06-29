@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import parse5 from 'parse5';
 import moment from 'moment';
 import { Helmet } from 'react-helmet';
 import {
@@ -22,14 +23,15 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 import injectSheet from 'react-jss';
-import { modules, models } from 'hkug-client-core';
+import { modules, constants } from 'hkug-client-core';
 import Avatar from '../../../components/Avatar';
 import IconText from '../../../components/IconText';
 import Loading from '../../../components/Loading';
+import ErrorPage from '../../../components/Error';
 import Delay from '../../../components/Delay';
 import { PAGE_TITLE_BASE } from '../../../constants';
 
-const { Reply } = models;
+const { HKG_HOST, LIHKG_HOST } = constants;
 const { fetchReplies, fetchQuote, FETCH_REPLIES } = modules.thread;
 const ButtonGroup = Button.Group;
 
@@ -122,6 +124,84 @@ const styles = theme => ({
   },
 });
 
+function toCamelCase(string) {
+  return string.replace('-', ' ').replace(/\s(\w)/g, (matches, letter) => letter.toUpperCase());
+}
+
+function createReactElements(nodes, forum, opts) {
+  if (!nodes || nodes.length === 0) {
+    return [];
+  }
+  const result = [];
+  let index = 0;
+  while (nodes.length > index) {
+    const n = nodes[index];
+    if (n.tagName) {
+      const properties = {};
+      n.attrs.forEach((a) => {
+        properties[a.name] = a.value;
+      });
+      if (forum === 'HKG') {
+        if (properties.src && properties.src.startsWith('/faces/') && n.tagName === 'img') {
+          const url = new URL(properties.src, HKG_HOST);
+          properties.src = url.href;
+        }
+      } else if (forum === 'LIHKG') {
+        if (n.tagName === 'img' && properties.class === 'hkgmoji') {
+          const url = new URL(properties.src, LIHKG_HOST);
+          properties.src = url.href;
+        }
+      }
+      const style = {};
+      const styleArray = typeof properties.style === 'string' ? properties.style.split(';') : [];
+      styleArray.forEach((s) => {
+        const [key, value] = s.split(':');
+        if (key && value && key !== '' && value !== '') {
+          style[toCamelCase(key.trim())] = value.trim();
+        }
+      });
+      delete properties.style;
+      delete properties.class;
+      if (Object.keys(style).length > 0) {
+        properties.style = style;
+      }
+      if (forum === 'HKG' && n.tagName === 'div') {
+        delete properties.style.color;
+      }
+      if (n.tagName === 'button' && properties['data-quote-post-id']) {
+        result.push(React.createElement(
+          opts.render,
+          {
+            onClick: () => { opts.handler(properties['data-quote-post-id']); },
+            loading: opts.fetchingIds.indexOf(properties['data-quote-post-id']) !== -1,
+          },
+          ...createReactElements(n.childNodes, forum, opts),
+        ));
+      } else {
+        result.push(React.createElement(
+          n.tagName,
+          properties,
+          ...createReactElements(n.childNodes, forum, opts),
+        ));
+      }
+    } else if (n.nodeName === '#text') {
+      result.push(n.value);
+    }
+    index += 1;
+  }
+  return result;
+}
+
+function createContentReactElement(content, forum, options) {
+  const documentFragment = parse5.parseFragment(content);
+  const childrens = createReactElements(documentFragment.childNodes, forum, options);
+  return React.createElement(
+    'div',
+    { className: options.className },
+    ...childrens,
+  );
+}
+
 const Thread = ({
   classes,
   replies,
@@ -163,7 +243,7 @@ const Thread = ({
             name={item.authorName}
             gender={item.authorGender}
           />
-          {item.contentReactElement({
+          {createContentReactElement(item.content, item.forum, {
             className: classes.content,
             render: props => (
               <Button
@@ -278,7 +358,16 @@ Thread.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   title: PropTypes.string.isRequired,
   thread: PropTypes.string.isRequired,
-  replies: PropTypes.arrayOf(PropTypes.instanceOf(Reply)).isRequired,
+  replies: PropTypes.arrayOf(PropTypes.shape({
+    replyId: PropTypes.string,
+    forum: PropTypes.string,
+    index: PropTypes.number,
+    authorId: PropTypes.string,
+    authorName: PropTypes.string,
+    authorGender: PropTypes.string,
+    content: PropTypes.string,
+    replyDate: PropTypes.number,
+  })).isRequired,
   page: PropTypes.number.isRequired,
   totalPage: PropTypes.number.isRequired,
   like: PropTypes.number.isRequired,
@@ -307,6 +396,8 @@ const enhance = compose(
     let page = query.get('page');
     if (!page || page < 1) {
       page = 1;
+    } else if (totalPage !== 0 && page > totalPage) {
+      page = totalPage;
     }
     const forum = query.get('forum');
     const { thread } = match.params;
@@ -359,31 +450,50 @@ const enhance = compose(
   }),
   lifecycle({
     componentDidMount() {
-      this.props.loadReplies();
+      const {
+        loadReplies,
+      } = this.props;
+      /* eslint-disable no-underscore-dangle */
+      if (window.__SS_RENDERED__) {
+        delete window.__SS_RENDERED__;
+        /* eslint-enable */
+      } else {
+        loadReplies();
+      }
     },
     componentDidUpdate(prevProps) {
-      if (this.props.page !== prevProps.page) {
-        this.props.loadReplies();
+      const {
+        status,
+        error,
+        page,
+        loadReplies,
+      } = this.props;
+      if (page !== prevProps.page) {
+        loadReplies();
       }
-      if (prevProps.status !== 'ERROR' && this.props.status === 'ERROR') {
-        message.error(this.props.error.message);
+      if (prevProps.status !== 'ERROR' && status === 'ERROR') {
+        message.error(error);
       }
     },
   }),
   branch(
-    ({ status, replies }) => (replies.length <= 0 && status === 'ERROR') || status === FETCH_REPLIES,
+    ({ status }) => status === FETCH_REPLIES,
+    renderComponent(() => (
+      <Delay>
+        <Loading />
+      </Delay>
+    )),
+  ),
+  branch(
+    ({ status, replies }) => replies.length === 0 && status === 'ERROR',
     renderComponent(({
-      status,
       error,
       loadReplies,
     }) => (
-      <Delay>
-        <Loading
-          error={status === 'ERROR'}
-          retry={loadReplies}
-          detail={status === 'ERROR' ? error.message : undefined}
-        />
-      </Delay>
+      <ErrorPage
+        retry={loadReplies}
+        detail={error}
+      />
     )),
   ),
   pure,

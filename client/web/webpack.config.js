@@ -1,19 +1,17 @@
 const path = require('path');
 const webpack = require('webpack');
+const loadable = require('react-loadable/webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const appMountId = 'root';
 const lang = 'zh-Hant';
 const assetsPrefix = 'assets';
 const contentBase = 'public';
-
 const devMode = process.env.NODE_ENV !== 'production';
 
-const mode = devMode ? 'development' : 'production';
 const devServer = devMode ? {
   host: 'localhost',
   port: 8080,
@@ -34,18 +32,6 @@ const devServer = devMode ? {
     },
   },
 } : undefined;
-const optimization = {
-  splitChunks: {
-    chunks: 'all',
-  },
-  minimizer: [
-    new UglifyJsPlugin({
-      cache: true,
-      parallel: true,
-      sourceMap: false,
-    }),
-  ],
-};
 const plugins = [
   // clean output folder before build
   new CleanWebpackPlugin([
@@ -71,24 +57,23 @@ const plugins = [
   new HtmlWebpackHarddiskPlugin(),
   // load only `moment/locale/zh-tw.js`
   new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /zh-tw/),
+  // set ENV vars
+  new webpack.DefinePlugin({
+    'process.env': {
+      NODE_ENV: devMode ? JSON.stringify('development') : JSON.stringify('production'),
+      PROXY: JSON.stringify(true),
+    },
+  }),
+  new loadable.ReactLoadablePlugin({
+    filename: path.resolve(__dirname, 'react-loadable.json'),
+  }),
 ];
 if (devMode) {
   plugins.push(
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.DefinePlugin({
-      'process.env': {
-        PROXY: JSON.stringify(true),
-      },
-    }),
   );
 } else {
   plugins.push(
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production'),
-        PROXY: JSON.stringify(true),
-      },
-    }),
     // keep vendor bundle unchanged when only module.id was changed, see:
     // https://webpack.js.org/guides/caching/#module-identifiers
     new webpack.HashedModuleIdsPlugin(),
@@ -103,11 +88,15 @@ if (devMode) {
 }
 
 module.exports = {
-  mode,
+  mode: devMode ? 'development' : 'production',
   entry: './src/index.jsx',
   devServer,
   plugins,
-  optimization,
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
   // config which extensions will be resolved, default only reslove .js only
   // to make
   // import module from './module'

@@ -11,7 +11,7 @@
     * Native Mobile App (React Native)
 
 ## 事前準備
-  Nodejs 8 (Nodejs 6.x 可能有問題) or Docker (Web client only)
+  Node >= 10 or Docker (Web client only)
 
   不使用Docker的話強烈建議使用yarn進行install
 
@@ -46,7 +46,7 @@ $ git clone https://github.com/hkgos/hkug.git
 
   ```bash
   $ yarn install
-  $ yarn run compile
+  $ yarn compile
   ```
 
 #### 然後build Web / Mobile
@@ -68,7 +68,7 @@ $ git clone https://github.com/hkgos/hkug.git
   * Run production server:
 
     ```bash
-    $ yarn run build:prod
+    $ yarn build
     $ yarn start
     ```
     open your browser and go to http://localhost:8080
