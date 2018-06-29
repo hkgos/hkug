@@ -5,72 +5,74 @@ import {
 } from '../constants';
 import { getHkgId } from '../utils/categories';
 
-export default class Topic {
-  constructor({
-    topicId,
-    forum,
-    category,
-    title,
-    createdDate,
-    authorId,
-    authorName,
-    authorGender,
-    lastReplyDate,
-    totalReplies,
-    like,
-    dislike,
-    totalPage,
-  } = {}) {
-    this.topicId = String(topicId);
-    this.forum = String(forum);
-    this.category = Number(category);
-    this.title = String(title);
-    this.createdDate = new Date(Number(createdDate));
-    this.authorId = String(authorId);
-    this.authorName = String(authorName);
-    this.authorGender = String(authorGender);
-    this.lastReplyDate = new Date(Number(lastReplyDate));
-    this.totalReplies = Number(totalReplies);
-    this.like = Number(like);
-    this.dislike = Number(dislike);
-    this.totalPage = Number(totalPage);
-  }
-
-  get isMaleAuthor() {
-    return this.authorGender === 'M';
-  }
-
-  get isFemaleAuthor() {
-    return this.authorGender === 'F';
-  }
-
-  get href() {
-    switch (this.forum) {
-      case 'HKG': {
-        const url = new URI('view.aspx', HKG_HOST);
-        url.search({
-          type: getHkgId(this.category),
-          message: this.topicId,
-        });
-        return url.href();
-      }
-      case 'LIHKG': {
-        const url = new URI(`thread/${this.topicId}`, LIHKG_HOST);
-        return url.href();
-      }
-      default:
-        return undefined;
+function getHref({
+  forum,
+  category,
+  topicId,
+}) {
+  switch (forum) {
+    case 'HKG': {
+      const url = new URI('view.aspx', HKG_HOST);
+      url.search({
+        type: getHkgId(category),
+        message: topicId,
+      });
+      return url.href();
     }
-  }
-
-  get forumName() {
-    switch (this.forum) {
-      case 'HKG':
-        return '高登';
-      case 'LIHKG':
-        return 'LIHKG';
-      default:
-        return this.forum;
+    case 'LIHKG': {
+      const url = new URI(`thread/${topicId}`, LIHKG_HOST);
+      return url.href();
     }
+    default:
+      return undefined;
   }
+}
+
+function getForumName(forum) {
+  switch (forum) {
+    case 'HKG':
+      return '高登';
+    case 'LIHKG':
+      return 'LIHKG';
+    default:
+      return forum;
+  }
+}
+
+export default function Topic({
+  topicId,
+  forum,
+  category,
+  title,
+  createdDate,
+  authorId,
+  authorName,
+  authorGender,
+  lastReplyDate,
+  totalReplies,
+  like,
+  dislike,
+  totalPage,
+}) {
+  return ({
+    topicId: String(topicId),
+    forum: String(forum),
+    category: Number(category),
+    title: String(title),
+    createdDate: Number(createdDate),
+    authorId: String(authorId),
+    authorName: String(authorName),
+    authorGender: String(authorGender),
+    lastReplyDate: Number(lastReplyDate),
+    totalReplies: Number(totalReplies),
+    like: Number(like),
+    dislike: Number(dislike),
+    totalPage: Number(totalPage),
+    href: getHref({
+      forum: String(forum),
+      category: Number(category),
+      topicId: String(topicId),
+    }),
+    forumName: getForumName(String(forum)),
+  });
 }

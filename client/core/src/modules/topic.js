@@ -103,7 +103,7 @@ export default function reducer(state = defaultState(), action) {
         status: 'ERROR',
         topics: mergeTopics(state.topics, action.payload.topics),
         page: action.payload.page,
-        error: action.error,
+        error: action.error.message,
       };
     default:
       return state;

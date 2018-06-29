@@ -257,8 +257,18 @@ const enhance = compose(
   }),
   lifecycle({
     componentDidMount() {
-      const { category, type, fetchTopicsAction } = this.props;
-      fetchTopicsAction({ category, type }, { reset: true });
+      const {
+        category,
+        type,
+        fetchTopicsAction,
+      } = this.props;
+      /* eslint-disable no-underscore-dangle */
+      if (window.__SS_RENDERED__) {
+        delete window.__SS_RENDERED__;
+        /* eslint-enable */
+      } else {
+        fetchTopicsAction({ category, type }, { reset: true });
+      }
     },
     componentDidUpdate(prevProps) {
       if (prevProps.category !== this.props.category || prevProps.type !== this.props.type) {
@@ -267,7 +277,7 @@ const enhance = compose(
         this.props.fetchTopicsAction({ category, type }, { reset: true });
       }
       if (prevProps.status !== 'ERROR' && this.props.status === 'ERROR') {
-        message.error(this.props.error.message);
+        message.error(this.props.error);
       }
     },
   }),

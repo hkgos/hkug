@@ -1,30 +1,45 @@
 {
-  "presets": [
-    ["env", {
-      "targets": {
-        "browsers": ["last 2 Chrome versions"],
-        "node": "current"
-      }
-    }],
-    "react",
-    "stage-0"
-  ],
-  "plugins": [
-    "react-hot-loader/babel",
-    [
-      "import",
-      [
-        {
-          "libraryName": "antd",
-          "libraryDirectory": "lib",
-          "style": true
-        },
-        {
-          "libraryName": "recompose",
-          "libraryDirectory": "",
-          "camel2DashComponentName": false,
-        }
+  "env": {
+    "browser": {
+      "presets": [
+        ["env", {
+          "targets": {
+            "browsers": ["last 2 Chrome versions"]
+          }
+        }],
+        "react",
+        "stage-0"
+      ],
+      "plugins": [
+        "react-hot-loader/babel",
+        [
+          "import",
+          [
+            {
+              "libraryName": "antd",
+              "libraryDirectory": "lib",
+              "style": true
+            },
+            {
+              "libraryName": "recompose",
+              "libraryDirectory": "",
+              "camel2DashComponentName": false,
+            }
+          ]
+        ]
       ]
-    ]
-  ]
+    },
+    "node": {
+      "presets": [
+        ["env", {
+          "targets": {
+            "node": "current"
+          }
+        }],
+        "react",
+        "stage-0"
+      ],
+      "plugins": ["react-loadable/babel"]
+    }
+  }
 }

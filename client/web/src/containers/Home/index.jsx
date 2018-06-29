@@ -15,7 +15,6 @@ import showdown from 'showdown';
 
 import { PAGE_TITLE_BASE } from '../../constants';
 import Loading from '../../components/Loading';
-import Delay from '../../components/Delay';
 
 const styles = theme => ({
   container: {
@@ -49,7 +48,7 @@ const enhance = compose(
   injectSheet(styles),
   withStateHandlers(
     () => ({
-      text: '',
+      text: window.__README__, // eslint-disable-line no-underscore-dangle
       isLoading: false,
       isError: false,
     }),
@@ -82,15 +81,23 @@ const enhance = compose(
   }),
   lifecycle({
     componentDidMount() {
-      this.props.fetchReadme();
+      const {
+        fetchReadme,
+      } = this.props;
+      /* eslint-disable no-underscore-dangle */
+      if (window.__SS_RENDERED__) {
+        delete window.__SS_RENDERED__;
+        delete window.__README__;
+        /* eslint-enable */
+      } else {
+        fetchReadme();
+      }
     },
   }),
   branch(
     ({ isLoading, isError }) => isLoading || isError,
     renderComponent(({ fetchReadme, isError }) => (
-      <Delay>
-        <Loading error={isError} retry={fetchReadme} />
-      </Delay>
+      <Loading error={isError} retry={fetchReadme} />
     )),
   ),
   pure,

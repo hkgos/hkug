@@ -1,4 +1,4 @@
-FROM node:8.11.1-alpine
+FROM node:10.3.0-alpine
 
 RUN mkdir /core
 WORKDIR /core
@@ -15,7 +15,7 @@ COPY ./web/yarn.lock /web
 RUN yarn install
 
 COPY ./web/. /web
-RUN npm run build:prod
+RUN npm run build
 
 EXPOSE 8080
 ENTRYPOINT ["npm", "start"]

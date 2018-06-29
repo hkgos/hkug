@@ -21,11 +21,11 @@
     "babel-eslint": "^8.2.5",
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-0": "^6.24.1",
-    "eslint": "^5.0.0",
+    "eslint": "^5.0.1",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-jest": "^21.17.0",
-    "jest": "^23.1.0",
+    "jest": "^23.2.0",
     "react": "16.3.1",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0"
@@ -33,7 +33,6 @@
   "dependencies": {
     "axios": "^0.18.0",
     "crypto-js": "^3.1.9-1",
-    "parse5": "^5.0.0",
     "urijs": "^1.19.1"
   },
   "peerDependencies": {

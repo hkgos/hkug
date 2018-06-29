@@ -2,6 +2,8 @@
 /public/index.html
 /public/assets
 /webpack.stats.json
+/react-loadable.json
+/dist
 
 # npm files
 /node_modules

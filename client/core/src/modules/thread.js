@@ -85,7 +85,7 @@ export default function reducer(state = defaultState(), action) {
       return {
         ...state,
         status: 'ERROR',
-        error: action.error,
+        error: action.error.message,
       };
     case FETCH_QUOTE:
       return {
@@ -101,7 +101,7 @@ export default function reducer(state = defaultState(), action) {
         quoteFetchingList: state.quoteFetchingList.filter(a => a !== action.meta.quote),
         replies: state.replies.map((r) => {
           if (r.replyId === action.meta.replyId) {
-            return new Reply({
+            return Reply({
               ...r,
               content: r.content.replace(`<button data-quote-post-id="${action.meta.quote}" />`, action.payload),
             });
@@ -114,7 +114,7 @@ export default function reducer(state = defaultState(), action) {
         ...state,
         status: 'ERROR',
         quoteFetchingList: state.quoteFetchingList.filter(a => a !== action.meta.quote),
-        error: action.error,
+        error: action.error.message,
       };
     default:
       return state;
