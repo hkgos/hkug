@@ -1,4 +1,5 @@
 /* eslint no-console: 0 */
+/* eslint import/no-unresolved: 0 */
 const fs = require('fs');
 const path = require('path');
 const compression = require('compression');
