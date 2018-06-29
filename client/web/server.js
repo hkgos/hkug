@@ -1,12 +1,11 @@
 /* eslint no-console: 0 */
-/* eslint import/no-unresolved: 0 */
 const fs = require('fs');
 const path = require('path');
 const compression = require('compression');
 const Loadable = require('react-loadable');
 const express = require('express');
 const httpProxy = require('http-proxy');
-const ssr = require('./dist/server.js');
+const ssr = require('./dist/server.js'); // eslint-disable-line import/no-unresolved
 
 const app = express();
 const proxy = httpProxy.createProxyServer({});
