@@ -12,7 +12,7 @@ create().then(client => {
         })
         .then(e => {
             console.log(e);
-            return client.getThreadContent({ message: '6917815', page: 1 });
+            return client.getThreadContent({ message: 6917815, page: 1 });
         })
         .then(e => console.log(e))
         .catch(e => console.log('error' + e));

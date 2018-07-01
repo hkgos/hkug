@@ -13,7 +13,7 @@ api_1.create().then(client => {
     })
         .then(e => {
         console_1.default.log(e);
-        return client.getThreadContent({ message: '6917815', page: 1 });
+        return client.getThreadContent({ message: 6917815, page: 1 });
     })
         .then(e => console_1.default.log(e))
         .catch(e => console_1.default.log('error' + e));

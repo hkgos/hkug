@@ -59,7 +59,7 @@ function create(config) {
             })).then(response => handleLogin(model_1.Convert.toLogin(response.data)));
         },
         getThreadContent: request => instance.get('newView.aspx?' + new url_1.URLSearchParams(Object.entries(Object.assign({ s: getApiTopicDetailsKey(request.message, request.page, userInfo !== undefined ? userInfo.id_key.toString() : undefined), message: request.message, page: request.page.toString() }, getLoginParam(), { block: 'Y', sensormode: 'N', filterMode: 'N', returntype: 'json' })))).then(response => model_1.Convert.toThreadContent(response.data)),
-        getTopicList: request => instance.get('topics.aspx?' + +new url_1.URLSearchParams(Object.entries(Object.assign({ s: getApiTopicsListKey(request.type, request.page, userInfo !== undefined ? userInfo.id_key.toString() : undefined), type: request.type, page: request.page.toString(), pagesize: '50' }, getLoginParam(), { block: 'Y', sensormode: 'N', filterMode: 'N', hotOnly: 'N', returntype: 'json' })))).then(response => model_1.Convert.toTopicList(response.data)),
+        getTopicList: request => instance.get('topics.aspx?' + new url_1.URLSearchParams(Object.entries(Object.assign({ s: getApiTopicsListKey(request.type, request.page, userInfo !== undefined ? userInfo.id_key.toString() : undefined), type: request.type, page: request.page.toString(), pagesize: '50' }, getLoginParam(), { block: 'Y', sensormode: 'N', filterMode: 'N', hotOnly: 'N', returntype: 'json' })))).then(response => model_1.Convert.toTopicList(response.data)),
         getVersion: () => {
             const test = {
                 s: getApiGeneralKey(),
@@ -67,7 +67,9 @@ function create(config) {
                 returntype: 'json'
             };
             return instance.get('version.aspx?' + new url_1.URLSearchParams(Object.entries(test)));
-        }
+        },
+        reply: request => instance.post('post.aspx', getFormData(Object.assign({ s: getApiGeneralKey(userInfo.id_key.toString()), mt: 'Y', id: request.message, body: request.body }, getLoginParam(), { returntype: 'json' }))).then(response => model_1.Convert.toReply(response.data)),
+        newThread: request => instance.post('post.aspx', getFormData(Object.assign({ s: getApiGeneralKey(userInfo.id_key.toString()), mt: 'N', ft: request.topicType, title: request.title, body: request.body }, getLoginParam(), { returntype: 'json' }))).then(response => model_1.Convert.toReply(response.data))
     };
     return Promise.resolve(apiEndPoint);
 }
